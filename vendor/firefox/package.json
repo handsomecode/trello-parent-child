@@ -1,0 +1,13 @@
+{
+  "title": "Parent/Child Managment for Trello",
+  "name": "handsome-trello",
+  "version": "0.6.8",
+  "description": "Add support of Parent/Child dependencies in Trello projects.",
+  "main": "main.js",
+  "author": "Handsome",
+  "engines": {
+    "firefox": ">=38.0a1",
+    "fennec": ">=38.0a1"
+  },
+  "license": "MIT"
+}

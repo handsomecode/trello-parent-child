@@ -1,0 +1,113 @@
+.handsome-trello {
+  &__inheritance {
+    &-parent {
+      margin-bottom: 20px;
+    }
+    &-children {
+      &-list {
+        list-style: none;
+
+        margin-bottom: 20px;
+
+        & & {
+          margin-top: 5px;
+          margin-bottom: 0;
+        }
+      }
+      &-item {
+        position: relative;
+
+        margin-left: 5px;
+        margin-bottom: 5px;
+        padding-left: 10px;
+
+        cursor: pointer;
+
+        &:before {
+          content: '-';
+
+          position: absolute;
+          top: 2px;
+          left: 0;
+        }
+        & & {
+          margin-left: 10px;
+        }
+      }
+      &-placeholder {
+        height: 28px;
+
+        margin-bottom: 5px;
+
+        background-color: #d6dadc;
+
+        border-radius: 3px;
+      }
+    }
+    &-related {
+      &-list {
+        list-style: none;
+
+        margin-bottom: 20px;
+      }
+      &-item {
+        position: relative;
+
+        margin-left: 5px;
+        margin-bottom: 5px;
+        padding-left: 10px;
+
+        cursor: pointer;
+
+        &:before {
+          content: '-';
+
+          position: absolute;
+          top: 2px;
+          left: 0;
+        }
+        & & {
+          margin-left: 10px;
+        }
+      }
+    }
+    &-link {
+      display: inline-block;
+
+      padding: 2px 4px;
+
+      background-color: #d6dadc;
+
+      border-radius: 3px;
+
+      &:before {
+        content: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAABzElEQVR4AV3QM5xdWRzA8d85976xP5MyttEXaTZOytRxUgX1VFEZu49tZ3erbdZWbPPhHv7H/B4batH5T0uj6K0P8q6mIJAI1KaKoVUJAI+KgY9BAKhJFMOqkrxW0qJmHX/tApLOaMpRW6YR4F0p8tsHDwiTm1KayxNQkLeRn985UqU8Iw4+MhuuvJK+YluYe+RpR2qv97Wube6YtjVU7Pj786Zbz2WgxUcetKWHMtCWm8+ldvu/n3W1tRjjGCjLLCWTMVDJOMpchi62ZRI8A4m3YAwSPYgneA8I0VuKzpC27+qdZaBoDRBRygGQIECKCpaSNaRJWxa7FrbvmiQKBCqV54e3Be78+oohjWXECJ9Kjj+ef2KUDqTRGYIxgMc6S1nUiEj7Qh7mS6w6/R91OQXARx+o0prmMo0WYyC69oQznswYYvCId9QGR7VYnDFkJqMqOsrFYYwhxRvefymBitQ1pIAmK2R8yBc7f6+8jFTooiAACGrs+qMmp1XZzJHNDKopQynFkw8lvr33jnINaEW3BBCBqLBpLnjtbWTvd3fBCQCUJUyqr0AiROld6+kUQKtxaw4tjYGtWqmaACR0igq0CJ0U3aJIPqa0tAJ8b06Q8qKYsQAAAABJRU5ErkJggg==');
+
+        display: inline-block;
+
+        width: 14px;
+        height: 14px;
+
+        margin-right: 3px;
+
+        vertical-align: middle;
+      }
+    }
+    &-pop-over-parent-list {
+      overflow: auto;
+      overflow-x: hidden;
+
+      max-height: 200px;
+    }
+    &-pop-over-children-checkbox.check-div {
+      min-height: 0;
+
+      margin: 17px 0 0 40px;
+    }
+    &-notification {
+      a {
+        color: #fff;
+      }
+    }
+  }
+}

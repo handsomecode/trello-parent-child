@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Author</key>
+	<string>Handsome</string>
+	<key>Builder Version</key>
+	<string>11601.1.56</string>
+	<key>CFBundleDisplayName</key>
+	<string>Parent/Child Managment for Trello</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.handsome.is.handsometrello</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.6.8</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>Content</key>
+	<dict>
+		<key>Scripts</key>
+		<dict>
+			<key>End</key>
+			<array>
+				<string>content/scripts/libs/jquery.js</string>
+				<string>content/scripts/libs/jquery-ui.js</string>
+				<string>content/scripts/config.js</string>
+				<string>content/scripts/api.js</string>
+				<string>content/scripts/plugins/inheritance.js</string>
+				<string>content/scripts/init.js</string>
+			</array>
+		</dict>
+		<key>Stylesheets</key>
+		<array>
+			<string>content/css/style.css</string>
+		</array>
+	</dict>
+	<key>Description</key>
+	<string>Add support of Parent/Child dependencies in Trello projects.</string>
+	<key>DeveloperIdentifier</key>
+	<string>6Y3UWZWJMU</string>
+	<key>ExtensionInfoDictionaryVersion</key>
+	<string>1.0</string>
+	<key>Permissions</key>
+	<dict>
+		<key>Website Access</key>
+		<dict>
+			<key>Allowed Domains</key>
+			<array>
+				<string>*.trello.com</string>
+			</array>
+			<key>Include Secure Pages</key>
+			<true/>
+			<key>Level</key>
+			<string>Some</string>
+		</dict>
+	</dict>
+</dict>
+</plist>
