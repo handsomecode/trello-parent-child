@@ -33,3 +33,9 @@ node_modules
 # Created by .ignore support plugin (hsz.mobi)
 
 vendor/*/content/*
+tools/certs
+
+build
+dist
+
+vendor/safari/certs

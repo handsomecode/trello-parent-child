@@ -1,33 +1,30 @@
 {
   "manifest_version": 2,
-
   "name": "Parent/Child Managment for Trello",
-  "short_name": "Parent/Child for Trello",
   "description": "Add support of Parent/Child dependencies in Trello projects.",
   "author": "Handsome",
+  "homepage_url": "http://labs.handsome.is/trello/",
   "version": "0.6.8",
-
   "icons": {
-    "16": "icon_16.png",
-    "48": "icon_48.png",
-    "128": "icon_128.png"
+    "16": "icons/icon_16.png",
+    "48": "icons/icon_48.png",
+    "128": "icons/icon_128.png"
   },
-
   "content_scripts": [
     {
       "matches": [
         "https://trello.com/*"
       ],
       "css": [
-        "content/css/style.css"
+        "css/style.css"
       ],
       "js": [
-        "content/scripts/libs/jquery.js",
-        "content/scripts/libs/jquery-ui.js",
-        "content/scripts/config.js",
-        "content/scripts/api.js",
-        "content/scripts/plugins/inheritance.js",
-        "content/scripts/init.js"
+        "js/libs/jquery.js",
+        "js/libs/jquery-ui.js",
+        "js/config.js",
+        "js/api.js",
+        "js/plugins/inheritance.js",
+        "js/init.js"
       ]
     }
   ]

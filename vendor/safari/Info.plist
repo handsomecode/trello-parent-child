@@ -22,21 +22,23 @@
 		<dict>
 			<key>End</key>
 			<array>
-				<string>content/scripts/libs/jquery.js</string>
-				<string>content/scripts/libs/jquery-ui.js</string>
-				<string>content/scripts/config.js</string>
-				<string>content/scripts/api.js</string>
-				<string>content/scripts/plugins/inheritance.js</string>
-				<string>content/scripts/init.js</string>
+				<string>js/libs/jquery.js</string>
+				<string>js/libs/jquery-ui.js</string>
+				<string>js/config.js</string>
+				<string>js/api.js</string>
+				<string>js/plugins/inheritance.js</string>
+				<string>js/init.js</string>
 			</array>
 		</dict>
 		<key>Stylesheets</key>
 		<array>
-			<string>content/css/style.css</string>
+			<string>css/style.css</string>
 		</array>
 	</dict>
 	<key>Description</key>
 	<string>Add support of Parent/Child dependencies in Trello projects.</string>
+	<key>Website</key>
+	<string>http://labs.handsome.is/trello/</string>
 	<key>DeveloperIdentifier</key>
 	<string>6Y3UWZWJMU</string>
 	<key>ExtensionInfoDictionaryVersion</key>
