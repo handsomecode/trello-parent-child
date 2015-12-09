@@ -425,7 +425,7 @@
 
       _popOverContent.querySelector('.js-fill-pop-over-content .js-children-select-list').addEventListener('change', function () {
         currentColumn = self.base.getElementByProperty(self.base.data.boardData.lists, 'id', this.value);
-        this.parentElement.querySelector('.js-children-list-value').innerText = currentColumn.name;
+        this.parentElement.querySelector('.js-children-list-value').innerHTML = currentColumn.name;
 
         generatePositionsList();
         this.parentElement.parentElement.querySelector('.js-children-select-position').innerHTML = positionsHtml;
@@ -433,7 +433,7 @@
       });
 
       _popOverContent.querySelector('.js-fill-pop-over-content .js-children-select-position').addEventListener('change', function () {
-        this.parentElement.querySelector('.js-children-position-value').innerText = positionsList[this.value];
+        this.parentElement.querySelector('.js-children-position-value').innerHTML = positionsList[this.value];
       });
 
       _popOverContent.querySelector('.js-children-create').addEventListener('click', function () {
@@ -617,7 +617,7 @@
 
         if (countCheckItems) {
           _checklistFakeBadge.classList.remove('hide');
-          _checklistFakeBadge.querySelector('.badge-text').innerText = countCompleteCheckItems + '/' + countCheckItems;
+          _checklistFakeBadge.querySelector('.badge-text').innerHTML = countCompleteCheckItems + '/' + countCheckItems;
         } else {
           _checklistFakeBadge.classList.add('hide');
         }
@@ -958,7 +958,7 @@
 
       var _checklist = self.base.findParentByClass(_target, 'checklist');
 
-      if (_checklist && _checklist.querySelector('h3') && _checklist.querySelector('h3').innerText.trim().toLowerCase() === self.data.childrenName.toLowerCase()) {
+      if (_checklist && _checklist.querySelector('h3') && _checklist.querySelector('h3').innerHTML.trim().toLowerCase() === self.data.childrenName.toLowerCase()) {
         var openedCard = self.base.getCurrentOpenedCard();
 
         if (openedCard && openedCard.childrenChecklist) {
@@ -985,7 +985,7 @@
       };
 
       self.base.callbacks.checklistInserted['inheritance'] = function (_target) {
-        if (_target.querySelector('h3') && _target.querySelector('h3').innerText.trim().toLowerCase() === self.data.childrenName.toLowerCase()) {
+        if (_target.querySelector('h3') && _target.querySelector('h3').innerHTML.trim().toLowerCase() === self.data.childrenName.toLowerCase()) {
           _target.classList.add('hide');
 
           self.updateCardView();
