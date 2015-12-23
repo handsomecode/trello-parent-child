@@ -107,10 +107,10 @@
 
     getOffset: function (element) {
       function getOffsetSum(element) {
-        var top=0,
-            left=0;
+        var top = 0,
+            left = 0;
 
-        while(element) {
+        while (element) {
           top = top + parseInt(element.offsetTop);
           left = left + parseInt(element.offsetLeft);
 
@@ -131,7 +131,7 @@
             scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft,
             clientTop = docElem.clientTop || body.clientTop || 0,
             clientLeft = docElem.clientLeft || body.clientLeft || 0,
-            top  = box.top +  scrollTop - clientTop,
+            top = box.top + scrollTop - clientTop,
             left = box.left + scrollLeft - clientLeft;
 
         return {

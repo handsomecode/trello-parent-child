@@ -46,6 +46,7 @@ gulp.task('chrome', function () {
       pipe('./src/js/**/*', './build/chrome/js'),
       pipe('./src/css/**/*', './build/chrome/css'),
       pipe('./src/icons/**/*', './build/chrome/icons'),
+      pipe('./vendor/chrome/errors-handler.js', './build/chrome/js'),
       pipe('./vendor/chrome/manifest.json', [
         jeditor({
           'name': app.title,
@@ -118,6 +119,8 @@ gulp.task('dist', function (cb) {
 });
 
 gulp.task('watch', function () {
+  rseq('default');
+
   gulp.watch([
     './src/less/**/*',
     './src/fonts/**/*'
@@ -126,7 +129,8 @@ gulp.task('watch', function () {
   gulp.watch([
     './src/js/**/*',
     './src/css/**/*',
-    './vendor/**/*'
+    './vendor/**/*',
+    './package.json'
   ], ['default']);
 });
 

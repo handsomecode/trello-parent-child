@@ -13,7 +13,8 @@
   "content_scripts": [
     {
       "matches": [
-        "https://trello.com/*"
+        "https://trello.com/*",
+        "https://api.airtable.com/*"
       ],
       "css": [
         "css/style.css"
@@ -21,6 +22,7 @@
       "js": [
         "js/libs/jquery.js",
         "js/libs/jquery-ui.js",
+        "js/errors-handler.js",
         "js/config.js",
         "js/api.js",
         "js/plugins/inheritance.js",
