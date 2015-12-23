@@ -324,6 +324,53 @@
       return stringData;
     },
 
+    checkPopOver: function (title) {
+      var self = this;
+
+      if (!self.data.popOverTitle || self.data.popOverTitle !== title) {
+        return true;
+      } else {
+        self.popOver(false);
+        return false;
+      }
+    },
+
+    generatePopOver: function (_popOver, title, content) {
+      var _popOverHeader = document.createElement('div');
+      _popOverHeader.classList.add('pop-over-header');
+      _popOverHeader.classList.add('js-pop-over-header');
+
+      var _popOverTitle = document.createElement('span');
+      _popOverTitle.classList.add('pop-over-header-title');
+
+      var _popOverCloseBtn = document.createElement('a');
+      _popOverCloseBtn.setAttribute('href', '#');
+      _popOverCloseBtn.classList.add('pop-over-header-close-btn');
+      _popOverCloseBtn.classList.add('icon-sm');
+      _popOverCloseBtn.classList.add('icon-close');
+
+      var _popOverContent = document.createElement('div');
+      _popOverContent.classList.add('pop-over-content');
+      _popOverContent.classList.add('js-pop-over-content');
+      _popOverContent.classList.add('u-fancy-scrollbar');
+      _popOverContent.classList.add('js-tab-parent');
+
+      _popOverHeader.appendChild(_popOverTitle);
+      _popOverHeader.appendChild(_popOverCloseBtn);
+      _popOver.appendChild(_popOverHeader);
+      _popOver.appendChild(_popOverContent);
+
+      _popOverTitle.innerHTML = title;
+      _popOverContent.innerHTML = content;
+
+      return {
+        _popOverHeader: _popOverHeader,
+        _popOverTitle: _popOverTitle,
+        _popOverCloseBtn: _popOverCloseBtn,
+        _popOverContent: _popOverContent
+      };
+    },
+
     popOver: function (open, title, content, _target) {
       var self = this;
 
@@ -331,15 +378,9 @@
       content = open ? content : '';
 
       var _popOver = document.querySelector('.pop-over'),
-          _popOverTitle = _popOver.querySelector('.js-fill-pop-over-title'),
-          _popOverContent = _popOver.querySelector('.js-fill-pop-over-content'),
-          _popOverCloseBtn = _popOver.querySelector('.js-close-popover'),
           _windowOverlay = document.querySelector('.window-overlay'),
           _window = _windowOverlay.querySelector('.window'),
           _sidebarButtons = _window.querySelectorAll('.button-link');
-
-      _popOverTitle.innerHTML = title;
-      _popOverContent.innerHTML = content;
 
       function changePopOverPosition() {
         var targetOffset = self.getOffset(_target),
@@ -363,13 +404,16 @@
         if (!self.data.popOverTitle || self.data.popOverTitle !== title) {
           closePopOver();
 
+          var popOverElements = self.generatePopOver(_popOver, title, content);
+
           _popOver.classList.add('is-shown');
 
           changePopOverPosition();
 
           document.body.addEventListener('keydown', keyDownPopOver);
 
-          _popOverCloseBtn.addEventListener('click', clickPopOver);
+          popOverElements._popOverCloseBtn.addEventListener('click', clickPopOver);
+          document.querySelector('.js-close-window').addEventListener('click', clickPopOver);
           _window.addEventListener('click', clickPopOver);
           _windowOverlay.addEventListener('click', clickPopOver);
           window.addEventListener('resize', resizePopOver);
@@ -381,7 +425,11 @@
           setTimeout(function () {
             self.data.popOverTitle = title;
           }, 1);
+
+          return popOverElements;
         }
+
+        return false;
       }
 
       function closePopOver() {
@@ -390,7 +438,6 @@
 
           document.body.removeEventListener('keydown', keyDownPopOver);
 
-          _popOverCloseBtn.removeEventListener('click', clickPopOver);
           _window.removeEventListener('click', clickPopOver);
           _windowOverlay.removeEventListener('click', clickPopOver);
           window.removeEventListener('resize', resizePopOver);
@@ -400,7 +447,12 @@
           }
 
           self.data.popOverTitle = undefined;
+          _popOver.innerHTML = '';
+
+          return true;
         }
+
+        return false;
       }
 
       function keyDownPopOver(e) {
@@ -412,15 +464,15 @@
       }
 
       function clickPopOver(e) {
-        if (self.data.popOverTitle && e.currentTarget.classList && (!e.currentTarget.classList.contains('pop-over') && !self.findParentByClass(e.currentTarget, 'pop-over')) || e.currentTarget.classList.contains('js-close-popover')) {
+        if (self.data.popOverTitle && e.currentTarget.classList && (!e.currentTarget.classList.contains('pop-over') && !self.findParentByClass(e.currentTarget, 'pop-over')) || e.currentTarget.classList.contains('pop-over-header-close-btn') || e.currentTarget.classList.contains('js-close-window')) {
           closePopOver();
         }
       }
 
       if (open) {
-        openPopOver();
+        return openPopOver();
       } else {
-        closePopOver();
+        return closePopOver();
       }
     },
 

@@ -145,6 +145,10 @@
     openParentPopOver: function (target) {
       var self = this;
 
+      if (!self.base.checkPopOver('Set Parent')) {
+        return false;
+      }
+
       var currentOpenedCard = self.base.getCurrentOpenedCard(),
           currentParent,
           currentItems = [],
@@ -167,9 +171,9 @@
           ' </ul>' +
           '</div>';
 
-      self.base.popOver(true, 'Set Parent', html, target);
+      var popOverElements = self.base.popOver(true, 'Set Parent', html, target);
 
-      var _popOverContent = document.querySelector('.js-fill-pop-over-content'),
+      var _popOverContent = popOverElements._popOverContent,
           _popOverParentList = _popOverContent.querySelector('.js-parent-list');
 
       generateCardsList();
@@ -278,6 +282,10 @@
     openChildrenPopOver: function (target) {
       var self = this;
 
+      if (!self.base.checkPopOver('Add Child')) {
+        return false;
+      }
+
       var currentOpenedCard = self.base.getCurrentOpenedCard(),
           currentColumn = false,
           currentPosition = 'bottom',
@@ -334,7 +342,7 @@
           '   </div>' +
           '</div>';
 
-      self.base.popOver(true, 'Add Child', html, target);
+      var popOverElements = self.base.popOver(true, 'Add Child', html, target);
 
       document.getElementById('pop-over-children-checkbox').addEventListener('change', function (e) {
         self.base.settings.openChildCard = e.target.checked;
@@ -419,11 +427,11 @@
         }
       }
 
-      var _popOverContent = document.querySelector('.js-fill-pop-over-content');
+      var _popOverContent = popOverElements._popOverContent;
 
       _popOverContent.querySelector('.js-children-title').focus();
 
-      _popOverContent.querySelector('.js-fill-pop-over-content .js-children-select-list').addEventListener('change', function () {
+      _popOverContent.querySelector('.js-pop-over-content .js-children-select-list').addEventListener('change', function () {
         currentColumn = self.base.getElementByProperty(self.base.data.boardData.lists, 'id', this.value);
         this.parentElement.querySelector('.js-children-list-value').innerHTML = currentColumn.name;
 
@@ -432,7 +440,7 @@
         this.parentElement.parentElement.querySelector('.js-children-position-value').innerHTML = currentPosition;
       });
 
-      _popOverContent.querySelector('.js-fill-pop-over-content .js-children-select-position').addEventListener('change', function () {
+      _popOverContent.querySelector('.js-pop-over-content .js-children-select-position').addEventListener('change', function () {
         this.parentElement.querySelector('.js-children-position-value').innerHTML = positionsList[this.value];
       });
 
