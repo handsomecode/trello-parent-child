@@ -542,7 +542,7 @@
       var self = this;
 
       if (card) {
-        var _descParentElement = document.querySelector('.js-card-desc').parentElement;
+        var _descParentElement = document.querySelector('[attr="desc"]');
 
         _descParentElement.innerHTML = self.generateHtmlForChildren(card.children) + _descParentElement.innerHTML;
         _descParentElement.innerHTML = self.generateHtmlForRelatedTasks(card, card.parent) + _descParentElement.innerHTML;
