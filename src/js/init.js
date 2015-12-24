@@ -94,6 +94,12 @@
       return matches ? decodeURIComponent(matches[1]) : undefined;
     },
 
+    triggerResize: function () {
+      var event = document.createEvent('UIEvents');
+      event.initUIEvent('resize', true, false, window, 0);
+      window.dispatchEvent(event);
+    },
+
     findParentByClass: function (element, className) {
       if (typeof element !== 'undefined') {
         while (typeof element.parentElement !== 'undefined' && (element = element.parentElement) !== null) {

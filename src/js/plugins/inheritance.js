@@ -499,6 +499,8 @@
 
         self.openChildrenPopOver(e.currentTarget);
       });
+
+      self.base.triggerResize();
     },
 
     bindDragAndDropOnChildren: function (card) {
