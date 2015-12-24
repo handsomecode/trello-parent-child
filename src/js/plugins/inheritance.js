@@ -266,6 +266,8 @@
 
       _popOverContent.querySelector('.js-search-parent').addEventListener('keyup', function () {
         generateCardsList();
+
+        self.base.updatePopOver();
       });
 
       _popOverContent.querySelector('.js-search-parent').addEventListener('keydown', function (e) {

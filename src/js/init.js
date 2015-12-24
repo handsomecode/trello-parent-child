@@ -371,6 +371,28 @@
       };
     },
 
+    updatePopOver: function () {
+      var self = this;
+
+      var _popOver = document.querySelector('.pop-over');
+
+      function changePopOverPosition(_target) {
+        var targetOffset = self.getOffset(_target),
+            popOverWidth = _popOver.offsetWidth,
+            popOverHeight = _popOver.offsetHeight,
+            targetHeight = _target.offsetHeight,
+            popOverTop = targetOffset.top + targetHeight + popOverHeight > window.innerHeight ? window.innerHeight - popOverHeight : targetOffset.top + targetHeight + self.settings.popOver.offset,
+            popOverLeft = targetOffset.left + popOverWidth + self.settings.popOver.offset > window.innerWidth ? window.innerWidth - popOverWidth - self.settings.popOver.offset : targetOffset.left;
+
+        _popOver.style.top = popOverTop + 'px';
+        _popOver.style.left = popOverLeft + 'px';
+      }
+
+      if (_popOver && typeof _popOver._buttonTarget !== 'undefined') {
+        changePopOverPosition(_popOver._buttonTarget);
+      }
+    },
+
     popOver: function (open, title, content, _target) {
       var self = this;
 
@@ -404,11 +426,11 @@
         if (!self.data.popOverTitle || self.data.popOverTitle !== title) {
           closePopOver();
 
+          _popOver._buttonTarget = _target;
+
           var popOverElements = self.generatePopOver(_popOver, title, content);
 
           _popOver.classList.add('is-shown');
-
-          changePopOverPosition();
 
           document.body.addEventListener('keydown', keyDownPopOver);
 
@@ -418,11 +440,15 @@
           _windowOverlay.addEventListener('click', clickPopOver);
           window.addEventListener('resize', resizePopOver);
 
+          self.updatePopOver();
+
           for (var i = 0; i < _sidebarButtons.length; i++) {
             _sidebarButtons[i].addEventListener('click', clickPopOver);
           }
 
           setTimeout(function () {
+            self.updatePopOver();
+
             self.data.popOverTitle = title;
           }, 1);
 
