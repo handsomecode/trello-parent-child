@@ -6,8 +6,7 @@
 
     data: {
       childrenName: 'Children',
-      checkChildrenInterval: 0,
-      cardsWithWaitingChildrenChecklists: []
+      checkChildrenInterval: 0
     },
 
     parseCard: function (card) {
@@ -400,15 +399,11 @@
                   }
                 });
               } else {
-                self.data.cardsWithWaitingChildrenChecklists.push(currentOpenedCard.id);
-
                 self.base.api.checklist.create(currentOpenedCard.id, self.data.childrenName, 'top', function (checkListData) {
                   self.base.api.checklist.addItem(checkListData.id, '#' + cardData.idShort, 'bottom', function (checkItemData) {
                     checkListData.checkItems = [checkItemData];
                     currentOpenedCard.data.checklists.push(checkListData);
                     currentOpenedCard.childrenChecklist = currentOpenedCard.data.checklists[currentOpenedCard.data.checklists.length - 1];
-
-                    self.data.cardsWithWaitingChildrenChecklists.splice(self.data.cardsWithWaitingChildrenChecklists.indexOf(currentOpenedCard.id), 1);
 
                     self.base.lockDOM('inheritance-create-new-card', true);
 
@@ -724,15 +719,11 @@
               self.base.lockDOM('inheritance-add-parent', false);
             });
           } else {
-            self.data.cardsWithWaitingChildrenChecklists.push(parent.id);
-
             self.base.api.checklist.create(parent.id, self.data.childrenName, 'top', function (checkListData) {
               self.base.api.checklist.addItem(checkListData.id, '#' + card.idShort, 'bottom', function (checkItemData) {
                 parent.data.checklists.push(checkListData);
                 parent.childrenChecklist = parent.data.checklists[parent.data.checklists.length - 1];
                 parent.childrenChecklist.checkItems = [checkItemData];
-
-                self.data.cardsWithWaitingChildrenChecklists.splice(self.data.cardsWithWaitingChildrenChecklists.indexOf(parent.id), 1);
 
                 self.base.lockDOM('inheritance-add-parent', true);
 
@@ -781,7 +772,7 @@
           var removedChild = card.children[c];
 
           delete removedChild.parent;
-          delete removedChild.checkItem
+          delete removedChild.checkItem;
         }
       }
 
@@ -794,13 +785,9 @@
 
         if (checklist.name.trim().toLowerCase() === self.data.childrenName.trim().toLowerCase()) {
           if (!checklist.checkItems.length) {
-            if (self.data.cardsWithWaitingChildrenChecklists.indexOf(card.id) < 0) {
+            if (!self.base.data.init) {
               self.base.api.checklist.remove(checklist.id);
               card.data.checklists.splice(i, 1);
-
-              if (typeof card.childrenChecklist !== 'undefined') {
-                delete card.childrenChecklist;
-              }
             }
           } else {
             card.childrenChecklist = checklist;
@@ -879,13 +866,7 @@
                     delete childCard.parent;
                   }
 
-                  if (checklist.checkItems.length) {
-                    self.base.api.checklist.deleteItem(checklist.id, checkItem.id);
-                  } else {
-                    self.base.api.checklist.remove(checklist.id);
-                    card.data.checklists.splice(i, 1);
-                    delete card.childrenChecklist;
-                  }
+                  self.base.api.checklist.deleteItem(checklist.id, checkItem.id);
                 } else {
                   if (typeof childCard.parent !== 'undefined' && childCard.parent !== card && typeof childCard.parent.childrenChecklist !== 'undefined') {
                     var checkCheckItem = self.base.getElementByProperty(childCard.parent.childrenChecklist.checkItems, 'name', '#' + childCard.idShort);
@@ -914,15 +895,9 @@
                   card.children.push(childCard);
                   childCard.parent = card;
                 }
-              } else if (self.data.cardsWithWaitingChildrenChecklists.indexOf(card.id) < 0) {
-                if (checklist.checkItems.length === 1) {
-                  self.base.api.checklist.remove(checklist.id);
-                  card.data.checklists.splice(i, 1);
-                  delete card.childrenChecklist;
-                } else {
-                  self.base.api.checklist.deleteItem(checklist.id, checkItem.id);
-                  checklist.checkItems.splice(y, 1);
-                }
+              } else {
+                self.base.api.checklist.deleteItem(checklist.id, checkItem.id);
+                checklist.checkItems.splice(y, 1);
               }
             }
 

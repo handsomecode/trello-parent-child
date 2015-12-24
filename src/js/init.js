@@ -8,6 +8,7 @@
     api: TrelloHelper.api,
 
     data: {
+      init: false,
       loading: false,
       loaded: false,
       me: {},
@@ -680,6 +681,8 @@
           }
 
           self.cardsUpdatedCallback();
+
+          self.data.init = true;
 
           self.lockDOM('update-cards', false);
         }
