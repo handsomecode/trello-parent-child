@@ -2,26 +2,6 @@
   'use strict';
 
   function sendError(e) {
-    var userData = {
-      username: '',
-      fullname: '',
-      email: ''
-    };
-
-    if (
-        typeof TrelloHelper !== 'undefined' &&
-        typeof TrelloHelper.data !== 'undefined' &&
-        typeof TrelloHelper.data.me !== 'undefined' &&
-        typeof TrelloHelper.data.me.data !== 'undefined' &&
-        typeof TrelloHelper.data.me.data.username !== 'undefined' &&
-        typeof TrelloHelper.data.me.data.fullName !== 'undefined' &&
-        typeof TrelloHelper.data.me.data.email !== 'undefined'
-    ) {
-      userData.username = TrelloHelper.data.me.data.username;
-      userData.fullname = TrelloHelper.data.me.data.fullName;
-      userData.email = TrelloHelper.data.me.data.email;
-    }
-
     var xhr = new XMLHttpRequest();
 
     xhr.open('POST', 'https://api.airtable.com/v0/appubz6id6ulcTeUr/Errors', true);
@@ -34,9 +14,6 @@
         Message: e.message,
         Date: new Date().toISOString(),
         Version: chrome.runtime.getManifest().version,
-        Username: userData.username,
-        Fullname: userData.fullname,
-        Email: userData.email,
         Notes: e.stack,
         Browser: navigator.userAgent,
         URL: window.location.href
