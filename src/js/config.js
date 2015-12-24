@@ -17,6 +17,7 @@ var TrelloHelper = {
       offset: 6,
       resizeTimeout: 100
     },
+    reloadTimeout: 500,
     notification: {
       defaultTimeout: 10000,
       messages: {

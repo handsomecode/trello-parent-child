@@ -817,6 +817,20 @@
         }
 
         if (self.data.boardId && self.data.loaded && !self.checkLockedDOM()) {
+          if (e.target.classList &&
+              (
+                  (e.target.classList.contains('js-list'))
+              )
+          ) {
+            if (!self.data.loading) {
+              clearTimeout(self.data.reloadTimeout);
+
+              self.data.reloadTimeout = setTimeout(function () {
+                self.reloadData();
+              }, 500);
+            }
+          }
+
           if ((e.target.nodeName === '#text' && e.target.parentNode.classList.contains('js-card-desc')) || (e.target.classList && e.target.classList.contains('card-detail-window'))) {
             self.openCardViewed();
           }
@@ -869,7 +883,7 @@
 
               self.data.reloadTimeout = setTimeout(function () {
                 self.reloadData();
-              }, 500);
+              }, self.settings.reloadTimeout);
             }
           }
 
@@ -889,6 +903,16 @@
 
       document.body.addEventListener('DOMSubtreeModified', function (e) {
         if (self.data.boardId && self.data.loaded && !self.checkLockedDOM()) {
+          if (e.target.classList && e.target.classList.contains('js-list')) {
+            if (!self.data.loading) {
+              clearTimeout(self.data.reloadTimeout);
+
+              self.data.reloadTimeout = setTimeout(function () {
+                self.reloadData();
+              }, self.settings.reloadTimeout);
+            }
+          }
+
           if (e.target.nodeName === '#text' && e.target.textContent.match(/[0-9]+\/[0-9]+/) && e.target.textContent.match(/[0-9]+\/[0-9]+/)[0] === e.target.textContent) {
             var _parentTarget = self.findParentByClass(e.target, 'list-card');
 
