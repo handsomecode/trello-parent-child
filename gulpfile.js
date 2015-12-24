@@ -6,6 +6,7 @@ var cssBase64 = require('gulp-css-base64');
 var es = require('event-stream');
 var rseq = require('gulp-run-sequence');
 var zip = require('gulp-zip');
+var rename = require('gulp-rename');
 var shell = require('gulp-shell');
 var jeditor = require("gulp-json-editor");
 var peditor = require('gulp-plist');
@@ -95,19 +96,23 @@ gulp.task('safari', function () {
 gulp.task('chrome-dist', function () {
   gulp.src('./build/chrome/**/*')
       .pipe(zip('handsome-trello-chrome-extension-' + app.version + '.zip'))
+      .pipe(gulp.dest('./dist/chrome'))
+      .pipe(rename('handsome-trello-chrome-extension-latest.zip'))
       .pipe(gulp.dest('./dist/chrome'));
 });
 
 gulp.task('firefox-dist', shell.task([
   'mkdir -p dist/firefox',
   'cd ./build/firefox && ../../node_modules/.bin/jpm xpi > /dev/null',
-  'mv ./build/firefox/*-' + app.version + '.xpi ./dist/firefox/handsome-trello-firefox-extension-' + app.version + '.xpi'
+  'mv ./build/firefox/*-' + app.version + '.xpi ./dist/firefox/handsome-trello-firefox-extension-' + app.version + '.xpi',
+  'cp ./dist/firefox/handsome-trello-firefox-extension-' + app.version + '.xpi ./dist/firefox/handsome-trello-firefox-extension-latest.xpi'
 ]));
 
 gulp.task('safari-dist', shell.task([
   'mkdir -p dist/safari',
   'cd ./build/safari && ../../node_modules/.bin/xarjs create extension.safariextz --cert ../../vendor/safari/certs/cert.pem --cert ../../vendor/safari/certs/apple-intermediate.pem --cert ../../vendor/safari/certs/apple-root.pem --private-key ../../vendor/safari/certs/privatekey.pem handsometrello.safariextension',
-  'mv ./build/safari/extension.safariextz ./dist/safari/handsome-trello-safari-extension-' + app.version + '.safariextz'
+  'mv ./build/safari/extension.safariextz ./dist/safari/handsome-trello-safari-extension-' + app.version + '.safariextz',
+  'cp ./dist/safari/handsome-trello-safari-extension-' + app.version + '.safariextz ./dist/safari/handsome-trello-safari-extension-latest.safariextz'
 ]));
 
 gulp.task('firefox-run', shell.task([
