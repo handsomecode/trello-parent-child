@@ -8,8 +8,7 @@
   "author": "Handsome",
   "homepage": "http://labs.handsome.is/trello/",
   "engines": {
-    "firefox": ">=38.0a1",
-    "fennec": ">=38.0a1"
+    "firefox": ">=38.0a1"
   },
   "icon": "data/icons/icon_48.png",
   "license": "MIT"
