@@ -15,7 +15,7 @@ Thinking about how we use Trello and how others might use it in a similar way, w
 
 ## Supported Browsers
 
-* Chrome
+* [Chrome](https://chrome.google.com/webstore/detail/parentchild-managment-for/flnpbgmiploomjgagfbcjlikpiehclld)
 * Firefox
 * Safari
 * Opera
