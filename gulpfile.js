@@ -59,6 +59,23 @@ gulp.task('chrome', function () {
   );
 });
 
+gulp.task('opera', function () {
+  return es.merge(
+      pipe('./src/js/**/*', './build/opera/js'),
+      pipe('./src/css/**/*', './build/opera/css'),
+      pipe('./src/icons/**/*', './build/opera/icons'),
+      pipe('./vendor/opera/errors-handler.js', './build/opera/js'),
+      pipe('./vendor/opera/manifest.json', [
+        jeditor({
+          'name': app.title,
+          'version': app.version,
+          'description': app.description,
+          'homepage_url': app.homepage
+        })
+      ], './build/opera/')
+  );
+});
+
 gulp.task('firefox', function () {
   return es.merge(
       pipe('./src/js/**/*', './build/firefox/data/js'),
@@ -101,6 +118,14 @@ gulp.task('chrome-dist', function () {
       .pipe(gulp.dest('./dist/chrome'));
 });
 
+gulp.task('opera-dist', function () {
+  gulp.src('./build/opera/**/*')
+      .pipe(zip('handsome-trello-opera-extension-' + app.version + '.zip'))
+      .pipe(gulp.dest('./dist/opera'))
+      .pipe(rename('handsome-trello-opera-extension-latest.zip'))
+      .pipe(gulp.dest('./dist/opera'));
+});
+
 gulp.task('firefox-dist', shell.task([
   'mkdir -p dist/firefox',
   'cd ./build/firefox && ../../node_modules/.bin/jpm xpi > /dev/null',
@@ -120,7 +145,7 @@ gulp.task('firefox-run', shell.task([
 ]));
 
 gulp.task('dist', function (cb) {
-  return rseq('clean', ['chrome', 'firefox', 'safari'], ['chrome-dist', 'firefox-dist', 'safari-dist'], cb);
+  return rseq('clean', ['chrome', 'opera', 'firefox', 'safari'], ['chrome-dist', 'opera-dist', 'firefox-dist', 'safari-dist'], cb);
 });
 
 gulp.task('watch', function () {
@@ -148,5 +173,5 @@ gulp.task('addons', shell.task([
 ]));
 
 gulp.task('default', function (cb) {
-  return rseq('clean', ['chrome', 'firefox', 'safari'], cb);
+  return rseq('clean', ['chrome', 'opera', 'firefox', 'safari'], cb);
 });
