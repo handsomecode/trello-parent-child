@@ -22,8 +22,8 @@
 		<dict>
 			<key>End</key>
 			<array>
-				<string>js/libs/jquery.js</string>
-				<string>js/libs/jquery-ui.js</string>
+				<string>js/vendor/jquery.js</string>
+				<string>js/vendor/jquery-ui.js</string>
 				<string>js/config.js</string>
 				<string>js/api.js</string>
 				<string>js/plugins/inheritance.js</string>

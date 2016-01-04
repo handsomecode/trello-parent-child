@@ -20,8 +20,8 @@
         "css/style.css"
       ],
       "js": [
-        "js/libs/jquery.js",
-        "js/libs/jquery-ui.js",
+        "js/vendor/jquery.js",
+        "js/vendor/jquery-ui.js",
         "js/errors-handler.js",
         "js/config.js",
         "js/api.js",
