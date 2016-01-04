@@ -26,8 +26,8 @@
         "css/style.css"
       ],
       "js": [
-        "js/vendor/jquery.js",
-        "js/vendor/jquery-ui.js",
+        "js/vendor/jquery.min.js",
+        "js/vendor/jquery-ui.min.js",
         "js/config.js",
         "js/api.js",
         "js/plugins/inheritance.js",

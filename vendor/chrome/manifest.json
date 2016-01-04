@@ -24,8 +24,8 @@
         "css/style.css"
       ],
       "js": [
-        "js/vendor/jquery.js",
-        "js/vendor/jquery-ui.js",
+        "js/vendor/jquery.min.js",
+        "js/vendor/jquery-ui.min.js",
         "js/errors-handler.js",
         "js/config.js",
         "js/api.js",
