@@ -10,11 +10,15 @@
     "48": "icons/icon_48.png",
     "128": "icons/icon_128.png"
   },
+  "permissions": [
+    "tabs",
+    "https://trello.com/",
+    "https://api.airtable.com/"
+  ],
   "content_scripts": [
     {
       "matches": [
-        "https://trello.com/*",
-        "https://api.airtable.com/*"
+        "https://trello.com/*"
       ],
       "css": [
         "css/style.css"
