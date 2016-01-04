@@ -95,9 +95,7 @@
     },
 
     triggerResize: function () {
-      var event = document.createEvent('UIEvents');
-      event.initUIEvent('resize', true, false, window, 0);
-      window.dispatchEvent(event);
+      window.dispatchEvent(new Event('resize'));
     },
 
     findParentByClass: function (element, className) {
