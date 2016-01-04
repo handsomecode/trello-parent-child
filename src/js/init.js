@@ -164,6 +164,8 @@
     },
 
     appendElementAfterAnother: function (_element, _beforeElement) {
+      var self = this;
+
       if (typeof _element === 'string') {
         _element = self.generateElementFromString(_element);
       }
@@ -172,6 +174,24 @@
         _beforeElement.parentNode.insertBefore(_element, _beforeElement.nextSibling);
       } else {
         _beforeElement.parentNode.appendChild(_element);
+      }
+    },
+
+    prependElement: function (_element, _parentElement) {
+      var self = this;
+
+      if (typeof _element === 'string') {
+        _element = self.generateElementFromString(_element);
+      }
+
+      if (typeof _element === 'undefined') {
+        return false;
+      }
+
+      if (_parentElement.firstChild) {
+        _parentElement.insertBefore(_element, _parentElement.firstChild);
+      } else {
+        _parentElement.appendChild(_element);
       }
     },
 
@@ -367,7 +387,7 @@
       _popOver.appendChild(_popOverHeader);
       _popOver.appendChild(_popOverContent);
 
-      _popOverTitle.innerHTML = title;
+      _popOverTitle.textContent = title;
       _popOverContent.innerHTML = content;
 
       return {
@@ -707,7 +727,7 @@
           if (currentCard) {
             clearInterval(self.data.updateTaskDescInterval);
 
-            var currentCardTitle = document.querySelector('.window .js-card-title').innerHTML;
+            var currentCardTitle = document.querySelector('.window .js-card-title').textContent;
 
             self.lockDOM('open-card-view', true);
 

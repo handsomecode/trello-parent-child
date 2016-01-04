@@ -430,7 +430,7 @@
 
       _popOverContent.querySelector('.js-pop-over-content .js-children-select-list').addEventListener('change', function () {
         currentColumn = self.base.getElementByProperty(self.base.data.boardData.lists, 'id', this.value);
-        this.parentElement.querySelector('.js-children-list-value').innerHTML = currentColumn.name;
+        this.parentElement.querySelector('.js-children-list-value').textContent = currentColumn.name;
 
         generatePositionsList();
         this.parentElement.parentElement.querySelector('.js-children-select-position').innerHTML = positionsHtml;
@@ -438,7 +438,7 @@
       });
 
       _popOverContent.querySelector('.js-pop-over-content .js-children-select-position').addEventListener('change', function () {
-        this.parentElement.querySelector('.js-children-position-value').innerHTML = positionsList[this.value];
+        this.parentElement.querySelector('.js-children-position-value').textContent = positionsList[this.value];
       });
 
       _popOverContent.querySelector('.js-children-create').addEventListener('click', function () {
@@ -543,9 +543,9 @@
       if (card) {
         var _descParentElement = document.querySelector('[attr="desc"]');
 
-        _descParentElement.innerHTML = self.generateHtmlForChildren(card.children) + _descParentElement.innerHTML;
-        _descParentElement.innerHTML = self.generateHtmlForRelatedTasks(card, card.parent) + _descParentElement.innerHTML;
-        _descParentElement.innerHTML = self.generateHtmlForParent(card.parent) + _descParentElement.innerHTML;
+        self.base.prependElement(self.generateHtmlForChildren(card.children), _descParentElement);
+        self.base.prependElement(self.generateHtmlForRelatedTasks(card, card.parent), _descParentElement);
+        self.base.prependElement(self.generateHtmlForParent(card.parent), _descParentElement);
 
         self.bindDragAndDropOnChildren(card);
       }
@@ -624,7 +624,7 @@
 
         if (countCheckItems) {
           _checklistFakeBadge.classList.remove('hide');
-          _checklistFakeBadge.querySelector('.badge-text').innerHTML = countCompleteCheckItems + '/' + countCheckItems;
+          _checklistFakeBadge.querySelector('.badge-text').textContent = countCompleteCheckItems + '/' + countCheckItems;
         } else {
           _checklistFakeBadge.classList.add('hide');
         }
@@ -945,7 +945,7 @@
 
       var _checklist = self.base.findParentByClass(_target, 'checklist');
 
-      if (_checklist && _checklist.querySelector('h3') && _checklist.querySelector('h3').innerHTML.trim().toLowerCase() === self.data.childrenName.toLowerCase()) {
+      if (_checklist && _checklist.querySelector('h3') && _checklist.querySelector('h3').textContent.trim().toLowerCase() === self.data.childrenName.toLowerCase()) {
         var openedCard = self.base.getCurrentOpenedCard();
 
         if (openedCard && openedCard.childrenChecklist) {
@@ -972,7 +972,7 @@
       };
 
       self.base.callbacks.checklistInserted['inheritance'] = function (_target) {
-        if (_target.querySelector('h3') && _target.querySelector('h3').innerHTML.trim().toLowerCase() === self.data.childrenName.toLowerCase()) {
+        if (_target.querySelector('h3') && _target.querySelector('h3').textContent.trim().toLowerCase() === self.data.childrenName.toLowerCase()) {
           _target.classList.add('hide');
 
           self.updateCardView();
