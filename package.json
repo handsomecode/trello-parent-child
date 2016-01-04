@@ -1,6 +1,6 @@
 {
   "name": "handsome-trello",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "title": "Parent/Child Managment for Trello",
   "description": "Add support of Parent/Child dependencies in Trello projects.",
   "main": "gulpfile.js",
