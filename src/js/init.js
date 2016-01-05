@@ -904,6 +904,20 @@
             }
           }
 
+          if (e.target.classList && e.target.classList.contains('phenom-action')) {
+            var deletedCardMatch = e.target.querySelector('.phenom-desc').textContent.match(/deleted card #([0-9]+) from/);
+
+            if (deletedCardMatch && parseInt(deletedCardMatch[1]) > 0 && typeof self.data.cards[deletedCardMatch[1]] !== 'undefined') {
+              var cardData = self.getElementByProperty(self.data.boardData.cards, 'idShort', deletedCardMatch[1]);
+
+              if (cardData) {
+                self.data.boardData.cards.splice(self.data.boardData.cards.indexOf(cardData), 1);
+              }
+
+              self.updateCards();
+            }
+          }
+
           if (e.target.classList && e.target.classList.contains('badge') && e.target.querySelector('.icon-checklist')) {
             var _parentTarget = self.findParentByClass(e.target, 'list-card');
 
