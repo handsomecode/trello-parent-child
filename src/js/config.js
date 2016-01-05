@@ -25,6 +25,7 @@ var TrelloHelper = {
         severalParentsOnCard: '<a href="%recursionCardLink%">%recursionCardTitle%</a> is not a child for <a href="%currentCardLink%">%currentCardTitle%</a> anymore, due to fix for multiple Parents dependency'
       }
     },
-    openChildCard: true
+    openChildCard: true,
+    showArchivedCard: true
   }
 };

@@ -34,7 +34,7 @@ TrelloHelper.api = {
 
       self.request('get', 'https://trello.com/1/Boards/' + boardId, {
         lists: 'open',
-        cards: 'visible',
+        cards: 'all',
         card_checklists: 'all',
         members: 'all'
       }, callback);

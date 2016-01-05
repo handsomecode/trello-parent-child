@@ -42,7 +42,7 @@
 
       var html = '<div class="js-card-parent">';
       html += '<h3 class="card-detail-item-header">Parent:</h3>';
-      html += '<p class="handsome-trello__inheritance-parent"><a href="' + parentCard.url + '" class="handsome-trello__inheritance-link">' + parentCard.title + '</a> (' + parentCard.column.name + ')</p>';
+      html += '<p class="handsome-trello__inheritance-parent handsome-trello__inheritance-parent--' + parentCard.status + '"><a href="' + parentCard.url + '" class="handsome-trello__inheritance-link">' + parentCard.title + '</a> (' + parentCard.column.name + ')</p>';
       html += '</div>';
 
       return html;
@@ -58,7 +58,7 @@
 
         if (typeof childCard !== 'undefined') {
           html += '' +
-              '<li class="handsome-trello__inheritance-children-item"' + (level === 0 ? ' children-id="' + childCard.checkItem.id + '" children-pos="' + childCard.checkItem.pos : '') + '">' +
+              '<li class="handsome-trello__inheritance-children-item handsome-trello__inheritance-children-item--' + childCard.status + '"' + (level === 0 ? ' children-id="' + childCard.checkItem.id + '" children-pos="' + childCard.checkItem.pos : '') + '">' +
               ' <a href="' + childCard.url + '" class="handsome-trello__inheritance-link">' + childCard.title + '</a>' +
               ' (' + childCard.column.name + ')';
 
@@ -114,7 +114,7 @@
         var relatedCard = parent.children[i];
 
         if (card !== relatedCard) {
-          html += '<li class="handsome-trello__inheritance-related-item"><a href="' + relatedCard.url + '" class="handsome-trello__inheritance-link">' + relatedCard.title + '</a> (' + relatedCard.column.name + ')</li>';
+          html += '<li class="handsome-trello__inheritance-related-item handsome-trello__inheritance-related-item--' + relatedCard.status + '"><a href="' + relatedCard.url + '" class="handsome-trello__inheritance-link">' + relatedCard.title + '</a> (' + relatedCard.column.name + ')</li>';
         }
       }
 
@@ -558,7 +558,7 @@
         card = self.base.getCurrentOpenedCard();
       }
 
-      if (card) {
+      if (card && (card.status !== 'closed' || self.base.settings.showArchivedCard)) {
         self.updateInheritanceListInOpenedCardView(card);
 
         self.addButtonsOnRightSidebar();
@@ -802,10 +802,14 @@
               if (match && match[0] === checkName && typeof self.base.data.cards[match[1]] !== 'undefined') {
                 var childCard = self.base.data.cards[match[1]];
 
+                if (childCard.status === 'closed' && !self.base.settings.showArchivedCard) {
+                  continue;
+                }
+
                 var checkRecursionParent = self.checkRecursion(card, 'parent', childCard),
                     checkRecursionChildren = self.checkRecursion(childCard.parent, 'parent', card);
 
-                if (card === childCard) {
+                if (card.id === childCard.id) {
                   console.warn(self.base.settings.notification.messages.recursionOnBoard
                       .replace(/%recursionCardTitle%/g, childCard.url)
                       .replace(/%recursionCardLink%/g, childCard.url)
@@ -856,7 +860,7 @@
                       .trim());
                 }
 
-                if (card.children.indexOf(childCard) > -1 || checkRecursionParent || checkRecursionChildren || card === childCard) {
+                if (card.children.indexOf(childCard) > -1 || checkRecursionParent || checkRecursionChildren || card.id === childCard.id) {
                   checklist.checkItems.splice(y, 1);
 
                   if (typeof childCard.parent !== 'undefined') {
@@ -870,7 +874,7 @@
 
                   self.base.api.checklist.deleteItem(checklist.id, checkItem.id);
                 } else {
-                  if (typeof childCard.parent !== 'undefined' && childCard.parent !== card && typeof childCard.parent.childrenChecklist !== 'undefined') {
+                  if (typeof childCard.parent !== 'undefined' && childCard.parent.id !== card.id && typeof childCard.parent.childrenChecklist !== 'undefined') {
                     var checkCheckItem = self.base.getElementByProperty(childCard.parent.childrenChecklist.checkItems, 'name', '#' + childCard.idShort);
 
                     if (checkCheckItem) {
@@ -915,8 +919,8 @@
       var openedCard = self.base.getCurrentOpenedCard();
 
       if (openedCard && (
-              openedCard === card ||
-              (openedCard.parent && openedCard.parent === card) ||
+              openedCard.id === card.id ||
+              (openedCard.parent && openedCard.parent.id === card.id) ||
               self.checkRecursion(card, 'parent', openedCard) ||
               (card.parent && card.parent.children && card.parent.children.length && card.parent.children.indexOf(openedCard))
           )) {

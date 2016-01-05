@@ -585,6 +585,27 @@
       self.removeElement(_link);
     },
 
+    createCardData: function (cardData, _card, _cardLink, _column) {
+      var self = this;
+
+      return {
+        id: cardData.id,
+        idShort: cardData.idShort,
+        title: cardData.name,
+        realTitle: cardData.name,
+        pos: cardData.pos,
+        status: cardData.closed ? 'closed' : 'opened',
+        shortLink: cardData.shortLink,
+        shortUrl: cardData.shortUrl,
+        url: cardData.url,
+        column: self.getElementByProperty(self.data.boardData.lists, 'id', cardData.idList),
+        _element: _card,
+        _link: _cardLink,
+        _column: _column,
+        data: cardData
+      };
+    },
+
     parseCard: function (_card) {
       var self = this;
 
@@ -616,24 +637,11 @@
         });
       }
 
-      var _column = self.findParentByClass(_card, 'js-list'),
-          column = self.getElementByProperty(self.data.boardData.lists, 'id', cardData.idList);
+      var _column = self.findParentByClass(_card, 'js-list');
 
-      self.data.cards[cardData.idShort] = {
-        id: cardData.id,
-        idShort: cardData.idShort,
-        title: cardData.name,
-        realTitle: cardData.name,
-        pos: cardData.pos,
-        shortLink: cardData.shortLink,
-        shortUrl: cardData.shortUrl,
-        url: cardData.url,
-        column: column,
-        _element: _card,
-        _link: _cardLink,
-        _column: _column,
-        data: cardData
-      };
+      self.data.cards[cardData.idShort] = self.createCardData(cardData, _card, _cardLink, _column);
+
+      var column = self.data.cards[cardData.idShort].column;
 
       if (typeof self.data.columns[column.id] === 'undefined') {
         self.data.columns[column.id] = {
@@ -684,6 +692,18 @@
       }, self.data.intervalTime);
     },
 
+    updateClosedCards: function () {
+      var self = this;
+
+      for (var i = 0; i < self.data.boardData.cards.length; i++) {
+        var cardData = self.data.boardData.cards[i];
+
+        if (cardData.closed === true) {
+          self.data.cards[cardData.idShort] = self.createCardData(cardData);
+        }
+      }
+    },
+
     updateCards: function () {
       var self = this;
 
@@ -703,6 +723,8 @@
           for (var i = 0; i < _cardsList.length; i++) {
             self.parseCard(_cardsList[i]);
           }
+
+          self.updateClosedCards();
 
           self.cardsUpdatedCallback();
 
