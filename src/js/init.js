@@ -1,11 +1,12 @@
 (function () {
   'use strict';
 
-  TrelloHelper = {
-    plugins: TrelloHelper.plugins,
-    callbacks: TrelloHelper.callbacks,
-    settings: TrelloHelper.settings,
-    api: TrelloHelper.api,
+  HandsomeTrello = {
+    plugins: HandsomeTrello.plugins,
+    callbacks: HandsomeTrello.callbacks,
+    settings: HandsomeTrello.settings,
+    options: {},
+    api: HandsomeTrello.api,
 
     data: {
       init: false,
@@ -92,6 +93,20 @@
       var matches = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'));
 
       return matches ? decodeURIComponent(matches[1]) : undefined;
+    },
+
+    loadSettings: function () {
+      var self = this;
+
+      loadSettings(self.settings.options, function (options) {
+        self.options = options;
+      });
+    },
+
+    saveSettings: function () {
+      var self = this;
+
+      saveSettings(self.options);
     },
 
     triggerResize: function () {
@@ -838,6 +853,8 @@
       self.api.checklist.base = self.api;
       self.api.member.base = self.api;
 
+      self.loadSettings();
+
       for (var pluginName in self.plugins) {
         if (typeof self.settings.plugins[pluginName] !== 'undefined' && self.settings.plugins[pluginName] && typeof self.plugins[pluginName].init === 'function') {
           self.plugins[pluginName].base = self;
@@ -992,6 +1009,6 @@
     }
   };
 
-  TrelloHelper.init();
+  HandsomeTrello.init();
 
 })();

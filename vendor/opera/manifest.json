@@ -15,12 +15,14 @@
   },
   "permissions": [
     "tabs",
+    "storage",
     "https://trello.com/"
   ],
+  "options_page": "options.html",
   "content_scripts": [
     {
       "matches": [
-        "https://trello.com/"
+        "https://trello.com/*"
       ],
       "css": [
         "css/style.css"
@@ -29,6 +31,7 @@
         "js/vendor/jquery.min.js",
         "js/vendor/jquery-ui.min.js",
         "js/config.js",
+        "js/settings.js",
         "js/api.js",
         "js/plugins/inheritance.js",
         "js/init.js"

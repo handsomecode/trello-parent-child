@@ -1,4 +1,4 @@
-var TrelloHelper = {
+var HandsomeTrello = {
   plugins: {},
 
   callbacks: {
@@ -25,7 +25,18 @@ var TrelloHelper = {
         severalParentsOnCard: '<a href="%recursionCardLink%">%recursionCardTitle%</a> is not a child for <a href="%currentCardLink%">%currentCardTitle%</a> anymore, due to fix for multiple Parents dependency'
       }
     },
-    openChildCard: true,
-    showArchivedCard: true
+
+    options: {
+      openChildCard: {
+        title: 'Open Child Card after adding',
+        type: 'boolean',
+        value: true
+      },
+      showArchivedCards: {
+        title: 'Show Archived Cards in children and related lists',
+        type: 'boolean',
+        value: true
+      }
+    }
   }
 };

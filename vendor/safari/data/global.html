@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <script type="text/javascript">
+    safari.application.addEventListener('message', function (e) {
+      var options = e.message;
+
+      if (e.name === 'getSettings') {
+        var gettingOptions = {};
+
+        for (var optionName in options) {
+          gettingOptions[optionName] = typeof safari.extension.settings[optionName] !== 'undefined' ? safari.extension.settings[optionName] : options[optionName].value;
+        }
+
+        e.target.page.dispatchMessage('updateSettings', gettingOptions);
+      }
+
+      if (e.name === 'setSettings') {
+        for (var optionName in options) {
+          safari.extension.settings[optionName] = options[optionName];
+        }
+      }
+    }, false);
+  </script>
+</head>
+<body>
+</body>
+</html>

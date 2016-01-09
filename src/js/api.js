@@ -1,4 +1,4 @@
-TrelloHelper.api = {
+HandsomeTrello.api = {
   request: function (type, url, data, callback) {
     var self = this;
 

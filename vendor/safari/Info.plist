@@ -16,6 +16,11 @@
 	<string>0.6.8</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>Chrome</key>
+	<dict>
+		<key>Global Page</key>
+		<string>global.html</string>
+	</dict>
 	<key>Content</key>
 	<dict>
 		<key>Scripts</key>
@@ -25,6 +30,7 @@
 				<string>js/vendor/jquery.min.js</string>
 				<string>js/vendor/jquery-ui.min.js</string>
 				<string>js/config.js</string>
+				<string>js/settings.js</string>
 				<string>js/api.js</string>
 				<string>js/plugins/inheritance.js</string>
 				<string>js/init.js</string>

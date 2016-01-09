@@ -1,4 +1,4 @@
-(function (window) {
+(function (window, HandsomeTrello) {
   'use strict';
 
   function sendError(e) {
@@ -34,9 +34,13 @@
     return func._wrapped;
   }
 
-  var addEventListener = window.EventTarget.prototype.addEventListener;
-  window.EventTarget.prototype.addEventListener = function (event, callback, bubble) {
-    addEventListener.call(this, event, wrap(callback), bubble);
-  };
+  loadSettings(HandsomeTrello.settings.options, function (options) {
+    if (options.sendAnonymousStatistics) {
+      var addEventListener = window.EventTarget.prototype.addEventListener;
+      window.EventTarget.prototype.addEventListener = function (event, callback, bubble) {
+        addEventListener.call(this, event, wrap(callback), bubble);
+      };
+    }
+  });
 
-})(window);
+})(window, HandsomeTrello);

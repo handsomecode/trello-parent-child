@@ -12,9 +12,11 @@
   },
   "permissions": [
     "tabs",
+    "storage",
     "https://trello.com/",
     "https://api.airtable.com/"
   ],
+  "options_page": "options.html",
   "content_scripts": [
     {
       "matches": [
@@ -26,8 +28,10 @@
       "js": [
         "js/vendor/jquery.min.js",
         "js/vendor/jquery-ui.min.js",
-        "js/errors-handler.js",
         "js/config.js",
+        "js/settings.js",
+        "js/errors-handler-config.js",
+        "js/errors-handler.js",
         "js/api.js",
         "js/plugins/inheritance.js",
         "js/init.js"

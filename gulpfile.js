@@ -38,6 +38,14 @@ gulp.task('styles', function () {
       .pipe(gulp.dest('./src/css'));
 });
 
+gulp.task('options', function () {
+  return gulp.src('./src/less/options.less')
+      .pipe(less())
+      .pipe(cssBase64())
+      .pipe(minifyCSS())
+      .pipe(gulp.dest('./src/css'));
+});
+
 gulp.task('clean', function () {
   return pipe('./build', [clean()]);
 });
@@ -47,7 +55,7 @@ gulp.task('chrome', function () {
       pipe('./src/js/**/*', './build/chrome/js'),
       pipe('./src/css/**/*', './build/chrome/css'),
       pipe('./src/icons/**/*', './build/chrome/icons'),
-      pipe('./vendor/chrome/errors-handler.js', './build/chrome/js'),
+      pipe('./vendor/chrome/data/**/*', './build/chrome'),
       pipe('./vendor/chrome/manifest.json', [
         jeditor({
           'name': app.title,
@@ -64,7 +72,7 @@ gulp.task('opera', function () {
       pipe('./src/js/**/*', './build/opera/js'),
       pipe('./src/css/**/*', './build/opera/css'),
       pipe('./src/icons/**/*', './build/opera/icons'),
-      pipe('./vendor/opera/errors-handler.js', './build/opera/js'),
+      pipe('./vendor/opera/data/**/*', './build/opera'),
       pipe('./vendor/opera/manifest.json', [
         jeditor({
           'name': app.title,
@@ -79,9 +87,9 @@ gulp.task('opera', function () {
 gulp.task('firefox', function () {
   return es.merge(
       pipe('./src/js/**/*', './build/firefox/data/js'),
-      pipe('./src/css/**/*', './build/firefox/data/css'),
+      pipe(['./src/css/**/*', '!./src/css/options.css'], './build/firefox/data/css'),
       pipe('./src/icons/**/*', './build/firefox/data/icons'),
-      pipe('./vendor/firefox/main.js', './build/firefox/data'),
+      pipe('./vendor/firefox/data/**/*', './build/firefox/data'),
       pipe('./vendor/firefox/package.json', [
         jeditor({
           'title': app.title,
@@ -96,8 +104,9 @@ gulp.task('firefox', function () {
 gulp.task('safari', function () {
   return es.merge(
       pipe('./src/js/**/*', './build/safari/handsometrello.safariextension/js'),
-      pipe('./src/css/**/*', './build/safari/handsometrello.safariextension/css'),
+      pipe(['./src/css/**/*', '!./src/css/options.css'], './build/safari/handsometrello.safariextension/css'),
       pipe('./src/icons/**/*', './build/safari/handsometrello.safariextension/icons'),
+      pipe('./vendor/safari/data/**/*', './build/safari/handsometrello.safariextension'),
       pipe('./vendor/safari/Info.plist', [
         peditor({
           CFBundleDisplayName: app.title,
@@ -105,8 +114,7 @@ gulp.task('safari', function () {
           Description: app.description,
           Website: app.homepage
         })
-      ], './build/safari/handsometrello.safariextension'),
-      pipe('./vendor/safari/Settings.plist', './build/safari/handsometrello.safariextension')
+      ], './build/safari/handsometrello.safariextension')
   );
 });
 
@@ -154,7 +162,7 @@ gulp.task('watch', function () {
   gulp.watch([
     './src/less/**/*',
     './src/fonts/**/*'
-  ], ['styles']);
+  ], ['styles', 'options']);
 
   gulp.watch([
     './src/js/**/*',

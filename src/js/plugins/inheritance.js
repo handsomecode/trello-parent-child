@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  TrelloHelper.plugins.inheritance = {
+  HandsomeTrello.plugins.inheritance = {
     base: {},
 
     data: {
@@ -338,7 +338,7 @@
           ' <div class="form-grid">' +
           '   <input class="primary wide js-children-create" type="submit" value="Create">' +
           '   <div class="check-div handsome-trello__inheritance-pop-over-children-checkbox">' +
-          '     <input type="checkbox" id="pop-over-children-checkbox"' + (self.base.settings.openChildCard ? ' checked="checked"' : '') + ' />' +
+          '     <input type="checkbox" id="pop-over-children-checkbox"' + (self.base.options.openChildCard ? ' checked="checked"' : '') + ' />' +
           '     <label for="pop-over-children-checkbox">Open Child Card</label>' +
           '   </div>' +
           '</div>';
@@ -346,7 +346,8 @@
       var popOverElements = self.base.popOver(true, 'Add Child', html, target);
 
       document.getElementById('pop-over-children-checkbox').addEventListener('change', function (e) {
-        self.base.settings.openChildCard = e.target.checked;
+        self.base.options.openChildCard = e.target.checked;
+        self.base.saveSettings();
       });
 
       function generatePositionsList() {
@@ -394,7 +395,7 @@
 
                   self.base.lockDOM('inheritance-create-new-card', false);
 
-                  if (self.base.settings.openChildCard) {
+                  if (self.base.options.openChildCard) {
                     self.base.goToLink(cardData.url);
                   }
                 });
@@ -411,7 +412,7 @@
 
                     self.base.lockDOM('inheritance-create-new-card', false);
 
-                    if (self.base.settings.openChildCard) {
+                    if (self.base.options.openChildCard) {
                       self.base.goToLink(cardData.url);
                     }
                   });
@@ -558,7 +559,7 @@
         card = self.base.getCurrentOpenedCard();
       }
 
-      if (card && (card.status !== 'closed' || self.base.settings.showArchivedCard)) {
+      if (card && (card.status !== 'closed' || self.base.options.showArchivedCards)) {
         self.updateInheritanceListInOpenedCardView(card);
 
         self.addButtonsOnRightSidebar();
@@ -802,7 +803,7 @@
               if (match && match[0] === checkName && typeof self.base.data.cards[match[1]] !== 'undefined') {
                 var childCard = self.base.data.cards[match[1]];
 
-                if (childCard.status === 'closed' && !self.base.settings.showArchivedCard) {
+                if (childCard.status === 'closed' && !self.base.options.showArchivedCards) {
                   continue;
                 }
 
