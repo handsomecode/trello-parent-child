@@ -42,7 +42,7 @@
 
       var html = '<div class="js-card-parent">';
       html += '<h3 class="card-detail-item-header">Parent:</h3>';
-      html += '<p class="handsome-trello__inheritance-parent handsome-trello__inheritance-parent--' + parentCard.status + '"><a href="' + parentCard.url + '" class="handsome-trello__inheritance-link">' + parentCard.title + '</a> (' + parentCard.column.name + ')</p>';
+      html += '<p class="handsome-trello__inheritance-parent handsome-trello__inheritance-parent--' + parentCard.status + '"><a href="' + parentCard.url + '" class="handsome-trello__inheritance-link">' + parentCard.title + '</a> (' + (parentCard.status === 'closed' ? 'Archived' : parentCard.column.name) + ')</p>';
       html += '</div>';
 
       return html;
@@ -60,7 +60,7 @@
           html += '' +
               '<li class="handsome-trello__inheritance-children-item handsome-trello__inheritance-children-item--' + childCard.status + '"' + (level === 0 ? ' children-id="' + childCard.checkItem.id + '" children-pos="' + childCard.checkItem.pos : '') + '">' +
               ' <a href="' + childCard.url + '" class="handsome-trello__inheritance-link">' + childCard.title + '</a>' +
-              ' (' + childCard.column.name + ')';
+              ' (' + (childCard.status === 'closed' ? 'Archived' : childCard.column.name) + ')';
 
           if (typeof childCard.children !== 'undefined' && childCard.children.length) {
             html += self.generateHtmlForOneChildren(childCard.children, level + 1);
@@ -114,7 +114,7 @@
         var relatedCard = parent.children[i];
 
         if (card !== relatedCard) {
-          html += '<li class="handsome-trello__inheritance-related-item handsome-trello__inheritance-related-item--' + relatedCard.status + '"><a href="' + relatedCard.url + '" class="handsome-trello__inheritance-link">' + relatedCard.title + '</a> (' + relatedCard.column.name + ')</li>';
+          html += '<li class="handsome-trello__inheritance-related-item handsome-trello__inheritance-related-item--' + relatedCard.status + '"><a href="' + relatedCard.url + '" class="handsome-trello__inheritance-link">' + relatedCard.title + '</a> (' + (relatedCard.status === 'closed' ? 'Archived' : relatedCard.column.name) + ')</li>';
         }
       }
 
