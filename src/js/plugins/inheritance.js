@@ -196,7 +196,7 @@
           for (var cardId in self.base.data.cards) {
             var card = self.base.data.cards[cardId];
 
-            if (card !== currentOpenedCard && self.searchInString(card.title.toLowerCase(), _searchParentField.value.toLowerCase())) {
+            if (card !== currentOpenedCard && card.status !== 'closed' && self.searchInString(card.title.toLowerCase(), _searchParentField.value.toLowerCase())) {
               cardsListHtml += '' +
                   '   <li class="item js-parent-item' + (currentOpenedCard.parent && card.id === currentOpenedCard.parent.id ? ' active' : '') + (!currentItems.length ? ' selected' : '') + '">' +
                   '     <a href="#" title="' + card.title + '" class="name js-select-parent" parent-index="' + currentItems.length + '">' +
