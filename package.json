@@ -25,12 +25,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:handsomecode/handsome-trello.git"
+    "url": "git@github.com:handsomecode/trello-parent-child.git"
   },
   "author": "Handsome",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/handsomecode/handsome-trello/issues"
+    "url": "https://github.com/handsomecode/trello-parent-child/issues"
   },
   "homepage": "http://labs.handsome.is/trello/"
 }
