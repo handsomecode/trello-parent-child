@@ -18,6 +18,7 @@ var HandsomeTrello = {
       resizeTimeout: 100
     },
     reloadTimeout: 500,
+    updateBadgeChecklistTimeout: 500,
     notification: {
       defaultTimeout: 10000,
       messages: {
