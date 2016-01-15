@@ -787,6 +787,36 @@
         var checklist = card.data.checklists[i];
 
         if (checklist.name.trim().toLowerCase() === self.data.childrenName.trim().toLowerCase()) {
+          if (typeof card.childrenChecklist !== 'undefined') {
+            if (!self.base.data.init) {
+              if (checklist.checkItems.length) {
+                for (var z = 0; z < checklist.checkItems.length; z++) {
+                  var movingCheckItemName = checklist.checkItems[z].name.trim(),
+                      movingCheckItemNameMatch = movingCheckItemName.match(/#([0-9]+)/);
+
+                  if (movingCheckItemNameMatch && movingCheckItemNameMatch[0] === movingCheckItemName && typeof self.base.data.cards[movingCheckItemNameMatch[1]] !== 'undefined') {
+                    if (card.children.indexOf(self.base.data.cards[movingCheckItemNameMatch[1]]) < 0) {
+                      self.base.api.checklist.addItem(card.childrenChecklist.id, movingCheckItemName, 'bottom', function (checkItemData) {
+                        card.childrenChecklist.checkItems.push(checkItemData);
+
+                        self.base.lockDOM('inheritance-move-children-cards-to-other-children-list', true);
+
+                        self.readCards();
+
+                        self.base.lockDOM('inheritance-move-children-cards-to-other-children-list', false);
+                      });
+                    }
+                  }
+                }
+              }
+
+              self.base.api.checklist.remove(checklist.id);
+              card.data.checklists.splice(i, 1);
+            }
+
+            continue;
+          }
+
           if (!checklist.checkItems.length) {
             if (!self.base.data.init) {
               self.base.api.checklist.remove(checklist.id);
@@ -910,8 +940,6 @@
 
             self.base.sortByProperty(card.children, 'checkItem.pos');
           }
-
-          break;
         }
       }
 
