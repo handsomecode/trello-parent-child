@@ -182,21 +182,21 @@
       function generateCardsList() {
         var _searchParentField = document.querySelector('.js-search-parent');
 
-        if (currentQueryString === _searchParentField.value) {
+        if (currentQueryString === _searchParentField.value.trim()) {
           return false;
         }
 
-        currentQueryString = _searchParentField.value;
+        currentQueryString = _searchParentField.value.trim();
 
         var cardsListHtml = '';
 
-        if (_searchParentField && _searchParentField.value.length) {
+        if (_searchParentField && _searchParentField.value.trim().length) {
           currentItems = [];
 
           for (var cardId in self.base.data.cards) {
             var card = self.base.data.cards[cardId];
 
-            if (card !== currentOpenedCard && card.status !== 'closed' && self.searchInString(card.title.toLowerCase(), _searchParentField.value.toLowerCase())) {
+            if (card !== currentOpenedCard && card.status !== 'closed' && self.searchInString(card.title.toLowerCase(), _searchParentField.value.trim().toLowerCase())) {
               cardsListHtml += '' +
                   '   <li class="item js-parent-item' + (currentOpenedCard.parent && card.id === currentOpenedCard.parent.id ? ' active' : '') + (!currentItems.length ? ' selected' : '') + '">' +
                   '     <a href="#" title="' + card.title + '" class="name js-select-parent" parent-index="' + currentItems.length + '">' +
@@ -378,8 +378,8 @@
       }
 
       function createNewCard() {
-        if (document.querySelector('.js-children-title').value.length) {
-          self.base.api.card.create(document.querySelector('.js-children-title').value, document.querySelector('.js-children-select-list').value, document.querySelector('.js-children-select-position').value, function (cardData) {
+        if (document.querySelector('.js-children-title').value.trim().length) {
+          self.base.api.card.create(document.querySelector('.js-children-title').value.trim(), document.querySelector('.js-children-select-list').value, document.querySelector('.js-children-select-position').value, function (cardData) {
             cardData.checklists = [];
 
             self.base.data.boardData.cards.push(cardData);
