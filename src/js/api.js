@@ -32,7 +32,7 @@ HandsomeTrello.api = {
     get: function (boardId, callback) {
       var self = this.base;
 
-      self.request('get', 'https://trello.com/1/Boards/' + boardId, {
+      self.request('get', 'https://trello.com/1/boards/' + boardId, {
         lists: 'open',
         cards: 'all',
         card_checklists: 'all',
@@ -44,7 +44,7 @@ HandsomeTrello.api = {
     get: function (cardId, callback) {
       var self = this.base;
 
-      self.request('get', 'https://trello.com/1/Cards/' + cardId, {
+      self.request('get', 'https://trello.com/1/cards/' + cardId, {
         checklists: 'all'
       }, callback);
     },
