@@ -953,6 +953,7 @@
       document.body.addEventListener('DOMNodeRemoved', function (e) {
         if (self.data.boardId && self.data.loaded && !self.checkLockedDOM()) {
           if (e.target.classList &&
+              !e.target.classList.contains('ui-droppable') &&
               (
                   (e.target.classList.contains('js-list')) ||
                   (e.target.classList.contains('list-card') && e.target.classList.contains('js-member-droppable'))
