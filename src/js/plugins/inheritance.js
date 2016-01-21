@@ -732,6 +732,7 @@
 
       if (typeof card !== 'undefined') {
         card.parent.childrenChecklist.checkItems.splice(card.parent.childrenChecklist.checkItems.indexOf(card.checkItem), 1);
+        card.parent.children.splice(card.parent.children.indexOf(card), 1);
 
         if (card.parent.childrenChecklist.checkItems.length) {
           self.base.api.checklist.deleteItem(card.parent.childrenChecklist.id, card.checkItem.id);
