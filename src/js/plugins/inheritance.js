@@ -32,8 +32,10 @@
     generateHtmlForParent: function (parentCard) {
       var self = this;
 
-      if (document.querySelector('.js-card-parent')) {
-        self.base.removeElement(document.querySelector('.js-card-parent'));
+      var _cardParent = document.querySelector('.js-card-parent');
+
+      if (_cardParent) {
+        self.base.removeElement(_cardParent);
       }
 
       if (typeof parentCard === 'undefined') {
@@ -58,7 +60,7 @@
 
         if (typeof childCard !== 'undefined') {
           html += '' +
-              '<li class="handsome-trello__inheritance-children-item handsome-trello__inheritance-children-item--' + childCard.status + '"' + (level === 0 ? ' children-id="' + childCard.checkItem.id + '" children-pos="' + childCard.checkItem.pos : '') + '">' +
+              '<li class="handsome-trello__inheritance-children-item handsome-trello__inheritance-children-item--' + childCard.status + '"' + (level === 0 ? ' data-children-id="' + childCard.checkItem.id + '" data-children-pos="' + childCard.checkItem.pos : '') + '">' +
               ' <a href="' + childCard.url + '" class="handsome-trello__inheritance-link">' + childCard.title + '</a>' +
               ' (' + (childCard.status === 'closed' ? 'Archived' : childCard.column.name) + ')';
 
@@ -78,8 +80,10 @@
     generateHtmlForChildren: function (children) {
       var self = this;
 
-      if (document.querySelector('.js-card-children')) {
-        self.base.removeElement(document.querySelector('.js-card-children'));
+      var _cardChildren = document.querySelector('.js-card-children');
+
+      if (_cardChildren) {
+        self.base.removeElement(_cardChildren);
       }
 
       if (typeof children === 'undefined' || !children.length) {
@@ -99,8 +103,10 @@
     generateHtmlForRelatedTasks: function (card, parent) {
       var self = this;
 
-      if (document.querySelector('.js-card-related')) {
-        self.base.removeElement(document.querySelector('.js-card-related'));
+      var _cardRelated = document.querySelector('.js-card-related');
+
+      if (_cardRelated) {
+        self.base.removeElement(_cardRelated);
       }
 
       if (typeof parent === 'undefined' || typeof parent.children === 'undefined' || !parent.children.length || (parent.children.length === 1 && parent.children[0] === card)) {
@@ -141,7 +147,7 @@
       return matchesCount === searchArray.length;
     },
 
-    openParentPopOver: function (target) {
+    openParentChangePopOver: function (target) {
       var self = this;
 
       if (!self.base.checkPopOver('Set Parent')) {
@@ -161,121 +167,105 @@
         };
       }
 
-      var html = '';
+      var html = '' +
+          '<input class="js-parent-change-search-field js-autofocus" type="text" placeholder="Search parent">' +
+          '<ul class="pop-over-card-list handsome-trello__inheritance-pop-over-parent-list checkable js-parent-change-list"></ul>';
 
-      html += '' +
-          '<div>' +
-          ' <input class="js-search-parent js-autofocus" type="text" placeholder="Search parent">' +
-          ' <ul class="pop-over-card-list handsome-trello__inheritance-pop-over-parent-list checkable js-parent-list">' +
-          ' </ul>' +
-          '</div>';
-
-      var popOverElements = self.base.popOver(true, 'Set Parent', html, target);
-
-      var _popOverContent = popOverElements._popOverContent,
-          _popOverParentList = _popOverContent.querySelector('.js-parent-list');
+      var popOverElements = self.base.popOver(true, 'Set Parent', html, target),
+          _popOverContent = popOverElements._popOverContent,
+          _parentChangeSearchField = _popOverContent.querySelector('.js-parent-change-search-field'),
+          _parentChangeList = _popOverContent.querySelector('.js-parent-change-list');
 
       generateCardsList();
 
-      _popOverContent.querySelector('.js-search-parent').focus();
+      _parentChangeSearchField.focus();
+
+      function generateCardsItem(card, parentIndex, active, selected) {
+        return self.base.generateElementFromHtml(
+            '   <li class="item js-parent-change-item' + (active ? ' active' : '') + (selected ? ' selected' : '') + '">' +
+            '     <a href="#" title="' + card.title + ' (' + card.column.name + ')" class="name js-parent-change-link" data-parent-index="' + parentIndex + '">' +
+            '       <span class="full-name">' + card.title + ' <span class="handsome-trello__inheritance-pop-over-parent-column-name">(' + card.column.name + ')</span></span>' +
+            '       <span class="icon-sm icon-check checked-icon"></span>' +
+            '     </a>' +
+            '   </li>'
+        );
+      }
 
       function generateCardsList() {
-        var _searchParentField = document.querySelector('.js-search-parent');
-
-        if (currentQueryString === _searchParentField.value.trim()) {
+        if (currentQueryString === _parentChangeSearchField.value.trim()) {
           return false;
         }
 
-        currentQueryString = _searchParentField.value.trim();
+        currentQueryString = _parentChangeSearchField.value.trim();
 
-        var cardsListHtml = '';
+        _parentChangeList.innerHTML = '';
 
-        if (_searchParentField && _searchParentField.value.trim().length) {
+        if (_parentChangeSearchField && _parentChangeSearchField.value.trim().length) {
           currentItems = [];
 
           for (var cardId in self.base.data.cards) {
             var card = self.base.data.cards[cardId];
 
-            if (card !== currentOpenedCard && card.status !== 'closed' && self.searchInString(card.title.toLowerCase(), _searchParentField.value.trim().toLowerCase())) {
-              cardsListHtml += '' +
-                  '   <li class="item js-parent-item' + (currentOpenedCard.parent && card.id === currentOpenedCard.parent.id ? ' active' : '') + (!currentItems.length ? ' selected' : '') + '">' +
-                  '     <a href="#" title="' + card.title + '" class="name js-select-parent" parent-index="' + currentItems.length + '">' +
-                  '       <span class="full-name">' + card.title + '</span>' +
-                  '       <span class="icon-sm icon-check checked-icon"></span>' +
-                  '     </a>' +
-                  '   </li>' +
-                  '';
+            if (card !== currentOpenedCard && card.status !== 'closed' && self.searchInString(card.title.toLowerCase(), _parentChangeSearchField.value.trim().toLowerCase())) {
+              _parentChangeList.appendChild(generateCardsItem(card, currentItems.length, (currentOpenedCard.parent && card.id === currentOpenedCard.parent.id), !currentItems.length));
 
               currentItems.push(card);
             }
           }
 
-          _popOverParentList.innerHTML = cardsListHtml;
-
-          selectItem(currentItems.length ? 0 : undefined, true);
+          selectParentChangeItem(currentItems.length ? 0 : undefined, true);
         } else if (currentOpenedCard.parent) {
-          cardsListHtml += '' +
-              '   <li class="item js-parent-item' + (currentParent && currentParent.id === currentOpenedCard.parent.id ? ' active' : '') + '">' +
-              '     <a href="#" title="' + currentOpenedCard.parent.title + '" class="name js-select-parent" parent-index="0">' +
-              '       <span class="full-name">' + currentOpenedCard.parent.title + '</span>' +
-              '       <span class="icon-sm icon-check checked-icon"></span>' +
-              '     </a>' +
-              '   </li>' +
-              '';
-
           currentItems = [currentOpenedCard.parent];
 
-          _popOverParentList.innerHTML = cardsListHtml;
+          _parentChangeList.appendChild(generateCardsItem(currentOpenedCard.parent, 0, currentParent && currentParent.id === currentOpenedCard.parent.id, false));
 
-          selectItem(undefined, true);
-        } else {
-          _popOverParentList.innerHTML = '';
+          selectParentChangeItem(undefined, true);
         }
 
-        var _popOverParentItems = _popOverParentList.querySelectorAll('.js-parent-item');
+        var _parentChangeLinks = _parentChangeList.querySelectorAll('.js-parent-change-link');
 
-        for (var i = 0; i < _popOverParentItems.length; i++) {
-          _popOverParentItems[i].addEventListener('mouseover', function (e) {
-            selectItem(parseInt(e.currentTarget.querySelector('.js-select-parent').getAttribute('parent-index')), true);
+        for (var i = 0; i < _parentChangeLinks.length; i++) {
+          _parentChangeLinks[i].addEventListener('mouseover', function (e) {
+            selectParentChangeItem(parseInt(e.currentTarget.getAttribute('data-parent-index')), true);
           });
 
-          _popOverParentItems[i].querySelector('.js-select-parent').addEventListener('click', function (e) {
+          _parentChangeLinks[i].addEventListener('click', function (e) {
             e.preventDefault();
 
-            self.changeParent(currentOpenedCard, currentItems[parseInt(e.currentTarget.getAttribute('parent-index'))]);
+            self.changeParent(currentOpenedCard, currentItems[parseInt(e.currentTarget.getAttribute('data-parent-index'))]);
           });
         }
       }
 
-      function selectItem(index, notUndefined) {
-        var _currentItems = _popOverParentList.querySelectorAll('.js-parent-item');
+      function selectParentChangeItem(index, notUndefined) {
+        var _parentChangeItems = _popOverContent.querySelectorAll('.js-parent-change-item');
 
-        if (_currentItems.length) {
-          if (typeof selectedItemIndex !== 'undefined' && typeof _currentItems[selectedItemIndex] !== 'undefined' && (!notUndefined || selectedItemIndex !== index)) {
-            _currentItems[selectedItemIndex].classList.remove('selected');
+        if (_parentChangeItems.length) {
+          if (typeof selectedItemIndex !== 'undefined' && typeof _parentChangeItems[selectedItemIndex] !== 'undefined' && (!notUndefined || selectedItemIndex !== index)) {
+            _parentChangeItems[selectedItemIndex].classList.remove('selected');
           }
 
-          if (typeof index !== 'undefined' && typeof _currentItems[index] !== 'undefined' && selectedItemIndex !== index) {
-            _currentItems[index].classList.add('selected');
+          if (typeof index !== 'undefined' && typeof _parentChangeItems[index] !== 'undefined' && selectedItemIndex !== index) {
+            _parentChangeItems[index].classList.add('selected');
           }
 
           selectedItemIndex = selectedItemIndex !== index || notUndefined ? index : undefined;
         }
       }
 
-      _popOverContent.querySelector('.js-search-parent').addEventListener('keyup', function () {
+      _parentChangeSearchField.addEventListener('keyup', function () {
         generateCardsList();
 
         self.base.updatePopOver();
       });
 
-      _popOverContent.querySelector('.js-search-parent').addEventListener('keydown', function (e) {
+      _parentChangeSearchField.addEventListener('keydown', function (e) {
         if (e.keyCode === 13 && typeof selectedItemIndex !== 'undefined' && typeof currentItems[selectedItemIndex] !== 'undefined') { // Enter
           self.changeParent(currentOpenedCard, currentItems[selectedItemIndex]);
         } else if (e.keyCode === 38) { // Arrow Up
-          selectItem(typeof selectedItemIndex !== 'undefined' && selectedItemIndex - 1 >= 0 ? selectedItemIndex - 1 : currentItems.length - 1);
+          selectParentChangeItem(typeof selectedItemIndex !== 'undefined' && selectedItemIndex - 1 >= 0 ? selectedItemIndex - 1 : currentItems.length - 1);
         } else if (e.keyCode === 40) { // Arrow Down
-          selectItem(typeof selectedItemIndex !== 'undefined' && selectedItemIndex + 1 < currentItems.length ? selectedItemIndex + 1 : 0);
+          selectParentChangeItem(typeof selectedItemIndex !== 'undefined' && selectedItemIndex + 1 < currentItems.length ? selectedItemIndex + 1 : 0);
         }
       });
     },
@@ -288,11 +278,10 @@
       }
 
       var currentOpenedCard = self.base.getCurrentOpenedCard(),
-          currentColumn = false,
+          currentColumn = undefined,
           currentPosition = 'bottom',
           positionsList = [],
-          columnsHtml = '',
-          positionsHtml = '';
+          columnsHtml = '';
 
       for (var i = 0; i < self.base.data.boardData.lists.length; i++) {
         var column = self.base.data.boardData.lists[i],
@@ -303,47 +292,48 @@
         }
 
         columnsHtml += '' +
-            '       <option value="' + column.id + '"' + (isCurrentColumn ? ' selected="selected"' : '') + '>' + column.name + (isCurrentColumn ? ' (current)' : '') + '</option>';
+            '<option value="' + column.id + '"' + (isCurrentColumn ? ' selected="selected"' : '') + '>' + column.name + (isCurrentColumn ? ' (current)' : '') + '</option>';
       }
 
-      generatePositionsList();
-
       var html = '' +
-          '<div>' +
-          ' <div class="form-grid">' +
-          '   <input type="text" placeholder="Title" class="js-children-title" />' +
-          ' </div>' +
-          ' <div class="form-grid">' +
-          '   <div class="button-link setting form-grid-child form-grid-child-threequarters">' +
-          '     <span class="label">List</span>' +
-          '     <span class="value js-children-list-value">' + currentColumn.name + '</span>' +
-          '     <label>List</label>' +
-          '     <select class="js-children-select-list">' +
+          '<div class="form-grid">' +
+          '  <input type="text" placeholder="Title" class="js-children-create-title-field" />' +
+          '</div>' +
+          '<div class="form-grid">' +
+          '  <div class="button-link setting form-grid-child form-grid-child-threequarters">' +
+          '    <span class="label">List</span>' +
+          '    <span class="value js-children-create-current-column-value">' + currentColumn.name + '</span>' +
+          '    <label>List</label>' +
+          '    <select class="js-children-create-columns-select">' +
 
           columnsHtml +
 
-          '     </select>' +
-          '   </div>' +
-          '   <div class="button-link setting form-grid-child form-grid-child-quarter">' +
-          '     <span class="label">Position</span>' +
-          '     <span class="value js-children-position-value">' + currentPosition + '</span>' +
-          '     <label>Position</label>' +
-          '     <select class="js-children-select-position">' +
+          '    </select>' +
+          '  </div>' +
+          '  <div class="button-link setting form-grid-child form-grid-child-quarter">' +
+          '    <span class="label">Position</span>' +
+          '    <span class="value js-children-create-current-position-value">' + currentPosition + '</span>' +
+          '    <label>Position</label>' +
+          '    <select class="js-children-create-positions-select"></select>' +
+          '  </div>' +
+          '</div>' +
+          '<div class="form-grid">' +
+          '  <input class="primary wide js-children-create-submit-btn" type="submit" value="Create">' +
+          '  <div class="check-div handsome-trello__inheritance-pop-over-children-checkbox">' +
+          '    <input type="checkbox" id="pop-over-children-checkbox"' + (self.base.options.openChildCard ? ' checked="checked"' : '') + ' />' +
+          '    <label for="pop-over-children-checkbox">Open Child Card</label>' +
+          '  </div>';
 
-          positionsHtml +
+      var popOverElements = self.base.popOver(true, 'Add Child', html, target),
+          _popOverContent = popOverElements._popOverContent,
+          _childrenCreateTitleField = _popOverContent.querySelector('.js-children-create-title-field'),
+          _childrenCreateCurrentColumnValue = _popOverContent.querySelector('.js-children-create-current-column-value'),
+          _childrenCreateColumnsSelect = _popOverContent.querySelector('.js-children-create-columns-select'),
+          _childrenCreateCurrentPositionValue = _popOverContent.querySelector('.js-children-create-current-position-value'),
+          _childrenCreatePositionsSelect = _popOverContent.querySelector('.js-children-create-positions-select'),
+          _childrenCreateSubmitBtn = _popOverContent.querySelector('.js-children-create-submit-btn');
 
-          '     </select>' +
-          '   </div>' +
-          ' </div>' +
-          ' <div class="form-grid">' +
-          '   <input class="primary wide js-children-create" type="submit" value="Create">' +
-          '   <div class="check-div handsome-trello__inheritance-pop-over-children-checkbox">' +
-          '     <input type="checkbox" id="pop-over-children-checkbox"' + (self.base.options.openChildCard ? ' checked="checked"' : '') + ' />' +
-          '     <label for="pop-over-children-checkbox">Open Child Card</label>' +
-          '   </div>' +
-          '</div>';
-
-      var popOverElements = self.base.popOver(true, 'Add Child', html, target);
+      generatePositionsList();
 
       document.getElementById('pop-over-children-checkbox').addEventListener('change', function (e) {
         self.base.options.openChildCard = e.target.checked;
@@ -353,7 +343,8 @@
       function generatePositionsList() {
         var prevCardPos = undefined;
 
-        positionsHtml = '';
+        _childrenCreatePositionsSelect.innerHTML = '';
+
         positionsList = [];
 
         for (var i = 0; i < self.base.data.boardData.cards.length; i++) {
@@ -363,23 +354,26 @@
             var currentPos = (prevCardPos ? (card.pos + prevCardPos) / 2 : 'top');
             positionsList[currentPos] = Object.keys(positionsList).length + 1;
 
-            positionsHtml += '' +
-                '       <option value="' + currentPos + '">' + positionsList[currentPos] + '</option>';
+            var _option = document.createElement('option');
+            _option.setAttribute('value', currentPos);
+            _option.textContent = positionsList[currentPos];
+
+            _childrenCreatePositionsSelect.appendChild(_option);
 
             prevCardPos = card.pos;
           }
         }
 
         positionsList['bottom'] = Object.keys(positionsList).length + 1;
-        positionsHtml += '' +
-            '       <option value="bottom" selected="selected">' + positionsList['bottom'] + '</option>';
 
-        currentPosition = Object.keys(positionsList).length;
+        _childrenCreatePositionsSelect.appendChild(self.base.generateElementFromHtml('<option value="bottom" selected="selected">' + positionsList['bottom'] + '</option>'));
+
+        _childrenCreateCurrentPositionValue.textContent = Object.keys(positionsList).length;
       }
 
       function createNewCard() {
-        if (document.querySelector('.js-children-title').value.trim().length) {
-          self.base.api.card.create(document.querySelector('.js-children-title').value.trim(), document.querySelector('.js-children-select-list').value, document.querySelector('.js-children-select-position').value, function (cardData) {
+        if (_childrenCreateTitleField.value.trim().length) {
+          self.base.api.card.create(_childrenCreateTitleField.value.trim(), _childrenCreateColumnsSelect.value, _childrenCreatePositionsSelect.value, function (cardData) {
             cardData.checklists = [];
 
             self.base.data.boardData.cards.push(cardData);
@@ -425,28 +419,24 @@
         }
       }
 
-      var _popOverContent = popOverElements._popOverContent;
+      _childrenCreateTitleField.focus();
 
-      _popOverContent.querySelector('.js-children-title').focus();
-
-      _popOverContent.querySelector('.js-pop-over-content .js-children-select-list').addEventListener('change', function () {
+      _childrenCreateColumnsSelect.addEventListener('change', function () {
         currentColumn = self.base.getElementByProperty(self.base.data.boardData.lists, 'id', this.value);
-        this.parentElement.querySelector('.js-children-list-value').textContent = currentColumn.name;
+        _childrenCreateCurrentColumnValue.textContent = currentColumn.name;
 
         generatePositionsList();
-        this.parentElement.parentElement.querySelector('.js-children-select-position').innerHTML = positionsHtml;
-        this.parentElement.parentElement.querySelector('.js-children-position-value').innerHTML = currentPosition;
       });
 
-      _popOverContent.querySelector('.js-pop-over-content .js-children-select-position').addEventListener('change', function () {
-        this.parentElement.querySelector('.js-children-position-value').textContent = positionsList[this.value];
+      _childrenCreatePositionsSelect.addEventListener('change', function () {
+        _childrenCreateCurrentPositionValue.textContent = positionsList[this.value];
       });
 
-      _popOverContent.querySelector('.js-children-create').addEventListener('click', function () {
+      _childrenCreateSubmitBtn.addEventListener('click', function () {
         createNewCard();
       });
 
-      _popOverContent.querySelector('.js-children-title').addEventListener('keydown', function (e) {
+      _childrenCreateTitleField.addEventListener('keydown', function (e) {
         if (e.keyCode === 13) {
           createNewCard();
         }
@@ -456,14 +446,14 @@
     addButtonsOnRightSidebar: function () {
       var self = this;
 
-      var _sidebarAdd = document.querySelector('.window-sidebar .window-module div');
+      var _sidebarButtonsList = document.querySelector('.window-sidebar .window-module div');
 
-      if (!_sidebarAdd || !self.base.data.boardAccess) {
+      if (!_sidebarButtonsList || !self.base.data.boardAccess) {
         return false;
       }
 
-      var _sidebarParentBtn = _sidebarAdd.querySelector('.js-parent-btn'),
-          _sidebarChildBtn = _sidebarAdd.querySelector('.js-child-btn');
+      var _sidebarParentBtn = _sidebarButtonsList.querySelector('.js-sidebar-parent-btn'),
+          _sidebarChildBtn = _sidebarButtonsList.querySelector('.js-sidebar-child-btn');
 
       if (_sidebarParentBtn && _sidebarChildBtn) {
         return false;
@@ -477,25 +467,18 @@
         self.base.removeElement(_sidebarChildBtn);
       }
 
-      _sidebarAdd.appendChild(
-          self.base.generateElementFromString(
-              '<a href="#" class="button-link js-parent-btn"> <span class="icon-sm handsome-icon-parent"></span> Parent</a>'
-          )
-      );
+      _sidebarParentBtn = self.base.generateElementFromHtml('<a href="#" class="button-link js-sidebar-parent-btn"> <span class="icon-sm handsome-icon-parent"></span> Parent</a>');
+      _sidebarChildBtn = self.base.generateElementFromHtml('<a href="#" class="button-link js-sidebar-child-btn"> <span class="icon-sm handsome-icon-child"></span> Child</a>');
+      _sidebarButtonsList.appendChild(_sidebarParentBtn);
+      _sidebarButtonsList.appendChild(_sidebarChildBtn);
 
-      _sidebarAdd.appendChild(
-          self.base.generateElementFromString(
-              '<a href="#" class="button-link js-child-btn"> <span class="icon-sm handsome-icon-child"></span> Child</a>'
-          )
-      );
-
-      _sidebarAdd.querySelector('.js-parent-btn').addEventListener('click', function (e) {
+      _sidebarParentBtn.addEventListener('click', function (e) {
         e.preventDefault();
 
-        self.openParentPopOver(e.currentTarget);
+        self.openParentChangePopOver(e.currentTarget);
       });
 
-      _sidebarAdd.querySelector('.js-child-btn').addEventListener('click', function (e) {
+      _sidebarChildBtn.addEventListener('click', function (e) {
         e.preventDefault();
 
         self.openChildrenPopOver(e.currentTarget);
@@ -521,17 +504,17 @@
         update: function (event, ui) {
           var $prevItem = ui.item.prev(),
               $nextItem = ui.item.next(),
-              checkItemId = ui.item.attr('children-id'),
+              checkItemId = ui.item.attr('data-children-id'),
               newPosition =
-                  !$prevItem.length || !$prevItem.attr('children-pos').length ? 'top' :
-                      !$nextItem.length || !$nextItem.attr('children-pos').length ? 'bottom' :
-                      (parseInt($prevItem.attr('children-pos')) + parseInt($nextItem.attr('children-pos'))) / 2;
+                  !$prevItem.length || !$prevItem.attr('data-children-pos').length ? 'top' :
+                      !$nextItem.length || !$nextItem.attr('data-children-pos').length ? 'bottom' :
+                      (parseInt($prevItem.attr('data-children-pos')) + parseInt($nextItem.attr('data-children-pos'))) / 2;
 
           self.base.api.checklist.posItem(card.id, card.childrenChecklist.id, checkItemId, newPosition, function (data) {
             if (data && typeof data.pos !== 'undefined') {
               self.base.getElementByProperty(card.childrenChecklist.checkItems, 'id', checkItemId).pos = data.pos;
               self.base.sortByProperty(card.children, 'checkItem.pos');
-              ui.item.attr('children-pos', data.pos);
+              ui.item.attr('data-children-pos', data.pos);
             }
           });
         }
@@ -595,7 +578,7 @@
       }
 
       if (!_checklistFakeBadge) {
-        _checklistFakeBadge = self.base.generateElementFromString(_checklistBadge.outerHTML);
+        _checklistFakeBadge = self.base.generateElementFromHtml(_checklistBadge.outerHTML);
         _checklistFakeBadge.classList.remove('js-checklist-badge');
         _checklistFakeBadge.classList.add('js-fake-checklist-badge');
         self.base.appendElementAfterAnother(_checklistFakeBadge, _checklistBadge);

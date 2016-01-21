@@ -167,20 +167,18 @@
       }
     },
 
-    generateElementFromString: function (string) {
-      var div = document.createElement('div');
-      div.innerHTML = string;
-      var element = div.childNodes[0];
-      div.remove();
+    generateElementFromHtml: function (html) {
+      var _div = document.createElement('div');
+      _div.innerHTML = html;
 
-      return element;
+      return _div.childNodes.length > 1 ? _div : _div.childNodes[0];
     },
 
     appendElementAfterAnother: function (_element, _beforeElement) {
       var self = this;
 
       if (typeof _element === 'string') {
-        _element = self.generateElementFromString(_element);
+        _element = self.generateElementFromHtml(_element);
       }
 
       if (_beforeElement.nextSibling) {
@@ -193,12 +191,16 @@
     prependElement: function (_element, _parentElement) {
       var self = this;
 
-      if (typeof _element === 'string') {
-        _element = self.generateElementFromString(_element);
-      }
-
       if (typeof _element === 'undefined') {
         return false;
+      }
+
+      if (typeof _element === 'string') {
+        if (!_element.trim().length) {
+          return false;
+        }
+
+        _element = self.generateElementFromHtml(_element);
       }
 
       if (_parentElement.firstChild) {
@@ -376,12 +378,15 @@
     },
 
     generatePopOver: function (_popOver, title, content) {
+      var self = this;
+
       var _popOverHeader = document.createElement('div');
       _popOverHeader.classList.add('pop-over-header');
       _popOverHeader.classList.add('js-pop-over-header');
 
       var _popOverTitle = document.createElement('span');
       _popOverTitle.classList.add('pop-over-header-title');
+      _popOverTitle.textContent = title;
 
       var _popOverCloseBtn = document.createElement('a');
       _popOverCloseBtn.setAttribute('href', '#');
@@ -394,14 +399,14 @@
       _popOverContent.classList.add('js-pop-over-content');
       _popOverContent.classList.add('u-fancy-scrollbar');
       _popOverContent.classList.add('js-tab-parent');
+      _popOverContent.appendChild(self.generateElementFromHtml(content));
 
       _popOverHeader.appendChild(_popOverTitle);
       _popOverHeader.appendChild(_popOverCloseBtn);
+
+      _popOver.innerHTML = '';
       _popOver.appendChild(_popOverHeader);
       _popOver.appendChild(_popOverContent);
-
-      _popOverTitle.textContent = title;
-      _popOverContent.innerHTML = content;
 
       return {
         _popOverHeader: _popOverHeader,
@@ -554,7 +559,7 @@
       }
 
       var _notification = document.getElementById('notification'),
-          _notificationContent = self.generateElementFromString('<div class="handsome-trello__inheritance-notification js-inheritance-notification app-alert-item mod-' + type + '">' + html + '</div>');
+          _notificationContent = self.generateElementFromHtml('<div class="handsome-trello__inheritance-notification js-inheritance-notification app-alert-item mod-' + type + '">' + html + '</div>');
 
       _notification.appendChild(_notificationContent);
 
