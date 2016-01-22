@@ -8,15 +8,15 @@ Thinking about how we use Trello and how others might use it in a similar way, w
 
 [![Quick overview of Parent/Child Management with Handsome Trello Extension][2]][1]
 
-  [1]: https://youtu.be/H1VukfGrP7U
-  [2]: http://cl.ly/image/2E2a1a1y2K0x/handsome_trello_preview.png
+  [1]: https://vimeo.com/152433592
+  [2]: http://assets.handsome.is/supporting/trello-github-video.png
 
-
+Read our Simplifying Management with Trello blog post – [Learn More!](http://handsome.is/simplifying-management-with-trello/)
 
 ## Supported Browsers
 
 * [Chrome](https://chrome.google.com/webstore/detail/parentchild-managment-for/flnpbgmiploomjgagfbcjlikpiehclld)
-* [Safari](http://labs.handsome.is/trello/download/safari/handsome-trello-safari-extension-latest.safariextz)
-* [Firefox](https://addons.mozilla.org/firefox/addon/parentchild-managment-for-trel/)
-* Opera
-* Yandex
+* Safari (coming soon!)
+* Firefox (coming soon!)
+* Opera (coming soon!)
+* Yandex (coming soon!)
