@@ -143,8 +143,7 @@ gulp.task('firefox-dist', shell.task([
 
 gulp.task('safari-dist', shell.task([
   'mkdir -p dist/safari',
-  'cd ./build/safari && ../../node_modules/.bin/xarjs create extension.safariextz --cert ../../vendor/safari/certs/cert.pem --cert ../../vendor/safari/certs/apple-intermediate.pem --cert ../../vendor/safari/certs/apple-root.pem --private-key ../../vendor/safari/certs/privatekey.pem handsometrello.safariextension',
-  'mv ./build/safari/extension.safariextz ./dist/safari/handsome-trello-safari-extension-' + app.version + '.safariextz',
+  'cd ./build/safari && ../../node_modules/.bin/xarjs create ../../dist/safari/handsome-trello-safari-extension-' + app.version + '.safariextz --cert ../../vendor/safari/certs/cert.pem --cert ../../vendor/safari/certs/apple-intermediate.pem --cert ../../vendor/safari/certs/apple-root.pem --private-key ../../vendor/safari/certs/privatekey.pem handsometrello.safariextension',
   'cp ./dist/safari/handsome-trello-safari-extension-' + app.version + '.safariextz ./dist/safari/handsome-trello-safari-extension-latest.safariextz'
 ]));
 
@@ -153,7 +152,7 @@ gulp.task('firefox-run', shell.task([
 ]));
 
 gulp.task('dist', function (cb) {
-  return rseq('clean', ['chrome', 'opera', 'firefox', 'safari'], ['chrome-dist', 'opera-dist', 'firefox-dist', 'safari-dist'], cb);
+  return rseq('clean', ['styles', 'options'], ['chrome', 'opera', 'firefox', 'safari'], ['chrome-dist', 'opera-dist', 'firefox-dist', 'safari-dist'], cb);
 });
 
 gulp.task('watch', function () {
@@ -162,7 +161,7 @@ gulp.task('watch', function () {
   gulp.watch([
     './src/less/**/*',
     './src/fonts/**/*'
-  ], ['styles', 'options']);
+  ], ['styles', 'options'], ['chrome', 'opera', 'firefox', 'safari']);
 
   gulp.watch([
     './src/js/**/*',
@@ -173,7 +172,7 @@ gulp.task('watch', function () {
 });
 
 gulp.task('run', function (cb) {
-  return rseq('clean', 'firefox', 'firefox-run', cb);
+  return rseq('clean', ['styles', 'options'], 'firefox', 'firefox-run', cb);
 });
 
 gulp.task('addons', shell.task([
@@ -181,5 +180,5 @@ gulp.task('addons', shell.task([
 ]));
 
 gulp.task('default', function (cb) {
-  return rseq('clean', ['chrome', 'opera', 'firefox', 'safari'], cb);
+  return rseq('clean', ['styles', 'options'], ['chrome', 'opera', 'firefox', 'safari'], cb);
 });
