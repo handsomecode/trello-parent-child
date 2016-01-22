@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
-  "name": "Parent/Child Managment for Trello",
-  "description": "Add support of Parent/Child dependencies in Trello projects.",
-  "author": "Handsome",
-  "homepage_url": "http://labs.handsome.is/trello/",
+  "name": "Title",
+  "description": "Description",
+  "author": "Handsome.is",
+  "homepage_url": "Homepage",
   "version": "0.0.0",
   "icons": {
     "16": "icons/icon_16.png",

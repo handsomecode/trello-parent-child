@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>Author</key>
-	<string>Handsome</string>
+	<string>Handsome.is</string>
 	<key>Builder Version</key>
 	<string>11601.1.56</string>
 	<key>CFBundleDisplayName</key>
-	<string>Parent/Child Managment for Trello</string>
+	<string>Title</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.handsome.is.handsometrello</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -42,9 +42,9 @@
 		</array>
 	</dict>
 	<key>Description</key>
-	<string>Add support of Parent/Child dependencies in Trello projects.</string>
+	<string>Description</string>
 	<key>Website</key>
-	<string>http://labs.handsome.is/trello/</string>
+	<string>Homepage</string>
 	<key>DeveloperIdentifier</key>
 	<string>6Y3UWZWJMU</string>
 	<key>ExtensionInfoDictionaryVersion</key>

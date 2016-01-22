@@ -1,12 +1,12 @@
 {
   "id": "handsome-trello@handsome.is",
-  "title": "Parent/Child Managment for Trello",
+  "title": "Title",
   "name": "handsome-trello",
   "version": "0.0.0",
-  "description": "Add support of Parent/Child dependencies in Trello projects.",
+  "description": "Description",
   "main": "data/main",
-  "author": "Handsome",
-  "homepage": "http://labs.handsome.is/trello/",
+  "author": "Handsome.is",
+  "homepage": "Homepage",
   "engines": {
     "firefox": ">=38.0a1"
   },
