@@ -12,7 +12,7 @@
     parseCard: function (card) {
       var self = this;
 
-      self.changeChildrenInCard(card);
+      self.updateChildrenInCard(card);
     },
 
     readCards: function () {
@@ -779,7 +779,7 @@
       return false;
     },
 
-    changeChildrenInCard: function (card) {
+    updateChildrenInCard: function (card) {
       var self = this;
 
       if (card.children && card.children.length) {
