@@ -408,7 +408,7 @@
 
             self.base.waitCreatingCard(cardData.shortUrl, function (card) {
               if (typeof currentOpenedCard.children !== 'undefined' && currentOpenedCard.children.length) {
-                self.base.api.checklist.addItem(currentOpenedCard.childrenChecklist.id, '#' + cardData.idShort, 'bottom', function (checkItemData) {
+                self.base.api.checklist.addItem(currentOpenedCard.childrenChecklist.id, cardData.url, 'bottom', function (checkItemData) {
                   currentOpenedCard.childrenChecklist.checkItems.push(checkItemData);
 
                   self.base.lockDOM('inheritance-create-new-card', true);
@@ -423,7 +423,7 @@
                 });
               } else {
                 self.base.api.checklist.create(currentOpenedCard.id, self.data.childrenName, 'top', function (checkListData) {
-                  self.base.api.checklist.addItem(checkListData.id, '#' + cardData.idShort, 'bottom', function (checkItemData) {
+                  self.base.api.checklist.addItem(checkListData.id, cardData.url, 'bottom', function (checkItemData) {
                     checkListData.checkItems = [checkItemData];
                     currentOpenedCard.data.checklists.push(checkListData);
                     currentOpenedCard.childrenChecklist = currentOpenedCard.data.checklists[currentOpenedCard.data.checklists.length - 1];
@@ -723,7 +723,7 @@
           // adding parent
 
           if (parent.childrenChecklist) {
-            self.base.api.checklist.addItem(parent.childrenChecklist.id, '#' + card.idShort, 'bottom', function (checkItemData) {
+            self.base.api.checklist.addItem(parent.childrenChecklist.id, card.url, 'bottom', function (checkItemData) {
               parent.childrenChecklist.checkItems.push(checkItemData);
 
               self.base.lockDOM('inheritance-add-parent', true);
@@ -734,7 +734,7 @@
             });
           } else {
             self.base.api.checklist.create(parent.id, self.data.childrenName, 'top', function (checkListData) {
-              self.base.api.checklist.addItem(checkListData.id, '#' + card.idShort, 'bottom', function (checkItemData) {
+              self.base.api.checklist.addItem(checkListData.id, card.url, 'bottom', function (checkItemData) {
                 parent.data.checklists.push(checkListData);
                 parent.childrenChecklist = parent.data.checklists[parent.data.checklists.length - 1];
                 parent.childrenChecklist.checkItems = [checkItemData];
@@ -779,6 +779,49 @@
       return false;
     },
 
+    checkValidationChildCheckItem: function (checkItemName) {
+      var self = this;
+
+      var cardIdMatch = checkItemName.match(self.base.data.regexp.cardId),
+          cardLinkMatch = checkItemName.match(self.base.data.regexp.cardIdFromLink);
+
+      if (cardIdMatch && cardIdMatch[0] === checkItemName && typeof self.base.data.cards[cardIdMatch[1]] !== 'undefined') {
+        return self.base.data.cards[cardIdMatch[1]];
+      } else if (cardLinkMatch && typeof self.base.data.cards[cardLinkMatch[1]] !== 'undefined') {
+        return self.base.data.cards[cardLinkMatch[1]];
+      }
+
+      return false;
+    },
+
+    moveFromSecondChildrenChecklistToFirst: function (card, checklist) {
+      var self = this;
+
+      if (checklist.checkItems.length) {
+        for (var z = 0; z < checklist.checkItems.length; z++) {
+          var movingCheckItemName = checklist.checkItems[z].name.trim(),
+              movingCard = self.checkValidationChildCheckItem(movingCheckItemName);
+
+          if (movingCard) {
+            if (card.children.indexOf(movingCard) < 0) {
+              self.base.api.checklist.addItem(card.childrenChecklist.id, movingCheckItemName, 'bottom', function (checkItemData) {
+                card.childrenChecklist.checkItems.push(checkItemData);
+
+                self.base.lockDOM('inheritance-move-children-cards-to-other-children-list', true);
+
+                self.readCards();
+
+                self.base.lockDOM('inheritance-move-children-cards-to-other-children-list', false);
+              });
+            }
+          }
+        }
+      }
+
+      self.base.api.checklist.remove(checklist.id);
+      card.data.checklists.splice(i, 1);
+    },
+
     updateChildrenInCard: function (card) {
       var self = this;
 
@@ -801,29 +844,7 @@
         if (checklist.name.trim().toLowerCase() === self.data.childrenName.trim().toLowerCase()) {
           if (typeof card.childrenChecklist !== 'undefined') {
             if (!self.base.data.init) {
-              if (checklist.checkItems.length) {
-                for (var z = 0; z < checklist.checkItems.length; z++) {
-                  var movingCheckItemName = checklist.checkItems[z].name.trim(),
-                      movingCheckItemNameMatch = movingCheckItemName.match(/#([0-9]+)/);
-
-                  if (movingCheckItemNameMatch && movingCheckItemNameMatch[0] === movingCheckItemName && typeof self.base.data.cards[movingCheckItemNameMatch[1]] !== 'undefined') {
-                    if (card.children.indexOf(self.base.data.cards[movingCheckItemNameMatch[1]]) < 0) {
-                      self.base.api.checklist.addItem(card.childrenChecklist.id, movingCheckItemName, 'bottom', function (checkItemData) {
-                        card.childrenChecklist.checkItems.push(checkItemData);
-
-                        self.base.lockDOM('inheritance-move-children-cards-to-other-children-list', true);
-
-                        self.readCards();
-
-                        self.base.lockDOM('inheritance-move-children-cards-to-other-children-list', false);
-                      });
-                    }
-                  }
-                }
-              }
-
-              self.base.api.checklist.remove(checklist.id);
-              card.data.checklists.splice(i, 1);
+              self.moveFromSecondChildrenChecklistToFirst(card, checklist);
             }
 
             continue;
@@ -839,11 +860,11 @@
 
             for (var y = 0; y < checklist.checkItems.length; y++) {
               var checkItem = checklist.checkItems[y],
-                  checkName = checkItem.name.trim(),
-                  match = checkName.match(/#([0-9]+)/);
+                  checkItemName = checkItem.name.trim(),
+                  checkItemCard = self.checkValidationChildCheckItem(checkItemName);
 
-              if (match && match[0] === checkName && typeof self.base.data.cards[match[1]] !== 'undefined') {
-                var childCard = self.base.data.cards[match[1]];
+              if (checkItemCard) {
+                var childCard = checkItemCard;
 
                 if (childCard.status === 'closed' && !self.base.options.showArchivedCards) {
                   continue;
@@ -918,7 +939,11 @@
                   self.base.api.checklist.deleteItem(checklist.id, checkItem.id);
                 } else {
                   if (typeof childCard.parent !== 'undefined' && childCard.parent.id !== card.id && typeof childCard.parent.childrenChecklist !== 'undefined') {
-                    var checkCheckItem = self.base.getElementByProperty(childCard.parent.childrenChecklist.checkItems, 'name', '#' + childCard.idShort);
+                    var checkCheckItem = self.base.getElementByProperty(childCard.parent.childrenChecklist.checkItems, 'name', childCard.url);
+
+                    if (!checkCheckItem) {
+                      self.base.getElementByProperty(childCard.parent.childrenChecklist.checkItems, 'name', '#' + childCard.idShort);
+                    }
 
                     if (checkCheckItem) {
                       console.warn(self.base.settings.notification.messages.severalParentsOnCard

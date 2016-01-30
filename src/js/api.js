@@ -111,6 +111,17 @@ HandsomeTrello.api = {
 
       self.request('delete', '/1/checklists/' + checklistId + '/checkItems/' + checkItemId, data, callback);
     },
+    nameItem: function (cardId, checklistId, checkItemId, name, callback) {
+      var self = this.base;
+
+      var data = {
+        idChecklist: checklistId,
+        idCheckItem: checkItemId,
+        value: name
+      };
+
+      self.request('put', '/1/cards/' + cardId + '/checklist/' + checklistId + '/checkItem/' + checkItemId + '/name', data, callback);
+    },
     posItem: function (cardId, checklistId, checkItemId, pos, callback) {
       var self = this.base;
 

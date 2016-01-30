@@ -21,8 +21,9 @@
 
       regexp: {
         boardPathname: /^\/b\/([a-zA-Z0-9]+)/,
-        cardId: /\/c\/[a-zA-Z0-9]+\/([0-9]+)/,
-        cardUrl: /\/c\/([a-zA-Z0-9]+)/,
+        cardId: /#([0-9]+)/,
+        cardIdFromLink: /\/c\/[a-zA-Z0-9]+\/([0-9]+)/,
+        cardShortLink: /\/c\/([a-zA-Z0-9]+)/,
         cardPathname: /^\/c\/([a-zA-Z0-9]+)/
       },
 
@@ -250,13 +251,13 @@
     // http://trello/c/uJOye8/25-test => 25
     // /c/uJOye8/25-test => 25
     getCardIdFromLink: function (link) {
-      var match = link.match(this.data.regexp.cardId);
+      var match = link.match(this.data.regexp.cardIdFromLink);
 
       return match ? match[1] : false;
     },
 
     getCardShortLinkFromLink: function (link) {
-      return link.match(this.data.regexp.cardUrl)[1];
+      return link.match(this.data.regexp.cardShortLink)[1];
     },
 
     // http://trello/c/uJOye8 => uJOye8
