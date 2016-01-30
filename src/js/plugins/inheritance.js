@@ -42,12 +42,11 @@
         return '';
       }
 
-      var html = '<div class="js-card-parent">';
-      html += '<h3 class="card-detail-item-header">Parent:</h3>';
-      html += '<p class="handsome-trello__inheritance-parent handsome-trello__inheritance-parent--' + parentCard.status + '"><a href="' + parentCard.url + '" class="handsome-trello__inheritance-link">' + parentCard.title + '</a> (' + (parentCard.status === 'closed' ? 'Archived' : parentCard.column.name) + ')</p>';
-      html += '</div>';
-
-      return html;
+      return '' +
+          '<div class="js-card-parent">' +
+          ' <h3 class="card-detail-item-header">Parent:</h3>' +
+          ' <p class="handsome-trello__inheritance-parent handsome-trello__inheritance-parent--' + parentCard.status + '"><a href="' + parentCard.url + '" class="handsome-trello__inheritance-link">' + parentCard.title + '</a> (' + (parentCard.status === 'closed' ? 'Archived' : parentCard.column.name) + ')</p>' +
+          '</div>';
     },
 
     generateHtmlForOneChildren: function (children, level) {
