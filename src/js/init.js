@@ -171,7 +171,7 @@
       var _div = document.createElement('div');
       _div.innerHTML = html;
 
-      return _div.childNodes.length > 1 ? _div : _div.childNodes[0];
+      return _div.children.length > 1 ? _div : _div.children[0];
     },
 
     appendElementAfterAnother: function (_element, _beforeElement) {
