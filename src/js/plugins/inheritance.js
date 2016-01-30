@@ -238,7 +238,30 @@
         }
       }
 
-      function selectParentChangeItem(index, notUndefined) {
+      function checkScrollMissing(_item, _list) {
+        var listHeight = _list.offsetHeight,
+            listOffsetTop = _list.offsetTop,
+            listScrollTop = _list.scrollTop,
+            itemHeight = _item.offsetHeight,
+            itemOffsetTop = _item.offsetTop,
+            itemPositionTop = itemOffsetTop - listOffsetTop;
+
+        if (itemPositionTop < listScrollTop) {
+          _list.scrollTop = itemPositionTop;
+        } else if (itemPositionTop + itemHeight > listScrollTop + listHeight) {
+          _list.scrollTop = itemPositionTop - listHeight + itemHeight;
+        }
+      }
+
+      function selectParentChangeItem(index, notUndefined, checkMissingScroll) {
+        if (typeof notUndefined === 'undefined') {
+          notUndefined = false;
+        }
+
+        if (typeof checkMissingScroll === 'undefined') {
+          checkMissingScroll = false;
+        }
+
         var _parentChangeItems = _popOverContent.querySelectorAll('.js-parent-change-item');
 
         if (_parentChangeItems.length) {
@@ -248,6 +271,10 @@
 
           if (typeof index !== 'undefined' && typeof _parentChangeItems[index] !== 'undefined' && selectedItemIndex !== index) {
             _parentChangeItems[index].classList.add('selected');
+
+            if (checkMissingScroll) {
+              checkScrollMissing(_parentChangeItems[index], _parentChangeList);
+            }
           }
 
           selectedItemIndex = selectedItemIndex !== index || notUndefined ? index : undefined;
@@ -264,9 +291,9 @@
         if (e.keyCode === 13 && typeof selectedItemIndex !== 'undefined' && typeof currentItems[selectedItemIndex] !== 'undefined') { // Enter
           self.changeParent(currentOpenedCard, currentItems[selectedItemIndex]);
         } else if (e.keyCode === 38) { // Arrow Up
-          selectParentChangeItem(typeof selectedItemIndex !== 'undefined' && selectedItemIndex - 1 >= 0 ? selectedItemIndex - 1 : currentItems.length - 1);
+          selectParentChangeItem(typeof selectedItemIndex !== 'undefined' && selectedItemIndex - 1 >= 0 ? selectedItemIndex - 1 : currentItems.length - 1, false, true);
         } else if (e.keyCode === 40) { // Arrow Down
-          selectParentChangeItem(typeof selectedItemIndex !== 'undefined' && selectedItemIndex + 1 < currentItems.length ? selectedItemIndex + 1 : 0);
+          selectParentChangeItem(typeof selectedItemIndex !== 'undefined' && selectedItemIndex + 1 < currentItems.length ? selectedItemIndex + 1 : 0, false, true);
         }
       });
     },
