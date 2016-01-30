@@ -11,12 +11,18 @@
       &-list {
         list-style: none;
 
+        min-width: 300px;
+
         margin-bottom: 20px;
 
         & & {
           margin-top: 5px;
           margin-bottom: 0;
         }
+      }
+      & > &-list {
+        overflow: auto;
+        overflow-y: hidden;
       }
       &-item {
         position: relative;

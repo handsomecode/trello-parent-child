@@ -90,8 +90,8 @@
         return '';
       }
 
-      var html = '<div class="handsome-trello__children js-card-children">';
-      html += '<h3 class="handsome-trello__children-title card-detail-item-header">Children:</h3>';
+      var html = '<div class="handsome-trello__inheritance-children js-card-children">';
+      html += '<h3 class="handsome-trello__inheritance-children-title card-detail-item-header">Children:</h3>';
 
       html += self.generateHtmlForOneChildren(children, 0);
 
