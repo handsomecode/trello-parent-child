@@ -60,8 +60,10 @@
         if (typeof childCard !== 'undefined') {
           html += '' +
               '<li class="handsome-trello__inheritance-children-item handsome-trello__inheritance-children-item--' + childCard.status + '"' + (level === 0 ? ' data-children-id="' + childCard.checkItem.id + '" data-children-pos="' + childCard.checkItem.pos : '') + '">' +
-              ' <a href="' + childCard.url + '" class="handsome-trello__inheritance-link">' + childCard.title + '</a>' +
-              ' (' + (childCard.status === 'closed' ? 'Archived' : childCard.column.name) + ')';
+              ' <p class="handsome-trello__inheritance-children-name">' +
+              '  <a href="' + childCard.url + '" class="handsome-trello__inheritance-link">' + childCard.title + '</a>' +
+              '  (' + (childCard.status === 'closed' ? 'Archived' : childCard.column.name) + ')' +
+              ' </p>';
 
           if (typeof childCard.children !== 'undefined' && childCard.children.length) {
             html += self.generateHtmlForOneChildren(childCard.children, level + 1);
