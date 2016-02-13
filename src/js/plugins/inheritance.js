@@ -378,7 +378,7 @@
         for (var i = 0; i < self.base.data.boardData.cards.length; i++) {
           var card = self.base.data.boardData.cards[i];
 
-          if (card.idList === currentColumn.id) {
+          if (card.idList === currentColumn.id && !card.closed) {
             var currentPos = (prevCardPos ? (card.pos + prevCardPos) / 2 : 'top');
             positionsList[currentPos] = Object.keys(positionsList).length + 1;
 
