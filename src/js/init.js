@@ -28,6 +28,7 @@
       },
 
       reloadTimeout: 0,
+      reloadInterval: 0,
       updateBoardInterval: 0,
       updateTaskDescInterval: 0,
       updateLinkCheckInterval: 0,
@@ -841,15 +842,25 @@
       }, self.data.intervalTime);
     },
 
-    reloadData: function () {
+    reloadData: function (timeout) {
       var self = this;
 
-      if (!self.data.loading) {
-        self.data.loaded = false;
-        self.data.loading = false;
+      timeout = typeof timeout === 'number' ? timeout : typeof timeout === 'boolean' ? self.settings.reloadTimeout : 0;
 
-        self.getBoardShortLinkFromUrl() || self.getCardShortLinkFromUrl();
-      }
+      clearTimeout(self.data.reloadTimeout);
+
+      self.data.reloadTimeout = setTimeout(function () {
+        self.data.reloadInterval = setInterval(function () {
+          if (!self.data.loading) {
+            clearInterval(self.data.reloadInterval);
+
+            self.data.loaded = false;
+            self.data.loading = false;
+
+            self.getBoardShortLinkFromUrl() || self.getCardShortLinkFromUrl();
+          }
+        }, self.data.intervalTime);
+      }, timeout);
     },
 
     init: function () {
@@ -896,13 +907,7 @@
                   (e.target.classList.contains('js-list'))
               )
           ) {
-            if (!self.data.loading) {
-              clearTimeout(self.data.reloadTimeout);
-
-              self.data.reloadTimeout = setTimeout(function () {
-                self.reloadData();
-              }, 500);
-            }
+            self.reloadData(true);
           }
 
           if ((e.target.nodeName === '#text' && e.target.parentNode.classList.contains('js-card-desc')) || (e.target.classList && e.target.classList.contains('card-detail-window'))) {
@@ -966,13 +971,7 @@
                   (e.target.classList.contains('list-card') && e.target.classList.contains('js-member-droppable'))
               )
           ) {
-            if (!self.data.loading) {
-              clearTimeout(self.data.reloadTimeout);
-
-              self.data.reloadTimeout = setTimeout(function () {
-                self.reloadData();
-              }, self.settings.reloadTimeout);
-            }
+            self.reloadData(true);
           }
 
           if (e.target.classList && e.target.classList.contains('badge') && e.target.querySelector('.icon-checklist')) {
@@ -992,13 +991,7 @@
       document.body.addEventListener('DOMSubtreeModified', function (e) {
         if (self.data.boardId && self.data.loaded && !self.checkLockedDOM()) {
           if (e.target.classList && e.target.classList.contains('js-list')) {
-            if (!self.data.loading) {
-              clearTimeout(self.data.reloadTimeout);
-
-              self.data.reloadTimeout = setTimeout(function () {
-                self.reloadData();
-              }, self.settings.reloadTimeout);
-            }
+            self.reloadData(true);
           }
 
           if (e.target.nodeName === '#text' && e.target.textContent.match(/[0-9]+\/[0-9]+/) && e.target.textContent.match(/[0-9]+\/[0-9]+/)[0] === e.target.textContent) {
