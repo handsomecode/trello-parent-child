@@ -797,19 +797,7 @@
 
         self.lockDOM('badge-check-list-update', false);
 
-        self.api.checklist.getByCardId(card.id, function (data) {
-          card.data.checklists = data;
-
-          self.lockDOM('badge-check-list-get-card', true);
-
-          for (var pluginName in self.callbacks.badgeChecklistUpdated) {
-            if (typeof self.callbacks.badgeChecklistUpdated[pluginName] === 'function') {
-              self.callbacks.badgeChecklistUpdated[pluginName](card);
-            }
-          }
-
-          self.lockDOM('badge-check-list-get-card', false);
-        });
+        self.reloadData();
       }, self.settings.updateBadgeChecklistTimeout);
     },
 
