@@ -817,6 +817,7 @@
       timeout = typeof timeout === 'number' ? timeout : typeof timeout === 'boolean' ? self.settings.reloadTimeout : 0;
 
       clearTimeout(self.data.reloadTimeout);
+      clearInterval(self.data.reloadInterval);
 
       self.data.reloadTimeout = setTimeout(function () {
         self.data.reloadInterval = setInterval(function () {
