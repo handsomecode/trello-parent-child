@@ -831,7 +831,9 @@
           if (currentCard) {
             currentCard.realTitle = _cardLink.innerHTML.replace(/<span(.*)<\/span>/, '').trim();
             currentCard.title = currentCard.realTitle;
+            currentCard.status = 'opened';
             currentCard.data.name = currentCard.realTitle;
+            currentCard.data.closed = false;
 
             self.cardsUpdatedCallback();
           } else {
@@ -954,7 +956,6 @@
               }
             }
           }
-
         }
       });
 
