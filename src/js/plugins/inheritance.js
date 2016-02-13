@@ -969,7 +969,7 @@
                   card.children.push(childCard);
                   childCard.parent = card;
                 }
-              } else {
+              } else if (!self.base.data.init) {
                 self.base.api.checklist.deleteItem(checklist.id, checkItem.id);
                 checklist.checkItems.splice(y, 1);
               }
