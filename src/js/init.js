@@ -990,7 +990,7 @@
 
       document.body.addEventListener('DOMSubtreeModified', function (e) {
         if (self.data.boardId && self.data.loaded && !self.checkLockedDOM()) {
-          if (e.target.classList && e.target.classList.contains('js-list')) {
+          if (e.target.classList && (e.target.classList.contains('js-list') || e.target.classList.contains('js-list-name'))) {
             self.reloadData(true);
           }
 
