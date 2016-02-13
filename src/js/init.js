@@ -617,12 +617,13 @@
       }
 
       var cardLink = _cardLink.href,
+          cardRealId = self.getCardShortLinkFromUrl(cardLink),
           cardId = self.getCardIdFromLink(cardLink),
           cardData = self.getElementByProperty(self.data.boardData.cards, 'idShort', cardId);
 
-      if (!cardData) {
+      if (!cardData && cardRealId) {
         cardData = {
-          id: self.getCardShortLinkFromUrl(cardLink),
+          id: cardRealId,
           idShort: cardId,
           name: _cardLink.innerHTML.replace(/<span(.*)<\/span>/, '').trim(),
           url: cardLink,
