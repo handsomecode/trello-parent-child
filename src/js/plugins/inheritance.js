@@ -1055,6 +1055,8 @@
 
       self.base.callbacks.badgeChecklistUpdated['inheritance'] = function (card) {
         self.parseCard(card);
+
+        self.updateCardView();
       };
     }
   };
