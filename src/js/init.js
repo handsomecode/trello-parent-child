@@ -613,7 +613,6 @@
         id: cardData.id,
         idShort: cardData.idShort,
         title: cardData.name,
-        realTitle: cardData.name,
         pos: cardData.pos,
         status: cardData.closed ? 'closed' : 'opened',
         shortLink: cardData.shortLink,
@@ -829,10 +828,9 @@
           var currentCard = self.getCardByLink(_cardLink.href);
 
           if (currentCard) {
-            currentCard.realTitle = _cardLink.innerHTML.replace(/<span(.*)<\/span>/, '').trim();
-            currentCard.title = currentCard.realTitle;
+            currentCard.title = _cardLink.innerHTML.replace(/<span(.*)<\/span>/, '').trim();
             currentCard.status = 'opened';
-            currentCard.data.name = currentCard.realTitle;
+            currentCard.data.name = currentCard.title;
             currentCard.data.closed = false;
 
             self.cardsUpdatedCallback();
