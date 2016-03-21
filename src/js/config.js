@@ -22,8 +22,38 @@ var HandsomeTrello = {
     notification: {
       defaultTimeout: 10000,
       messages: {
-        recursionOnBoard: '<a href="%recursionCardLink%">%recursionCardTitle%</a> is not a child for <a href="%currentCardLink%">%currentCardTitle%</a> anymore, due to fix for cycle Parent/Child dependency',
-        severalParentsOnCard: '<a href="%recursionCardLink%">%recursionCardTitle%</a> is not a child for <a href="%currentCardLink%">%currentCardTitle%</a> anymore, due to fix for multiple Parents dependency'
+        recursionOnBoard: function (recursionCardTitle, recursionCardLink, currentCardTitle, currentCardLink) {
+          return HandsomeTrello.jsonToDOM(['span', {},
+              ['a', {
+                'href': recursionCardLink
+              },
+                recursionCardTitle
+              ],
+              ' is not a child for ',
+              ['a', {
+                'href': currentCardLink
+              },
+                currentCardTitle
+              ],
+              ' anymore, due to fix for cycle Parent/Child dependency'
+          ]);
+        },
+        severalParentsOnCard: function (recursionCardTitle, recursionCardLink, currentCardTitle, currentCardLink) {
+          return HandsomeTrello.jsonToDOM(['span', {},
+              ['a', {
+                'href': recursionCardLink
+              },
+                recursionCardTitle
+              ],
+              ' is not a child for ',
+              ['a', {
+                'href': currentCardLink
+              },
+                currentCardTitle
+              ],
+              ' anymore, due to fix for multiple Parents dependency'
+          ]);
+        }
       }
     },
 

@@ -169,19 +169,81 @@
       }
     },
 
-    generateElementFromHtml: function (html) {
-      var _div = document.createElement('div');
-      _div.innerHTML = html;
+    jsonToDOM: function (json, doc, nodes) {
+      if (typeof doc === 'undefined') {
+        doc = document;
+      }
 
-      return _div.children.length > 1 ? _div : _div.children[0];
+      if (typeof nodes === 'undefined') {
+        nodes = {};
+      }
+
+      var namespaces = {
+        html: 'http://www.w3.org/1999/xhtml',
+        xul: 'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul'
+      };
+      var defaultNamespace = namespaces.html;
+
+      function namespace(name) {
+        var m = /^(?:(.*):)?(.*)$/.exec(name);
+        return [namespaces[m[1]], m[2]];
+      }
+
+      function tag(name, attr) {
+        if (Array.isArray(name)) {
+          var frag = doc.createDocumentFragment();
+          Array.prototype.forEach.call(arguments, function (arg) {
+            if (!Array.isArray(arg[0]))
+              frag.appendChild(tag.apply(null, arg));
+            else
+              arg.forEach(function (arg) {
+                frag.appendChild(tag.apply(null, arg));
+              });
+          });
+          return frag;
+        }
+
+        var args = Array.prototype.slice.call(arguments, 2);
+        var vals = namespace(name);
+        var elem = doc.createElementNS(vals[0] || defaultNamespace, vals[1]);
+
+        for (var key in attr) {
+          var val = attr[key];
+          if (nodes && key == 'key')
+            nodes[val] = elem;
+
+          vals = namespace(key);
+          if (typeof val == 'function')
+            elem.addEventListener(key.replace(/^on/, ''), val, false);
+          else
+            elem.setAttributeNS(vals[0] || '', vals[1], val);
+        }
+        args.forEach(function (e) {
+          try {
+            elem.appendChild(
+                Object.prototype.toString.call(e) == '[object Array]'
+                    ?
+                    tag.apply(null, e)
+                    :
+                    e instanceof doc.defaultView.Node
+                        ?
+                        e
+                        :
+                        doc.createTextNode(e)
+            );
+          } catch (ex) {
+            elem.appendChild(doc.createTextNode(ex));
+          }
+        });
+
+        return elem;
+      }
+
+      return tag.apply(null, json);
     },
 
     appendElementAfterAnother: function (_element, _beforeElement) {
       var self = this;
-
-      if (typeof _element === 'string') {
-        _element = self.generateElementFromHtml(_element);
-      }
 
       if (_beforeElement.nextSibling) {
         _beforeElement.parentNode.insertBefore(_element, _beforeElement.nextSibling);
@@ -197,14 +259,6 @@
         return false;
       }
 
-      if (typeof _element === 'string') {
-        if (!_element.trim().length) {
-          return false;
-        }
-
-        _element = self.generateElementFromHtml(_element);
-      }
-
       if (_parentElement.firstChild) {
         _parentElement.insertBefore(_element, _parentElement.firstChild);
       } else {
@@ -215,7 +269,11 @@
     removeElement: function (_element) {
       var self = this;
 
-      if (typeof _element !== 'undefined' && typeof _element.parentElement !== 'undefined' && typeof _element.parentElement.removeChild !== 'undefined') {
+      if (
+          typeof _element !== 'undefined' &&
+          typeof _element.parentElement !== 'undefined' &&
+          typeof _element.parentElement.removeChild !== 'undefined'
+      ) {
         self.lockDOM('removeElement', true);
 
         _element.parentElement.removeChild(_element);
@@ -379,9 +437,7 @@
       }
     },
 
-    generatePopOver: function (_popOver, title, content) {
-      var self = this;
-
+    generatePopOver: function (_popOver, title, _content) {
       var _popOverHeader = document.createElement('div');
       _popOverHeader.classList.add('pop-over-header');
       _popOverHeader.classList.add('js-pop-over-header');
@@ -401,7 +457,7 @@
       _popOverContent.classList.add('js-pop-over-content');
       _popOverContent.classList.add('u-fancy-scrollbar');
       _popOverContent.classList.add('js-tab-parent');
-      _popOverContent.appendChild(self.generateElementFromHtml(content));
+      _popOverContent.appendChild(_content);
 
       _popOverHeader.appendChild(_popOverTitle);
       _popOverHeader.appendChild(_popOverCloseBtn);
@@ -418,55 +474,57 @@
       };
     },
 
+    changePopOverPosition: function (_popOver, _target) {
+      var self = this;
+
+      var targetOffset = self.getOffset(_target),
+          popOverWidth = _popOver.offsetWidth,
+          popOverHeight = _popOver.offsetHeight,
+          targetHeight = _target.offsetHeight,
+          popOverTop =
+              targetOffset.top +
+              targetHeight +
+              popOverHeight > window.innerHeight ?
+              window.innerHeight - popOverHeight :
+              targetOffset.top + targetHeight + self.settings.popOver.offset,
+          popOverLeft =
+              targetOffset.left +
+              popOverWidth +
+              self.settings.popOver.offset > window.innerWidth ?
+              window.innerWidth - popOverWidth - self.settings.popOver.offset :
+                  targetOffset.left;
+
+      _popOver.style.top = popOverTop + 'px';
+      _popOver.style.left = popOverLeft + 'px';
+    },
+
     updatePopOver: function () {
       var self = this;
 
       var _popOver = document.querySelector('.pop-over');
 
-      function changePopOverPosition(_target) {
-        var targetOffset = self.getOffset(_target),
-            popOverWidth = _popOver.offsetWidth,
-            popOverHeight = _popOver.offsetHeight,
-            targetHeight = _target.offsetHeight,
-            popOverTop = targetOffset.top + targetHeight + popOverHeight > window.innerHeight ? window.innerHeight - popOverHeight : targetOffset.top + targetHeight + self.settings.popOver.offset,
-            popOverLeft = targetOffset.left + popOverWidth + self.settings.popOver.offset > window.innerWidth ? window.innerWidth - popOverWidth - self.settings.popOver.offset : targetOffset.left;
-
-        _popOver.style.top = popOverTop + 'px';
-        _popOver.style.left = popOverLeft + 'px';
-      }
-
       if (_popOver && typeof _popOver._buttonTarget !== 'undefined') {
-        changePopOverPosition(_popOver._buttonTarget);
+        self.changePopOverPosition(_popOver, _popOver._buttonTarget);
       }
     },
 
-    popOver: function (open, title, content, _target) {
+    popOver: function (open, title, _content, _target) {
       var self = this;
 
       title = open ? title : '';
-      content = open ? content : '';
+      _content = open ? _content : false;
 
       var _popOver = document.querySelector('.pop-over'),
           _windowOverlay = document.querySelector('.window-overlay'),
           _window = _windowOverlay.querySelector('.window'),
           _sidebarButtons = _window.querySelectorAll('.button-link');
 
-      function changePopOverPosition() {
-        var targetOffset = self.getOffset(_target),
-            popOverWidth = _popOver.offsetWidth,
-            popOverHeight = _popOver.offsetHeight,
-            targetHeight = _target.offsetHeight,
-            popOverTop = targetOffset.top + targetHeight + popOverHeight > window.innerHeight ? window.innerHeight - popOverHeight : targetOffset.top + targetHeight + self.settings.popOver.offset,
-            popOverLeft = targetOffset.left + popOverWidth + self.settings.popOver.offset > window.innerWidth ? window.innerWidth - popOverWidth - self.settings.popOver.offset : targetOffset.left;
-
-        _popOver.style.top = popOverTop + 'px';
-        _popOver.style.left = popOverLeft + 'px';
-      }
-
       function resizePopOver() {
         clearTimeout(self.data.popOverResizeTimeout);
 
-        self.data.popOverResizeTimeout = setTimeout(changePopOverPosition, self.settings.popOver.resizeTimeout);
+        self.data.popOverResizeTimeout = setTimeout(function () {
+          self.changePopOverPosition(_popOver, _target);
+        }, self.settings.popOver.resizeTimeout);
       }
 
       function openPopOver() {
@@ -475,7 +533,7 @@
 
           _popOver._buttonTarget = _target;
 
-          var popOverElements = self.generatePopOver(_popOver, title, content);
+          var popOverElements = self.generatePopOver(_popOver, title, _content);
 
           _popOver.classList.add('is-shown');
 
@@ -537,7 +595,17 @@
       }
 
       function clickPopOver(e) {
-        if (self.data.popOverTitle && e.currentTarget.classList && (!e.currentTarget.classList.contains('pop-over') && !self.findParentByClass(e.currentTarget, 'pop-over')) || e.currentTarget.classList.contains('pop-over-header-close-btn') || e.currentTarget.classList.contains('js-close-window')) {
+        if (
+            self.data.popOverTitle &&
+            e.currentTarget.classList &&
+            (
+                (
+                    !e.currentTarget.classList.contains('pop-over') && !self.findParentByClass(e.currentTarget, 'pop-over')
+                ) ||
+                e.currentTarget.classList.contains('pop-over-header-close-btn') ||
+                e.currentTarget.classList.contains('js-close-window')
+            )
+        ) {
           closePopOver();
         }
       }
@@ -549,7 +617,7 @@
       }
     },
 
-    openNotification: function (html, type, timeout) {
+    openNotification: function (_message, type, timeout) {
       var self = this;
 
       if (typeof type === 'undefined') {
@@ -561,7 +629,13 @@
       }
 
       var _notification = document.getElementById('notification'),
-          _notificationContent = self.generateElementFromHtml('<div class="handsome-trello__inheritance-notification js-inheritance-notification app-alert-item mod-' + type + '">' + html + '</div>');
+          _notificationContent = document.createElement('div');
+
+      _notificationContent.setAttribute(
+          'class',
+          'handsome-trello__inheritance-notification js-inheritance-notification app-alert-item mod-' + type
+      );
+      _notificationContent.appendChild(_message);
 
       _notification.appendChild(_notificationContent);
 
@@ -743,7 +817,12 @@
       clearInterval(self.data.updateTaskDescInterval);
 
       self.data.updateTaskDescInterval = setInterval(function () {
-        if (self.data.boardId && self.getCardShortLinkFromUrl() && document.querySelector('.js-card-desc') && document.querySelector('.card-detail-item-block')) {
+        if (
+            self.data.boardId &&
+            self.getCardShortLinkFromUrl() &&
+            document.querySelector('.js-card-desc') &&
+            document.querySelector('.card-detail-item-block')
+        ) {
           var currentCard = self.getCurrentOpenedCard();
 
           if (currentCard) {
@@ -845,14 +924,24 @@
       self.loadSettings();
 
       for (var pluginName in self.plugins) {
-        if (typeof self.settings.plugins[pluginName] !== 'undefined' && self.settings.plugins[pluginName] && typeof self.plugins[pluginName].init === 'function') {
+        if (
+            typeof self.settings.plugins[pluginName] !== 'undefined' &&
+            self.settings.plugins[pluginName] &&
+            typeof self.plugins[pluginName].init === 'function'
+        ) {
           self.plugins[pluginName].base = self;
           self.plugins[pluginName].init();
         }
       }
 
       document.body.addEventListener('DOMNodeInserted', function (e) {
-        if (e.target.classList && (e.target.classList.contains('board-wrapper') || (!self.data.boardId && document.querySelector('.list-card')))) {
+        if (
+            e.target.classList &&
+            (
+                e.target.classList.contains('board-wrapper') ||
+                (!self.data.boardId && document.querySelector('.list-card'))
+            )
+        ) {
           if (self.data.loaded && e.target.classList.contains('board-wrapper')) {
             self.data.boardId = undefined;
             self.data.loaded = false;
@@ -880,7 +969,10 @@
             self.reloadData(true);
           }
 
-          if ((e.target.nodeName === '#text' && e.target.parentNode.classList.contains('js-card-desc')) || (e.target.classList && e.target.classList.contains('card-detail-window'))) {
+          if (
+              (e.target.nodeName === '#text' && e.target.parentNode.classList.contains('js-card-desc')) ||
+              (e.target.classList && e.target.classList.contains('card-detail-window'))
+          ) {
             self.openCardViewed();
           }
 
@@ -934,8 +1026,7 @@
 
       document.body.addEventListener('DOMNodeRemoved', function (e) {
         if (self.data.boardId && self.data.loaded && !self.checkLockedDOM()) {
-          if (e.target.classList &&
-              !e.target.classList.contains('ui-droppable') &&
+          if (e.target.classList && !e.target.classList.contains('ui-droppable') &&
               (
                   (e.target.classList.contains('js-list')) ||
                   (e.target.classList.contains('list-card') && e.target.classList.contains('js-member-droppable'))
@@ -964,7 +1055,11 @@
             self.reloadData(true);
           }
 
-          if (e.target.nodeName === '#text' && e.target.textContent.match(/[0-9]+\/[0-9]+/) && e.target.textContent.match(/[0-9]+\/[0-9]+/)[0] === e.target.textContent) {
+          if (
+              e.target.nodeName === '#text' &&
+              e.target.textContent.match(/[0-9]+\/[0-9]+/) &&
+              e.target.textContent.match(/[0-9]+\/[0-9]+/)[0] === e.target.textContent
+          ) {
             var _parentTarget = self.findParentByClass(e.target, 'list-card');
 
             if (_parentTarget && _parentTarget.querySelector('.icon-checklist')) {

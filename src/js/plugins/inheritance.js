@@ -39,43 +39,74 @@
       }
 
       if (typeof parentCard === 'undefined') {
-        return '';
+        return;
       }
 
-      return '' +
-          '<div class="js-card-parent">' +
-          ' <h3 class="card-detail-item-header">Parent:</h3>' +
-          ' <p class="handsome-trello__inheritance-parent handsome-trello__inheritance-parent--' + parentCard.status + '"><a href="' + parentCard.url + '" class="handsome-trello__inheritance-link">' + parentCard.title + '</a> (' + (parentCard.status === 'closed' ? 'Archived' : parentCard.column.name) + ')</p>' +
-          '</div>';
+      return self.base.jsonToDOM(
+          ['div', {
+            'class': 'js-card-parent'
+          },
+            ['h3', {
+              'class': 'card-detail-item-header'
+            },
+              'Parent:'
+            ],
+            ['p', {
+              'class': 'handsome-trello__inheritance-parent handsome-trello__inheritance-parent--' + parentCard.status
+            },
+              ['a', {
+                'href': parentCard.url,
+                'class': 'handsome-trello__inheritance-link'
+              },
+                parentCard.title
+              ],
+              ' (' + (parentCard.status === 'closed' ? 'Archived' : parentCard.column.name) + ')'
+            ]
+          ]
+      );
     },
 
     generateHtmlForOneChildren: function (children, level) {
       var self = this;
 
-      var html = '<ul class="handsome-trello__inheritance-children-list' + (level === 0 ? ' js-children-list' : '') + '">';
+      var _ul = document.createElement('ul');
+      _ul.setAttribute('class', 'handsome-trello__inheritance-children-list' + (level === 0 ? ' js-children-list' : ''));
 
       for (var i = 0; i < children.length; i++) {
         var childCard = children[i];
 
         if (typeof childCard !== 'undefined') {
-          html += '' +
-              '<li class="handsome-trello__inheritance-children-item handsome-trello__inheritance-children-item--' + childCard.status + '"' + (level === 0 ? ' data-children-id="' + childCard.checkItem.id + '" data-children-pos="' + childCard.checkItem.pos : '') + '">' +
-              ' <p class="handsome-trello__inheritance-children-name">' +
-              '  <a href="' + childCard.url + '" class="handsome-trello__inheritance-link">' + childCard.title + '</a>' +
-              '  (' + (childCard.status === 'closed' ? 'Archived' : childCard.column.name) + ')' +
-              ' </p>';
+          var liAttributes = {
+            'class': 'handsome-trello__inheritance-children-item handsome-trello__inheritance-children-item--' + childCard.status
+          };
 
-          if (typeof childCard.children !== 'undefined' && childCard.children.length) {
-            html += self.generateHtmlForOneChildren(childCard.children, level + 1);
+          if (level === 0) {
+            liAttributes['data-children-id'] = childCard.checkItem.id;
+            liAttributes['data-children-pos'] = childCard.checkItem.pos;
           }
 
-          html += '</li>';
+          _ul.appendChild(self.base.jsonToDOM(
+              ['li', liAttributes,
+                ['p', {
+                  'class': 'handsome-trello__inheritance-children-name'
+                },
+                  ['a', {
+                    'href': childCard.url,
+                    'class': 'handsome-trello__inheritance-link'
+                  },
+                    childCard.title
+                  ],
+                  ' (' + (childCard.status === 'closed' ? 'Archived' : childCard.column.name) + ')'
+                ],
+                typeof childCard.children !== 'undefined' && childCard.children.length ?
+                    self.generateHtmlForOneChildren(childCard.children, level + 1) :
+                    ''
+              ]
+          ));
         }
       }
 
-      html += '</ul>';
-
-      return html;
+      return _ul;
     },
 
     generateHtmlForChildren: function (children) {
@@ -88,17 +119,20 @@
       }
 
       if (typeof children === 'undefined' || !children.length) {
-        return '';
+        return;
       }
 
-      var html = '<div class="handsome-trello__inheritance-children js-card-children">';
-      html += '<h3 class="handsome-trello__inheritance-children-title card-detail-item-header">Children:</h3>';
+      var _div = document.createElement('div'),
+          _h3 = document.createElement('h3');
 
-      html += self.generateHtmlForOneChildren(children, 0);
+      _div.setAttribute('class', 'handsome-trello__inheritance-children js-card-children');
+      _h3.setAttribute('class', 'handsome-trello__inheritance-children-title card-detail-item-header');
+      _h3.textContent = 'Children:';
 
-      html += '</div>';
+      _div.appendChild(_h3);
+      _div.appendChild(self.generateHtmlForOneChildren(children, 0));
 
-      return html;
+      return _div;
     },
 
     generateHtmlForRelatedTasks: function (card, parent) {
@@ -110,24 +144,50 @@
         self.base.removeElement(_cardRelated);
       }
 
-      if (typeof parent === 'undefined' || typeof parent.children === 'undefined' || !parent.children.length || (parent.children.length === 1 && parent.children[0] === card)) {
-        return '';
+      if (
+          typeof parent === 'undefined' ||
+          typeof parent.children === 'undefined' || !parent.children.length ||
+          (
+              parent.children.length === 1 &&
+              parent.children[0] === card
+          )
+      ) {
+        return;
       }
 
-      var html = '<div class="js-card-related">';
-      html += '<h3 class="card-detail-item-header">Related:</h3><ul class="handsome-trello__inheritance-related-list">';
+      var _div = document.createElement('div'),
+          _h3 = document.createElement('h3'),
+          _ul = document.createElement('ul');
+
+      _div.setAttribute('class', 'js-card-related');
+      _h3.setAttribute('class', 'card-detail-item-header');
+      _h3.textContent = 'Related:';
+      _ul.setAttribute('class', 'handsome-trello__inheritance-related-list');
 
       for (var i = 0; i < parent.children.length; i++) {
         var relatedCard = parent.children[i];
 
         if (card !== relatedCard) {
-          html += '<li class="handsome-trello__inheritance-related-item handsome-trello__inheritance-related-item--' + relatedCard.status + '"><a href="' + relatedCard.url + '" class="handsome-trello__inheritance-link">' + relatedCard.title + '</a> (' + (relatedCard.status === 'closed' ? 'Archived' : relatedCard.column.name) + ')</li>';
+          _ul.appendChild(self.base.jsonToDOM(
+              ['li', {
+                'class': 'handsome-trello__inheritance-related-item handsome-trello__inheritance-related-item--' + relatedCard.status
+              },
+                ['a', {
+                  'href': relatedCard.url,
+                  'class': 'handsome-trello__inheritance-link'
+                },
+                  relatedCard.title
+                ],
+                ' (' + (relatedCard.status === 'closed' ? 'Archived' : relatedCard.column.name) + ')'
+              ]
+          ));
         }
       }
 
-      html += '</ul></div>';
+      _div.appendChild(_h3);
+      _div.appendChild(_ul);
 
-      return html;
+      return _div;
     },
 
     searchInString: function (stringLine, searchLine) {
@@ -137,7 +197,13 @@
 
       for (var y = 0; y < searchArray.length; y++) {
         for (var i = 0; i < stringArray.length; i++) {
-          if ((y === searchArray.length - 1 && stringArray[i].indexOf(searchArray[y]) === 0) || stringArray[i].toLowerCase() == searchArray[y].toLowerCase()) {
+          if (
+              (
+                  y === searchArray.length - 1 &&
+                  stringArray[i].indexOf(searchArray[y]) === 0
+              ) ||
+              stringArray[i].toLowerCase() == searchArray[y].toLowerCase()
+          ) {
             matchesCount++;
 
             break;
@@ -168,11 +234,16 @@
         };
       }
 
-      var html = '' +
-          '<input class="js-parent-change-search-field js-autofocus" type="text" placeholder="Search parent">' +
-          '<ul class="pop-over-card-list handsome-trello__inheritance-pop-over-parent-list checkable js-parent-change-list"></ul>';
-
-      var popOverElements = self.base.popOver(true, 'Set Parent', html, target),
+      var popOverElements = self.base.popOver(true, 'Set Parent', self.base.jsonToDOM(['div', {},
+            ['input', {
+              'type': 'text',
+              'placeholder': 'Search parent',
+              'class': 'js-parent-change-search-field js-autofocus'
+            }],
+            ['ul', {
+              'class': 'pop-over-card-list handsome-trello__inheritance-pop-over-parent-list checkable js-parent-change-list'
+            }]
+          ]), target),
           _popOverContent = popOverElements._popOverContent,
           _parentChangeSearchField = _popOverContent.querySelector('.js-parent-change-search-field'),
           _parentChangeList = _popOverContent.querySelector('.js-parent-change-list');
@@ -182,13 +253,31 @@
       _parentChangeSearchField.focus();
 
       function generateCardsItem(card, parentIndex, active, selected) {
-        return self.base.generateElementFromHtml(
-            '   <li class="item js-parent-change-item' + (active ? ' active' : '') + (selected ? ' selected' : '') + '">' +
-            '     <a href="#" title="' + card.title + ' (' + card.column.name + ')" class="name js-parent-change-link" data-parent-index="' + parentIndex + '">' +
-            '       <span class="full-name">' + card.title + ' <span class="handsome-trello__inheritance-pop-over-parent-column-name">(' + card.column.name + ')</span></span>' +
-            '       <span class="icon-sm icon-check checked-icon"></span>' +
-            '     </a>' +
-            '   </li>'
+        return self.base.jsonToDOM(
+            ['li', {
+              'class': 'item js-parent-change-item' + (active ? ' active' : '') + (selected ? ' selected' : '')
+            },
+              ['a', {
+                'href': '#',
+                'title': card.title + ' (' + card.column.name + ')',
+                'class': 'name js-parent-change-link',
+                'data-parent-index': parentIndex
+              },
+                ['span', {
+                  'class': 'full-name'
+                },
+                  card.title + ' ',
+                  ['span', {
+                    'class': 'handsome-trello__inheritance-pop-over-parent-column-name'
+                  },
+                    '(' + card.column.name + ')'
+                  ]
+                ],
+                ['span', {
+                  'class': 'icon-sm icon-check checked-icon'
+                }]
+              ]
+            ]
         );
       }
 
@@ -207,8 +296,19 @@
           for (var cardId in self.base.data.cards) {
             var card = self.base.data.cards[cardId];
 
-            if (card !== currentOpenedCard && card.status !== 'closed' && self.searchInString(card.title.toLowerCase(), _parentChangeSearchField.value.trim().toLowerCase())) {
-              _parentChangeList.appendChild(generateCardsItem(card, currentItems.length, (currentOpenedCard.parent && card.id === currentOpenedCard.parent.id), !currentItems.length));
+            if (
+                card !== currentOpenedCard &&
+                card.status !== 'closed' &&
+                self.searchInString(card.title.toLowerCase(), _parentChangeSearchField.value.trim().toLowerCase())
+            ) {
+              _parentChangeList.appendChild(
+                  generateCardsItem(
+                      card,
+                      currentItems.length,
+                      (currentOpenedCard.parent && card.id === currentOpenedCard.parent.id),
+                      !currentItems.length
+                  )
+              );
 
               currentItems.push(card);
             }
@@ -218,7 +318,14 @@
         } else if (currentOpenedCard.parent) {
           currentItems = [currentOpenedCard.parent];
 
-          _parentChangeList.appendChild(generateCardsItem(currentOpenedCard.parent, 0, currentParent && currentParent.id === currentOpenedCard.parent.id, false));
+          _parentChangeList.appendChild(
+              generateCardsItem(
+                  currentOpenedCard.parent,
+                  0,
+                  currentParent && currentParent.id === currentOpenedCard.parent.id,
+                  false
+              )
+          );
 
           selectParentChangeItem(undefined, true);
         }
@@ -265,11 +372,19 @@
         var _parentChangeItems = _popOverContent.querySelectorAll('.js-parent-change-item');
 
         if (_parentChangeItems.length) {
-          if (typeof selectedItemIndex !== 'undefined' && typeof _parentChangeItems[selectedItemIndex] !== 'undefined' && (!notUndefined || selectedItemIndex !== index)) {
+          if (
+              typeof selectedItemIndex !== 'undefined' &&
+              typeof _parentChangeItems[selectedItemIndex] !== 'undefined' &&
+              (!notUndefined || selectedItemIndex !== index)
+          ) {
             _parentChangeItems[selectedItemIndex].classList.remove('selected');
           }
 
-          if (typeof index !== 'undefined' && typeof _parentChangeItems[index] !== 'undefined' && selectedItemIndex !== index) {
+          if (
+              typeof index !== 'undefined' &&
+              typeof _parentChangeItems[index] !== 'undefined' &&
+              selectedItemIndex !== index
+          ) {
             _parentChangeItems[index].classList.add('selected');
 
             if (checkMissingScroll) {
@@ -288,12 +403,24 @@
       });
 
       _parentChangeSearchField.addEventListener('keydown', function (e) {
-        if (e.keyCode === 13 && typeof selectedItemIndex !== 'undefined' && typeof currentItems[selectedItemIndex] !== 'undefined') { // Enter
+        if (
+            e.keyCode === 13 && // Enter
+            typeof selectedItemIndex !== 'undefined' &&
+            typeof currentItems[selectedItemIndex] !== 'undefined'
+        ) {
           self.changeParent(currentOpenedCard, currentItems[selectedItemIndex]);
         } else if (e.keyCode === 38) { // Arrow Up
-          selectParentChangeItem(typeof selectedItemIndex !== 'undefined' && selectedItemIndex - 1 >= 0 ? selectedItemIndex - 1 : currentItems.length - 1, false, true);
+          selectParentChangeItem(
+              typeof selectedItemIndex !== 'undefined' && selectedItemIndex - 1 >= 0 ? selectedItemIndex - 1 : currentItems.length - 1,
+              false,
+              true
+          );
         } else if (e.keyCode === 40) { // Arrow Down
-          selectParentChangeItem(typeof selectedItemIndex !== 'undefined' && selectedItemIndex + 1 < currentItems.length ? selectedItemIndex + 1 : 0, false, true);
+          selectParentChangeItem(
+              typeof selectedItemIndex !== 'undefined' && selectedItemIndex + 1 < currentItems.length ? selectedItemIndex + 1 : 0,
+              false,
+              true
+          );
         }
       });
     },
@@ -309,50 +436,104 @@
           currentColumn = undefined,
           currentPosition = 'bottom',
           positionsList = [],
-          columnsHtml = '';
+          columnsList = [];
 
-      for (var i = 0; i < self.base.data.boardData.lists.length; i++) {
-        var column = self.base.data.boardData.lists[i],
+      for (var k = 0; k < self.base.data.boardData.lists.length; k++) {
+        var column = self.base.data.boardData.lists[k],
             isCurrentColumn = currentOpenedCard && column.name === currentOpenedCard.column.name;
 
         if (!currentColumn || isCurrentColumn) {
           currentColumn = column;
         }
 
-        columnsHtml += '' +
-            '<option value="' + column.id + '"' + (isCurrentColumn ? ' selected="selected"' : '') + '>' + column.name + (isCurrentColumn ? ' (current)' : '') + '</option>';
+        columnsList.push(self.base.jsonToDOM(
+            ['option', {
+              'value': column.id,
+              'selected': (isCurrentColumn ? 'selected' : false)
+            },
+              column.name + (isCurrentColumn ? ' (current)' : '')
+            ]
+        ));
       }
 
-      var html = '' +
-          '<div class="form-grid">' +
-          '  <input type="text" placeholder="Title" class="js-children-create-title-field" />' +
-          '</div>' +
-          '<div class="form-grid">' +
-          '  <div class="button-link setting form-grid-child form-grid-child-threequarters">' +
-          '    <span class="label">List</span>' +
-          '    <span class="value js-children-create-current-column-value">' + currentColumn.name + '</span>' +
-          '    <label>List</label>' +
-          '    <select class="js-children-create-columns-select">' +
-
-          columnsHtml +
-
-          '    </select>' +
-          '  </div>' +
-          '  <div class="button-link setting form-grid-child form-grid-child-quarter">' +
-          '    <span class="label">Position</span>' +
-          '    <span class="value js-children-create-current-position-value">' + currentPosition + '</span>' +
-          '    <label>Position</label>' +
-          '    <select class="js-children-create-positions-select"></select>' +
-          '  </div>' +
-          '</div>' +
-          '<div class="form-grid">' +
-          '  <input class="primary wide js-children-create-submit-btn" type="submit" value="Create">' +
-          '  <div class="check-div handsome-trello__inheritance-pop-over-children-checkbox">' +
-          '    <input type="checkbox" id="pop-over-children-checkbox"' + (self.base.options.openChildCard ? ' checked="checked"' : '') + ' />' +
-          '    <label for="pop-over-children-checkbox">Open Child Card</label>' +
-          '  </div>';
-
-      var popOverElements = self.base.popOver(true, 'Add Child', html, target),
+      var popOverElements = self.base.popOver(true, 'Add Child', self.base.jsonToDOM(['div', {},
+            ['div', {
+              'class': 'form-grid'
+            },
+              ['input', {
+                'type': 'text',
+                'placeholder': 'Title',
+                'class': 'js-children-create-title-field'
+              }]
+            ],
+            ['div', {
+              'class': 'form-grid'
+            },
+              ['div', {
+                'class': 'button-link setting form-grid-child form-grid-child-threequarters'
+              },
+                ['span', {
+                  'class': 'label'
+                },
+                  'List'
+                ],
+                ['span', {
+                  'class': 'value js-children-create-current-column-value'
+                },
+                  currentColumn.name
+                ],
+                ['label', {},
+                  'List'
+                ],
+                ['select', {
+                  'class': 'js-children-create-columns-select'
+                }]
+              ],
+              ['div', {
+                'class': 'button-link setting form-grid-child form-grid-child-quarter'
+              },
+                ['span', {
+                  'class': 'label'
+                },
+                  'Position'
+                ],
+                ['span', {
+                  'class': 'value js-children-create-current-position-value'
+                },
+                  currentPosition
+                ],
+                ['label', {},
+                  'Position'
+                ],
+                ['select', {
+                  'class': 'js-children-create-positions-select'
+                }]
+              ]
+            ],
+            ['div', {
+              'class': 'form-grid'
+            },
+              ['input', {
+                'type': 'submit',
+                'value': 'Create',
+                'class': 'primary wide js-children-create-submit-btn'
+              }],
+              ['div', {
+                'class': 'check-div handsome-trello__inheritance-pop-over-children-checkbox'
+              },
+                ['input', {
+                  'type': 'checkbox',
+                  'id': 'pop-over-children-checkbox',
+                  'checked': (self.base.options.openChildCard ? 'checked' : false)
+                }],
+                ['label', {
+                  'for': 'pop-over-children-checkbox'
+                },
+                  'Open Child Card'
+                ]
+              ]
+            ]
+          ]), target),
           _popOverContent = popOverElements._popOverContent,
           _childrenCreateTitleField = _popOverContent.querySelector('.js-children-create-title-field'),
           _childrenCreateCurrentColumnValue = _popOverContent.querySelector('.js-children-create-current-column-value'),
@@ -360,6 +541,10 @@
           _childrenCreateCurrentPositionValue = _popOverContent.querySelector('.js-children-create-current-position-value'),
           _childrenCreatePositionsSelect = _popOverContent.querySelector('.js-children-create-positions-select'),
           _childrenCreateSubmitBtn = _popOverContent.querySelector('.js-children-create-submit-btn');
+
+      for (var l = 0; l < columnsList.length; l++) {
+        _childrenCreateColumnsSelect.appendChild(columnsList[l]);
+      }
 
       generatePositionsList();
 
@@ -394,54 +579,74 @@
 
         positionsList['bottom'] = Object.keys(positionsList).length + 1;
 
-        _childrenCreatePositionsSelect.appendChild(self.base.generateElementFromHtml('<option value="bottom" selected="selected">' + positionsList['bottom'] + '</option>'));
+        _childrenCreatePositionsSelect.appendChild(
+            self.base.jsonToDOM(
+                ['option', {
+                  'value': 'bottom',
+                  'selected': 'selected'
+                },
+                  positionsList['bottom']
+                ]
+            )
+        );
 
         _childrenCreateCurrentPositionValue.textContent = Object.keys(positionsList).length;
       }
 
       function createNewCard() {
         if (_childrenCreateTitleField.value.trim().length) {
-          self.base.api.card.create(_childrenCreateTitleField.value.trim(), _childrenCreateColumnsSelect.value, _childrenCreatePositionsSelect.value, function (cardData) {
-            cardData.checklists = [];
+          self.base.api.card.create(
+              _childrenCreateTitleField.value.trim(),
+              _childrenCreateColumnsSelect.value,
+              _childrenCreatePositionsSelect.value,
+              function (cardData) {
+                cardData.checklists = [];
 
-            self.base.data.boardData.cards.push(cardData);
+                self.base.data.boardData.cards.push(cardData);
 
-            self.base.waitCreatingCard(cardData.shortUrl, function (card) {
-              if (typeof currentOpenedCard.children !== 'undefined' && currentOpenedCard.children.length) {
-                self.base.api.checklist.addItem(currentOpenedCard.childrenChecklist.id, cardData.url, 'bottom', function (checkItemData) {
-                  currentOpenedCard.childrenChecklist.checkItems.push(checkItemData);
+                self.base.waitCreatingCard(cardData.shortUrl, function (card) {
+                  if (typeof currentOpenedCard.children !== 'undefined' && currentOpenedCard.children.length) {
+                    self.base.api.checklist.addItem(
+                        currentOpenedCard.childrenChecklist.id,
+                        cardData.url,
+                        'bottom',
+                        function (checkItemData) {
+                          currentOpenedCard.childrenChecklist.checkItems.push(checkItemData);
 
-                  self.base.lockDOM('inheritance-create-new-card', true);
+                          self.base.lockDOM('inheritance-create-new-card', true);
 
-                  self.readCards();
+                          self.readCards();
 
-                  self.base.lockDOM('inheritance-create-new-card', false);
+                          self.base.lockDOM('inheritance-create-new-card', false);
 
-                  if (self.base.options.openChildCard) {
-                    self.base.goToLink(cardData.url);
+                          if (self.base.options.openChildCard) {
+                            self.base.goToLink(cardData.url);
+                          }
+                        }
+                    );
+                  } else {
+                    self.base.api.checklist.create(currentOpenedCard.id, self.data.childrenName, 'top', function (checkListData) {
+                      self.base.api.checklist.addItem(checkListData.id, cardData.url, 'bottom', function (checkItemData) {
+                        checkListData.checkItems = [checkItemData];
+                        currentOpenedCard.data.checklists.push(checkListData);
+                        currentOpenedCard.childrenChecklist =
+                            currentOpenedCard.data.checklists[currentOpenedCard.data.checklists.length - 1];
+
+                        self.base.lockDOM('inheritance-create-new-card', true);
+
+                        self.readCards();
+
+                        self.base.lockDOM('inheritance-create-new-card', false);
+
+                        if (self.base.options.openChildCard) {
+                          self.base.goToLink(cardData.url);
+                        }
+                      });
+                    });
                   }
                 });
-              } else {
-                self.base.api.checklist.create(currentOpenedCard.id, self.data.childrenName, 'top', function (checkListData) {
-                  self.base.api.checklist.addItem(checkListData.id, cardData.url, 'bottom', function (checkItemData) {
-                    checkListData.checkItems = [checkItemData];
-                    currentOpenedCard.data.checklists.push(checkListData);
-                    currentOpenedCard.childrenChecklist = currentOpenedCard.data.checklists[currentOpenedCard.data.checklists.length - 1];
-
-                    self.base.lockDOM('inheritance-create-new-card', true);
-
-                    self.readCards();
-
-                    self.base.lockDOM('inheritance-create-new-card', false);
-
-                    if (self.base.options.openChildCard) {
-                      self.base.goToLink(cardData.url);
-                    }
-                  });
-                });
               }
-            });
-          });
+          );
 
           self.base.popOver(false);
         }
@@ -495,8 +700,30 @@
         self.base.removeElement(_sidebarChildBtn);
       }
 
-      _sidebarParentBtn = self.base.generateElementFromHtml('<a href="#" class="button-link js-sidebar-parent-btn"> <span class="icon-sm handsome-icon-parent"></span> Parent</a>');
-      _sidebarChildBtn = self.base.generateElementFromHtml('<a href="#" class="button-link js-sidebar-child-btn"> <span class="icon-sm handsome-icon-child"></span> Child</a>');
+      _sidebarParentBtn = self.base.jsonToDOM(
+          ['a', {
+            'href': '#',
+            'class': 'button-link js-sidebar-parent-btn'
+          },
+            ' ',
+            ['span', {
+              'class': 'icon-sm handsome-icon-parent'
+            }],
+            ' Parent'
+          ]
+      );
+      _sidebarChildBtn = self.base.jsonToDOM(
+          ['a', {
+            'href': '#',
+            'class': 'button-link js-sidebar-child-btn'
+          },
+            ' ',
+            ['span', {
+              'class': 'icon-sm handsome-icon-child'
+            }],
+            ' Child'
+          ]
+      );
       _sidebarButtonsList.appendChild(_sidebarParentBtn);
       _sidebarButtonsList.appendChild(_sidebarChildBtn);
 
@@ -606,7 +833,7 @@
       }
 
       if (!_checklistFakeBadge) {
-        _checklistFakeBadge = self.base.generateElementFromHtml(_checklistBadge.outerHTML);
+        _checklistFakeBadge = _checklistBadge.cloneNode(true);
         _checklistFakeBadge.classList.remove('js-checklist-badge');
         _checklistFakeBadge.classList.add('js-fake-checklist-badge');
         self.base.appendElementAfterAnother(_checklistFakeBadge, _checklistBadge);
@@ -700,20 +927,23 @@
           var checkParentRecursionCard = self.checkRecursion(parent, 'parent', card);
 
           if (checkParentRecursionCard) {
-            console.warn(self.base.settings.notification.messages.recursionOnBoard
-                .replace(/%recursionCardTitle%/g, checkParentRecursionCard.url)
-                .replace(/%recursionCardLink%/g, checkParentRecursionCard.url)
-                .replace(/%currentCardTitle%/g, card.url)
-                .replace(/%currentCardLink%/g, card.url)
-                .replace(/<\/?[^>]+(>|$)/g, '')
-                .trim());
+            console.warn(
+                self.base.settings.notification.messages.recursionOnBoard(
+                    '#' + checkParentRecursionCard.idShort + ' ' + checkParentRecursionCard.title,
+                    checkParentRecursionCard.url,
+                    '#' + card.idShort + ' ' + card.title,
+                    card.url
+                ).outerHTML.replace(/<\/?[^>]+(>|$)/g, '')
+            );
 
-            self.base.openNotification(self.base.settings.notification.messages.recursionOnBoard
-                .replace(/%recursionCardTitle%/g, '#' + checkParentRecursionCard.idShort + ' ' + checkParentRecursionCard.title)
-                .replace(/%recursionCardLink%/g, checkParentRecursionCard.url)
-                .replace(/%currentCardTitle%/g, '#' + card.idShort + ' ' + card.title)
-                .replace(/%currentCardLink%/g, card.url)
-                .trim());
+            self.base.openNotification(
+                self.base.settings.notification.messages.recursionOnBoard(
+                    '#' + checkParentRecursionCard.idShort + ' ' + checkParentRecursionCard.title,
+                    checkParentRecursionCard.url,
+                    '#' + card.idShort + ' ' + card.title,
+                    card.url
+                )
+            );
 
             self.removeParent(checkParentRecursionCard);
           }
@@ -874,61 +1104,74 @@
                     checkRecursionChildren = self.checkRecursion(childCard.parent, 'parent', card);
 
                 if (card.id === childCard.id) {
-                  console.warn(self.base.settings.notification.messages.recursionOnBoard
-                      .replace(/%recursionCardTitle%/g, childCard.url)
-                      .replace(/%recursionCardLink%/g, childCard.url)
-                      .replace(/%currentCardTitle%/g, card.url)
-                      .replace(/%currentCardLink%/g, card.url)
-                      .replace(/<\/?[^>]+(>|$)/g, '')
-                      .trim());
+                  console.warn(
+                      self.base.settings.notification.messages.recursionOnBoard(
+                          '#' + childCard.idShort + ' ' + childCard.title,
+                          childCard.url,
+                          '#' + card.idShort + ' ' + card.title,
+                          card.url
+                      ).outerHTML.replace(/<\/?[^>]+(>|$)/g, '')
+                  );
 
-                  self.base.openNotification(self.base.settings.notification.messages.recursionOnBoard
-                      .replace(/%recursionCardTitle%/g, '#' + childCard.idShort + ' ' + childCard.title)
-                      .replace(/%recursionCardLink%/g, childCard.url)
-                      .replace(/%currentCardTitle%/g, '#' + card.idShort + ' ' + card.title)
-                      .replace(/%currentCardLink%/g, card.url)
-                      .trim());
+                  self.base.openNotification(
+                      self.base.settings.notification.messages.recursionOnBoard(
+                          '#' + childCard.idShort + ' ' + childCard.title,
+                          childCard.url,
+                          '#' + card.idShort + ' ' + card.title,
+                          card.url
+                      )
+                  );
                 }
 
                 if (checkRecursionParent) {
-                  console.warn(self.base.settings.notification.messages.recursionOnBoard
-                      .replace(/%recursionCardTitle%/g, childCard.url)
-                      .replace(/%recursionCardLink%/g, childCard.url)
-                      .replace(/%currentCardTitle%/g, checkRecursionParent.url)
-                      .replace(/%currentCardLink%/g, checkRecursionParent.url)
-                      .replace(/<\/?[^>]+(>|$)/g, '')
-                      .trim());
+                  console.warn(
+                      self.base.settings.notification.messages.recursionOnBoard(
+                          '#' + childCard.idShort + ' ' + childCard.title,
+                          childCard.url,
+                          '#' + checkRecursionParent.idShort + ' ' + checkRecursionParent.title,
+                          checkRecursionParent.url
+                      ).outerHTML.replace(/<\/?[^>]+(>|$)/g, '')
+                  );
 
-                  self.base.openNotification(self.base.settings.notification.messages.recursionOnBoard
-                      .replace(/%recursionCardTitle%/g, '#' + childCard.idShort + ' ' + childCard.title)
-                      .replace(/%recursionCardLink%/g, childCard.url)
-                      .replace(/%currentCardTitle%/g, '#' + checkRecursionParent.idShort + ' ' + checkRecursionParent.title)
-                      .replace(/%currentCardLink%/g, checkRecursionParent.url)
-                      .trim());
+                  self.base.openNotification(
+                      self.base.settings.notification.messages.recursionOnBoard(
+                          '#' + childCard.idShort + ' ' + childCard.title,
+                          childCard.url,
+                          '#' + checkRecursionParent.idShort + ' ' + checkRecursionParent.title,
+                          checkRecursionParent.url
+                      )
+                  );
                 }
 
                 if (checkRecursionChildren) {
-                  console.warn(self.base.settings.notification.messages.recursionOnBoard
-                      .replace(/%recursionCardTitle%/g, card.url)
-                      .replace(/%recursionCardLink%/g, card.url)
-                      .replace(/%currentCardTitle%/g, checkRecursionChildren.url)
-                      .replace(/%currentCardLink%/g, checkRecursionChildren.url)
-                      .replace(/<\/?[^>]+(>|$)/g, '')
-                      .trim());
+                  console.warn(
+                      self.base.settings.notification.messages.recursionOnBoard(
+                          '#' + card.idShort + ' ' + card.title,
+                          card.url,
+                          '#' + checkRecursionChildren.idShort + ' ' + checkRecursionChildren.title,
+                          checkRecursionChildren.url
+                      ).outerHTML.replace(/<\/?[^>]+(>|$)/g, '')
+                  );
 
-                  self.base.openNotification(self.base.settings.notification.messages.recursionOnBoard
-                      .replace(/%recursionCardTitle%/g, '#' + card.idShort + ' ' + card.title)
-                      .replace(/%recursionCardLink%/g, card.url)
-                      .replace(/%currentCardTitle%/g, '#' + checkRecursionChildren.idShort + ' ' + checkRecursionChildren.title)
-                      .replace(/%currentCardLink%/g, checkRecursionChildren.url)
-                      .trim());
+                  self.base.openNotification(
+                      self.base.settings.notification.messages.recursionOnBoard(
+                          '#' + card.idShort + ' ' + card.title,
+                          card.url,
+                          '#' + checkRecursionChildren.idShort + ' ' + checkRecursionChildren.title,
+                          checkRecursionChildren.url
+                      )
+                  );
                 }
 
                 if (card.children.indexOf(childCard) > -1 || checkRecursionParent || checkRecursionChildren || card.id === childCard.id) {
                   checklist.checkItems.splice(y, 1);
 
                   if (typeof childCard.parent !== 'undefined') {
-                    if (childCard.parent.children && childCard.parent.children.length && childCard.parent.children.lastIndexOf(childCard) > -1) {
+                    if (
+                        childCard.parent.children &&
+                        childCard.parent.children.length &&
+                        childCard.parent.children.lastIndexOf(childCard) > -1
+                    ) {
                       childCard.parent.children.splice(childCard.parent.children.lastIndexOf(childCard), 1);
                     }
 
@@ -938,28 +1181,38 @@
 
                   self.base.api.checklist.deleteItem(checklist.id, checkItem.id);
                 } else {
-                  if (typeof childCard.parent !== 'undefined' && childCard.parent.id !== card.id && typeof childCard.parent.childrenChecklist !== 'undefined') {
-                    var checkCheckItem = self.base.getElementByProperty(childCard.parent.childrenChecklist.checkItems, 'name', childCard.url);
+                  if (
+                      typeof childCard.parent !== 'undefined' &&
+                      childCard.parent.id !== card.id &&
+                      typeof childCard.parent.childrenChecklist !== 'undefined'
+                  ) {
+                    var checkCheckItem = self.base.getElementByProperty(
+                        childCard.parent.childrenChecklist.checkItems,
+                        'name',
+                        childCard.url
+                    );
 
                     if (!checkCheckItem) {
                       self.base.getElementByProperty(childCard.parent.childrenChecklist.checkItems, 'name', '#' + childCard.idShort);
                     }
 
                     if (checkCheckItem) {
-                      console.warn(self.base.settings.notification.messages.severalParentsOnCard
-                          .replace(/%recursionCardTitle%/g, childCard.url)
-                          .replace(/%recursionCardLink%/g, childCard.url)
-                          .replace(/%currentCardTitle%/g, childCard.parent.url)
-                          .replace(/%currentCardLink%/g, childCard.parent.url)
-                          .replace(/<\/?[^>]+(>|$)/g, '')
-                          .trim());
+                      console.warn(
+                          self.base.settings.notification.messages.severalParentsOnCard(
+                              '#' + childCard.idShort + ' ' + childCard.title,
+                              childCard.url,
+                              '#' + childCard.parent.idShort + ' ' + childCard.parent.title,
+                              childCard.parent.url
+                          ).outerHTML.replace(/<\/?[^>]+(>|$)/g, ''));
 
-                      self.base.openNotification(self.base.settings.notification.messages.severalParentsOnCard
-                          .replace(/%recursionCardTitle%/g, '#' + childCard.idShort + ' ' + childCard.title)
-                          .replace(/%recursionCardLink%/g, childCard.url)
-                          .replace(/%currentCardTitle%/g, '#' + childCard.parent.idShort + ' ' + childCard.parent.title)
-                          .replace(/%currentCardLink%/g, childCard.parent.url)
-                          .trim());
+                      self.base.openNotification(
+                          self.base.settings.notification.messages.severalParentsOnCard(
+                              '#' + childCard.idShort + ' ' + childCard.title,
+                              childCard.url,
+                              '#' + childCard.parent.idShort + ' ' + childCard.parent.title,
+                              childCard.parent.url
+                          )
+                      );
 
                       self.removeParent(childCard);
                     }
@@ -1015,7 +1268,11 @@
 
       var _checklist = self.base.findParentByClass(_target, 'checklist');
 
-      if (_checklist && _checklist.querySelector('h3') && _checklist.querySelector('h3').textContent.trim().toLowerCase() === self.data.childrenName.toLowerCase()) {
+      if (
+          _checklist &&
+          _checklist.querySelector('h3') &&
+          _checklist.querySelector('h3').textContent.trim().toLowerCase() === self.data.childrenName.toLowerCase()
+      ) {
         var openedCard = self.base.getCurrentOpenedCard();
 
         if (openedCard && openedCard.childrenChecklist) {
@@ -1042,7 +1299,10 @@
       };
 
       self.base.callbacks.checklistInserted['inheritance'] = function (_target) {
-        if (_target.querySelector('h3') && _target.querySelector('h3').textContent.trim().toLowerCase() === self.data.childrenName.toLowerCase()) {
+        if (
+            _target.querySelector('h3') &&
+            _target.querySelector('h3').textContent.trim().toLowerCase() === self.data.childrenName.toLowerCase()
+        ) {
           _target.classList.add('hide');
 
           self.updateCardView();
