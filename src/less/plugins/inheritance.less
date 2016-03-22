@@ -1,23 +1,22 @@
 .handsome-trello {
   &__inheritance {
     &-parent {
-      margin-bottom: 20px;
+      padding-bottom: 20px;
 
       &--closed {
         opacity: 0.5;
       }
     }
     &-children {
+      padding-bottom: 20px;
+
       &-list {
         list-style: none;
 
         min-width: 300px;
 
-        margin-bottom: 20px;
-
         & & {
           margin-top: 5px;
-          margin-bottom: 0;
         }
       }
       & > &-list {
@@ -25,13 +24,21 @@
         overflow-y: hidden;
 
         &::-webkit-scrollbar {
-          -webkit-appearance: none;
-          height: 8px;
+          -webkit-appearance: none !important;
+        }
+        &::-webkit-scrollbar:horizontal {
+          height: 8px !important;
+
+          background-color: rgb(214, 216, 218) !important;
+
+          border-radius: 4px !important;
         }
         &::-webkit-scrollbar-thumb {
-          border-radius: 4px;
-          background-color: rgba(0, 0, 0, 0.5);
-          -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+          background-color: rgb(179, 184, 187) !important;
+
+          border-radius: 4px !important;
+
+          -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5) !important;
         }
       }
       &-item {
@@ -68,10 +75,10 @@
       }
     }
     &-related {
+      padding-bottom: 20px;
+
       &-list {
         list-style: none;
-
-        margin-bottom: 20px;
       }
       &-item {
         position: relative;
