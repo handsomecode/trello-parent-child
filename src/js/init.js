@@ -243,8 +243,6 @@
     },
 
     appendElementAfterAnother: function (_element, _beforeElement) {
-      var self = this;
-
       if (_beforeElement.nextSibling) {
         _beforeElement.parentNode.insertBefore(_element, _beforeElement.nextSibling);
       } else {

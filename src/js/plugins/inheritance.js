@@ -446,11 +446,15 @@
           currentColumn = column;
         }
 
+        var optionParams = {
+          'value': column.id
+        };
+        if (isCurrentColumn) {
+          optionParams['selected'] = 'selected';
+        }
+
         columnsList.push(self.base.jsonToDOM(
-            ['option', {
-              'value': column.id,
-              'selected': (isCurrentColumn ? 'selected' : false)
-            },
+            ['option', optionParams,
               column.name + (isCurrentColumn ? ' (current)' : '')
             ]
         ));
@@ -1024,7 +1028,7 @@
       return false;
     },
 
-    moveFromSecondChildrenChecklistToFirst: function (card, checklist) {
+    moveFromSecondChildrenChecklistToFirst: function (card, checklist, indexChecklist) {
       var self = this;
 
       if (checklist.checkItems.length) {
@@ -1049,7 +1053,7 @@
       }
 
       self.base.api.checklist.remove(checklist.id);
-      card.data.checklists.splice(i, 1);
+      card.data.checklists.splice(indexChecklist, 1);
     },
 
     updateChildrenInCard: function (card) {
@@ -1074,7 +1078,7 @@
         if (checklist.name.trim().toLowerCase() === self.data.childrenName.trim().toLowerCase()) {
           if (typeof card.childrenChecklist !== 'undefined') {
             if (!self.base.data.init) {
-              self.moveFromSecondChildrenChecklistToFirst(card, checklist);
+              self.moveFromSecondChildrenChecklistToFirst(card, checklist, i);
             }
 
             continue;
