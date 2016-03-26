@@ -868,6 +868,12 @@
         if (countCheckItems) {
           _checklistFakeBadge.classList.remove('hide');
           _checklistFakeBadge.querySelector('.badge-text').textContent = countCompleteCheckItems + '/' + countCheckItems;
+
+          if (countCompleteCheckItems === countCheckItems) {
+            _checklistFakeBadge.classList.add('is-complete');
+          } else {
+            _checklistFakeBadge.classList.remove('is-complete');
+          }
         } else {
           _checklistFakeBadge.classList.add('hide');
         }
