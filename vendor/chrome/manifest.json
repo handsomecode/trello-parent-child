@@ -30,8 +30,6 @@
         "js/vendor/jquery-ui.min.js",
         "js/config.js",
         "js/settings.js",
-        "js/errors-handler-config.js",
-        "js/errors-handler.js",
         "js/api.js",
         "js/plugins/inheritance.js",
         "js/init.js"
