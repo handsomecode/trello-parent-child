@@ -460,6 +460,15 @@
         ));
       }
 
+      var openChildCheckboxAttributes = {
+        'type': 'checkbox',
+        'id': 'pop-over-children-checkbox'
+      };
+
+      if (self.base.options.openChildCard) {
+        openChildCheckboxAttributes['checked'] = 'checked';
+      }
+
       var popOverElements = self.base.popOver(true, 'Add Child', self.base.jsonToDOM(['div', {},
             ['div', {
               'class': 'form-grid'
@@ -525,11 +534,7 @@
               ['div', {
                 'class': 'check-div handsome-trello__inheritance-pop-over-children-checkbox'
               },
-                ['input', {
-                  'type': 'checkbox',
-                  'id': 'pop-over-children-checkbox',
-                  'checked': (self.base.options.openChildCard ? 'checked' : false)
-                }],
+                ['input', openChildCheckboxAttributes],
                 ['label', {
                   'for': 'pop-over-children-checkbox'
                 },
