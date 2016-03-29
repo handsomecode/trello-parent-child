@@ -1,10 +1,10 @@
 var gulp = require('gulp');
-var clean = require('gulp-clean');
+var rimraf = require('rimraf');
 var less = require('gulp-less');
-var minifyCSS = require('gulp-minify-css');
+var minifyCSS = require('gulp-clean-css');
 var cssBase64 = require('gulp-css-base64');
 var es = require('event-stream');
-var rseq = require('gulp-run-sequence');
+var rseq = require('run-sequence');
 var zip = require('gulp-zip');
 var rename = require('gulp-rename');
 var shell = require('gulp-shell');
@@ -47,7 +47,7 @@ gulp.task('options', function () {
 });
 
 gulp.task('clean', function () {
-  return pipe('./build', [clean()]);
+  return rimraf.sync('./build');
 });
 
 gulp.task('chrome', function () {
