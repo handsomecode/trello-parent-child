@@ -44,7 +44,7 @@
 
       return self.base.jsonToDOM(
           ['div', {
-            'class': 'js-card-parent'
+            'class': 'handsome-trello__inheritance-parent js-card-parent'
           },
             ['h3', {
               'class': 'card-detail-item-header'
@@ -52,7 +52,7 @@
               'Parent:'
             ],
             ['p', {
-              'class': 'handsome-trello__inheritance-parent handsome-trello__inheritance-parent--' + parentCard.status
+              'class': 'handsome-trello__inheritance-parent-item handsome-trello__inheritance-parent-item--' + parentCard.status
             },
               ['a', {
                 'href': parentCard.url,
@@ -159,7 +159,7 @@
           _h3 = document.createElement('h3'),
           _ul = document.createElement('ul');
 
-      _div.setAttribute('class', 'js-card-related');
+      _div.setAttribute('class', 'handsome-trello__inheritance-related js-card-related');
       _h3.setAttribute('class', 'card-detail-item-header');
       _h3.textContent = 'Related:';
       _ul.setAttribute('class', 'handsome-trello__inheritance-related-list');
