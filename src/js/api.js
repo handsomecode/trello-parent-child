@@ -1,38 +1,77 @@
 HandsomeTrello.api = {
-  request: function (type, url, data, callback) {
+  queue: [],
+
+  running: false,
+
+  request: function () {
     var self = this;
 
-    var xhttp = new XMLHttpRequest();
+    if (!self.queue.length) {
+      self.running = false;
 
-    if (typeof data !== 'object') {
-      data = {};
+      return false;
     }
 
-    if (type.toLowerCase() !== 'get') {
-      data.token = self.base.getCookie('token');
-    } else if (Object.keys(data).length) {
-      url += '?' + self.base.generateParamsStringFromObject(data);
-
-      data = {};
+    if (self.running) {
+      return false;
     }
 
-    xhttp.open(type.toUpperCase(), url, true);
+    self.running = true;
+
+    var requestData = self.queue[0],
+        xhttp = new XMLHttpRequest();
+
+    if (typeof requestData.data !== 'object') {
+      requestData.data = {};
+    }
+
+    if (requestData.type.toLowerCase() !== 'get') {
+      requestData.data.token = self.base.getCookie('token');
+    } else if (Object.keys(requestData.data).length) {
+      requestData.url += '?' + self.base.generateParamsStringFromObject(requestData.data);
+
+      requestData.data = {};
+    }
+
+    xhttp.open(requestData.type.toUpperCase(), requestData.url, true);
     xhttp.setRequestHeader('Content-Type', 'application/json');
     xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
     xhttp.onreadystatechange = function () {
-      if (xhttp.readyState === 4 && xhttp.status === 200 && typeof callback === 'function' && self.base.isJSONString(xhttp.responseText)) {
-        callback(JSON.parse(xhttp.responseText));
+      if (xhttp.readyState === 4) {
+        if (xhttp.status === 200 && typeof requestData.callback === 'function' && self.base.isJSONString(xhttp.responseText)) {
+          requestData.callback(JSON.parse(xhttp.responseText));
+        }
+
+        self.queue.splice(0, 1);
+
+        self.running = false;
+
+        self.request();
       }
     };
 
-    xhttp.send(JSON.stringify(data));
+    xhttp.send(JSON.stringify(requestData.data));
   },
+
+  addToQueue: function (type, url, data, callback) {
+    var self = this;
+
+    self.queue.push({
+      type: type,
+      url: url,
+      data: data,
+      callback: callback
+    });
+
+    self.request();
+  },
+
   board: {
     get: function (boardId, callback) {
       var self = this.base;
 
-      self.request('get', 'https://trello.com/1/boards/' + boardId, {
+      self.addToQueue('get', 'https://trello.com/1/boards/' + boardId, {
         lists: 'open',
         cards: 'all',
         card_checklists: 'all',
@@ -40,11 +79,12 @@ HandsomeTrello.api = {
       }, callback);
     }
   },
+
   card: {
     get: function (cardId, callback) {
       var self = this.base;
 
-      self.request('get', 'https://trello.com/1/cards/' + cardId, {
+      self.addToQueue('get', 'https://trello.com/1/cards/' + cardId, {
         checklists: 'all'
       }, callback);
     },
@@ -62,19 +102,20 @@ HandsomeTrello.api = {
         idList: columnId
       };
 
-      self.request('post', '/1/cards', data, callback);
+      self.addToQueue('post', '/1/cards', data, callback);
     }
   },
+
   checklist: {
     getByCardId: function (cardId, callback) {
       var self = this.base;
 
-      self.request('get', '/1/cards/' + cardId + '/checklists', {}, callback);
+      self.addToQueue('get', '/1/cards/' + cardId + '/checklists', {}, callback);
     },
     get: function (checklistId, callback) {
       var self = this.base;
 
-      self.request('get', '/1/checklists/' + checklistId, {}, callback);
+      self.addToQueue('get', '/1/checklists/' + checklistId, {}, callback);
     },
     create: function (cardId, name, pos, callback) {
       var self = this.base;
@@ -85,12 +126,12 @@ HandsomeTrello.api = {
         pos: pos
       };
 
-      self.request('post', '/1/checklists', data, callback);
+      self.addToQueue('post', '/1/checklists', data, callback);
     },
     remove: function (checklistId, callback) {
       var self = this.base;
 
-      self.request('delete', '/1/checklists/' + checklistId, {}, callback);
+      self.addToQueue('delete', '/1/checklists/' + checklistId, {}, callback);
     },
     addItem: function (checklistId, name, pos, callback) {
       var self = this.base;
@@ -100,7 +141,7 @@ HandsomeTrello.api = {
         pos: pos
       };
 
-      self.request('post', '/1/checklists/' + checklistId + '/checkItems', data, callback);
+      self.addToQueue('post', '/1/checklists/' + checklistId + '/checkItems', data, callback);
     },
     deleteItem: function (checklistId, checkItemId, callback) {
       var self = this.base;
@@ -109,7 +150,7 @@ HandsomeTrello.api = {
         idCheckItem: checkItemId
       };
 
-      self.request('delete', '/1/checklists/' + checklistId + '/checkItems/' + checkItemId, data, callback);
+      self.addToQueue('delete', '/1/checklists/' + checklistId + '/checkItems/' + checkItemId, data, callback);
     },
     nameItem: function (cardId, checklistId, checkItemId, name, callback) {
       var self = this.base;
@@ -120,7 +161,7 @@ HandsomeTrello.api = {
         value: name
       };
 
-      self.request('put', '/1/cards/' + cardId + '/checklist/' + checklistId + '/checkItem/' + checkItemId + '/name', data, callback);
+      self.addToQueue('put', '/1/cards/' + cardId + '/checklist/' + checklistId + '/checkItem/' + checkItemId + '/name', data, callback);
     },
     posItem: function (cardId, checklistId, checkItemId, pos, callback) {
       var self = this.base;
@@ -131,14 +172,15 @@ HandsomeTrello.api = {
         value: pos
       };
 
-      self.request('put', '/1/cards/' + cardId + '/checklist/' + checklistId + '/checkItem/' + checkItemId + '/pos', data, callback);
+      self.addToQueue('put', '/1/cards/' + cardId + '/checklist/' + checklistId + '/checkItem/' + checkItemId + '/pos', data, callback);
     }
   },
+
   member: {
     get: function (username, data, callback) {
       var self = this.base;
 
-      self.request('get', '/1/members/' + username, data, callback);
+      self.addToQueue('get', '/1/members/' + username, data, callback);
     }
   }
 };
