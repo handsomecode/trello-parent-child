@@ -297,7 +297,7 @@
     getCurrentOpenedCard: function () {
       var self = this;
 
-      var _title = document.querySelector('.window .js-card-title');
+      var _title = document.querySelector('.window .js-title-helper');
       if (_title && self.getCardShortLinkFromUrl()) {
         return self.getCardByLink(window.location.pathname);
       }
