@@ -826,7 +826,7 @@
           if (currentCard) {
             clearInterval(self.data.updateTaskDescInterval);
 
-            var currentCardTitle = document.querySelector('.window .js-card-title').textContent;
+            var currentCardTitle = document.querySelector('.window .js-title-helper').textContent;
 
             self.lockDOM('open-card-view', true);
 
