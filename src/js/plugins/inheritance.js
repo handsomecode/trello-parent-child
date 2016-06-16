@@ -161,7 +161,7 @@
 
       _div.setAttribute('class', 'handsome-trello__inheritance-related js-card-related');
       _h3.setAttribute('class', 'card-detail-item-header');
-      _h3.textContent = 'Related:';
+      _h3.textContent = 'Siblings:';
       _ul.setAttribute('class', 'handsome-trello__inheritance-related-list');
 
       for (var i = 0; i < parent.children.length; i++) {
