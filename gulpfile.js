@@ -156,19 +156,19 @@ gulp.task('dist', function (cb) {
 });
 
 gulp.task('watch', function () {
-  rseq('default');
+  rseq('default', function () {
+    gulp.watch([
+      './src/less/**/*',
+      './src/fonts/**/*'
+    ], ['styles', 'options'], ['chrome', 'opera', 'firefox', 'safari']);
 
-  gulp.watch([
-    './src/less/**/*',
-    './src/fonts/**/*'
-  ], ['styles', 'options'], ['chrome', 'opera', 'firefox', 'safari']);
-
-  gulp.watch([
-    './src/js/**/*',
-    './src/css/**/*',
-    './vendor/**/*',
-    './package.json'
-  ], ['default']);
+    gulp.watch([
+      './src/js/**/*',
+      './src/css/**/*',
+      './vendor/**/*',
+      './package.json'
+    ], ['default']);
+  });
 });
 
 gulp.task('run', function (cb) {
