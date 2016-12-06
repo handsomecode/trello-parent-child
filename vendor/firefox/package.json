@@ -24,6 +24,23 @@
       "description": "Show Archived Cards in children and related lists",
       "type": "bool",
       "value": true
+    },
+    {
+      "name": "descriptionPosition",
+      "title": "Position relative to the description",
+      "description": "The position of the Parent/Child block relative to the description",
+      "type": "menulist",
+      "options": [
+        {
+          "label": "Top",
+          "value": "top"
+        },
+        {
+          "label": "Bottom",
+          "value": "bottom"
+        }
+      ],
+      "value": "top"
     }
   ],
   "icon": "data/icons/icon_48.png",

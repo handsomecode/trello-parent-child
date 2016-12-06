@@ -69,6 +69,21 @@ var HandsomeTrello = {
         title: 'Show Archived Cards in children and related lists',
         type: 'boolean',
         value: true
+      },
+      descriptionPosition: {
+        title: 'The position of the Parent/Child block relative to the description',
+        type: 'select',
+        options: [
+          {
+            label: 'Top',
+            value: 'top'
+          },
+          {
+            label: 'Bottom',
+            value: 'bottom'
+          }
+        ],
+        value: 'bottom'
       }
     }
   }

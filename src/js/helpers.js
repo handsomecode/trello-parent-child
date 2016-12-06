@@ -211,6 +211,14 @@ HandsomeTrello.helpers = {
     }
   },
 
+  appendElement: function (_element, _parentElement) {
+    if (typeof _element === 'undefined') {
+      return false;
+    }
+
+    _parentElement.appendChild(_element);
+  },
+
   prependElement: function (_element, _parentElement) {
     if (typeof _element === 'undefined') {
       return false;

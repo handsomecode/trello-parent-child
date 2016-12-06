@@ -24,5 +24,25 @@
 		<key>Type</key>
 		<string>CheckBox</string>
 	</dict>
+	<dict>
+        <key>DefaultValue</key>
+        <string>top</string>
+        <key>Key</key>
+        <string>descriptionPosition</string>
+        <key>Title</key>
+        <string>The position of the Parent/Child block relative to the description</string>
+        <key>Type</key>
+        <string>PopUpButton</string>
+        <key>Titles</key>
+        <array>
+            <string>Top</string>
+            <string>Bottom</string>
+        </array>
+        <key>Values</key>
+        <array>
+            <string>top</string>
+            <string>bottom</string>
+        </array>
+    </dict>
 </array>
 </plist>
