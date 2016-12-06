@@ -30,7 +30,7 @@
         <key>Key</key>
         <string>descriptionPosition</string>
         <key>Title</key>
-        <string>The position of the Parent/Child block relative to the description</string>
+        <string>The position of Parent/Siblings/Child blocks relative to the description</string>
         <key>Type</key>
         <string>PopUpButton</string>
         <key>Titles</key>

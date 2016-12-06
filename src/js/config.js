@@ -71,7 +71,7 @@ var HandsomeTrello = {
         value: true
       },
       descriptionPosition: {
-        title: 'The position of the Parent/Child block relative to the description',
+        title: 'The position of Parent/Siblings/Child blocks relative to the description',
         type: 'select',
         options: [
           {
