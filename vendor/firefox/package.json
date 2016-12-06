@@ -41,6 +41,27 @@
         }
       ],
       "value": "top"
+    },
+    {
+      "name": "orderOfBlocks",
+      "title": "The order of Parent/Siblings/Child blocks",
+      "description": "The order of Parent/Siblings/Child blocks in the card view window",
+      "type": "menulist",
+      "options": [
+        {
+          "label": "Parent - Siblings - Children",
+          "value": "parent-related-children"
+        },
+        {
+          "label": "Parent - Children - Siblings",
+          "value": "parent-children-related"
+        },
+        {
+          "label": "Siblings - Parent - Children",
+          "value": "related-parent-children"
+        }
+      ],
+      "value": "parent-related-children"
     }
   ],
   "icon": "data/icons/icon_48.png",

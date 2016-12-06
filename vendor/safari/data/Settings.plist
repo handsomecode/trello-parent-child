@@ -44,5 +44,27 @@
             <string>bottom</string>
         </array>
     </dict>
+	<dict>
+        <key>DefaultValue</key>
+        <string>parent-related-children</string>
+        <key>Key</key>
+        <string>orderOfBlocks</string>
+        <key>Title</key>
+        <string>The order of Parent/Siblings/Child blocks</string>
+        <key>Type</key>
+        <string>PopUpButton</string>
+        <key>Titles</key>
+        <array>
+            <string>Parent - Siblings - Children</string>
+            <string>Parent - Children - Siblings</string>
+            <string>Siblings - Parent - Children</string>
+        </array>
+        <key>Values</key>
+        <array>
+            <string>parent-related-children</string>
+            <string>parent-children-related</string>
+            <string>related-parent-children</string>
+        </array>
+    </dict>
 </array>
 </plist>

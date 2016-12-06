@@ -907,17 +907,29 @@
 
     updateInheritanceListInOpenedCardView: function (card) {
       if (card) {
-        var _descParentElement = document.querySelector('[attr="desc"]');
+        var _descParentElement = document.querySelector('[attr="desc"]'),
+          addingMethod = 'prependElement';
 
-        if (HandsomeTrello.options.descriptionPosition === 'top') {
-          HandsomeTrello.helpers.prependElement(this.generateHtmlForChildren(card.children), _descParentElement);
-          HandsomeTrello.helpers.prependElement(this.generateHtmlForRelatedTasks(card, card.parent), _descParentElement);
-          HandsomeTrello.helpers.prependElement(this.generateHtmlForParent(card.parent), _descParentElement);
+
+        var htmlContainers = {
+          parent: this.generateHtmlForParent(card.parent),
+          related: this.generateHtmlForRelatedTasks(card, card.parent),
+          children: this.generateHtmlForChildren(card.children)
+        };
+
+        var htmlContainersOrder = HandsomeTrello.options.orderOfBlocks.split('-').map(function (blockName) {
+          return htmlContainers[blockName];
+        });
+
+        if (HandsomeTrello.options.descriptionPosition === 'bottom') {
+          addingMethod = 'appendElement';
         } else {
-          HandsomeTrello.helpers.appendElement(this.generateHtmlForParent(card.parent), _descParentElement);
-          HandsomeTrello.helpers.appendElement(this.generateHtmlForRelatedTasks(card, card.parent), _descParentElement);
-          HandsomeTrello.helpers.appendElement(this.generateHtmlForChildren(card.children), _descParentElement);
+          htmlContainersOrder.reverse();
         }
+
+        htmlContainersOrder.forEach(function (block) {
+          HandsomeTrello.helpers[addingMethod](block, _descParentElement);
+        });
 
         this.bindDragAndDropOnChildren(card);
       }

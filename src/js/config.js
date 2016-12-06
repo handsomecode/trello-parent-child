@@ -84,6 +84,25 @@ var HandsomeTrello = {
           }
         ],
         value: 'bottom'
+      },
+      orderOfBlocks: {
+        title: 'The order of Parent/Siblings/Child blocks',
+        type: 'select',
+        options: [
+          {
+            label: 'Parent - Siblings - Children',
+            value: 'parent-related-children'
+          },
+          {
+            label: 'Parent - Children - Siblings',
+            value: 'parent-children-related'
+          },
+          {
+            label: 'Siblings - Parent - Children',
+            value: 'related-parent-children'
+          }
+        ],
+        value: 'parent-related-children'
       }
     }
   }
