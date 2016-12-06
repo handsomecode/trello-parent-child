@@ -19,16 +19,16 @@ HandsomeTrello.api = {
     self.running = true;
 
     var requestData = self.queue[0],
-        xhttp = new XMLHttpRequest();
+      xhttp = new XMLHttpRequest();
 
     if (typeof requestData.data !== 'object') {
       requestData.data = {};
     }
 
     if (requestData.type.toLowerCase() !== 'get') {
-      requestData.data.token = self.base.getCookie('token');
+      requestData.data.token = HandsomeTrello.helpers.getCookie('token');
     } else if (Object.keys(requestData.data).length) {
-      requestData.url += '?' + self.base.generateParamsStringFromObject(requestData.data);
+      requestData.url += '?' + HandsomeTrello.helpers.generateGetParamsStringFromObject(requestData.data);
 
       requestData.data = {};
     }
@@ -39,8 +39,17 @@ HandsomeTrello.api = {
 
     xhttp.onreadystatechange = function () {
       if (xhttp.readyState === 4) {
-        if (xhttp.status === 200 && typeof requestData.callback === 'function' && self.base.isJSONString(xhttp.responseText)) {
-          requestData.callback(JSON.parse(xhttp.responseText));
+        if (xhttp.status === 200 && typeof requestData.callback === 'function' && HandsomeTrello.helpers.isJSONString(xhttp.responseText)) {
+          requestData.callback(null, JSON.parse(xhttp.responseText));
+        } else {
+          console.error('Request Error:', xhttp.status, xhttp.responseText || xhttp.statusText);
+
+          if (typeof requestData.callback === 'function') {
+            requestData.callback({
+              code: xhttp.status,
+              message: xhttp.statusText
+            });
+          }
         }
 
         self.queue.splice(0, 1);
@@ -98,7 +107,7 @@ HandsomeTrello.api = {
         closed: false,
         idLabels: [],
         idMembers: [],
-        idBoard: self.base.data.boardId,
+        idBoard: HandsomeTrello.data.boardId,
         idList: columnId
       };
 
@@ -163,7 +172,7 @@ HandsomeTrello.api = {
 
       self.addToQueue('put', '/1/cards/' + cardId + '/checklist/' + checklistId + '/checkItem/' + checkItemId + '/name', data, callback);
     },
-    posItem: function (cardId, checklistId, checkItemId, pos, callback) {
+    changeItemPos: function (cardId, checklistId, checkItemId, pos, callback) {
       var self = this.base;
 
       var data = {

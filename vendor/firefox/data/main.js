@@ -9,6 +9,9 @@ pageMod.PageMod({
     data.url("js/vendor/jquery-ui.min.js"),
     data.url("js/config.js"),
     data.url("js/settings.js"),
+    data.url("js/helpers.js"),
+    data.url("js/pop-over.js"),
+    data.url("js/notification.js"),
     data.url("js/api.js"),
     data.url("js/plugins/inheritance.js"),
     data.url("js/init.js")

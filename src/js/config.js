@@ -18,12 +18,14 @@ var HandsomeTrello = {
       resizeTimeout: 100
     },
     reloadTimeout: 500,
-    updateBadgeChecklistTimeout: 500,
     notification: {
       defaultTimeout: 10000,
       messages: {
+        error: function (message) {
+          return HandsomeTrello.helpers.jsonToDOM(['span', {}, message]);
+        },
         recursionOnBoard: function (recursionCardTitle, recursionCardLink, currentCardTitle, currentCardLink) {
-          return HandsomeTrello.jsonToDOM(['span', {},
+          return HandsomeTrello.helpers.jsonToDOM(['span', {},
               ['a', {
                 'href': recursionCardLink
               },
@@ -39,7 +41,7 @@ var HandsomeTrello = {
           ]);
         },
         severalParentsOnCard: function (recursionCardTitle, recursionCardLink, currentCardTitle, currentCardLink) {
-          return HandsomeTrello.jsonToDOM(['span', {},
+          return HandsomeTrello.helpers.jsonToDOM(['span', {},
               ['a', {
                 'href': recursionCardLink
               },
