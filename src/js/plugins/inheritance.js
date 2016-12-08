@@ -92,7 +92,7 @@
 
       return HandsomeTrello.helpers.jsonToDOM(
           ['div', {
-            'class': 'handsome-trello__inheritance-parent js-card-parent'
+            'class': 'handsome-trello__inheritance-parent handsome-trello__inheritance-parent--' + HandsomeTrello.options.descriptionPosition + ' js-card-parent'
           },
             ['h3', {
               'class': 'card-detail-item-header'
@@ -169,7 +169,7 @@
       var _div = document.createElement('div'),
           _h3 = document.createElement('h3');
 
-      _div.setAttribute('class', 'handsome-trello__inheritance-children js-card-children');
+      _div.setAttribute('class', 'handsome-trello__inheritance-children handsome-trello__inheritance-children--' + HandsomeTrello.options.descriptionPosition + ' js-card-children');
       _h3.setAttribute('class', 'handsome-trello__inheritance-children-title card-detail-item-header');
       _h3.textContent = 'Children:';
 
@@ -200,7 +200,7 @@
           _h3 = document.createElement('h3'),
           _ul = document.createElement('ul');
 
-      _div.setAttribute('class', 'handsome-trello__inheritance-related js-card-related');
+      _div.setAttribute('class', 'handsome-trello__inheritance-related handsome-trello__inheritance-related--' + HandsomeTrello.options.descriptionPosition + ' js-card-related');
       _h3.setAttribute('class', 'card-detail-item-header');
       _h3.textContent = 'Siblings:';
       _ul.setAttribute('class', 'handsome-trello__inheritance-related-list');
@@ -907,11 +907,29 @@
 
     updateInheritanceListInOpenedCardView: function (card) {
       if (card) {
-        var _descParentElement = document.querySelector('[attr="desc"]');
+        var _descParentElement = document.querySelector('[attr="desc"]'),
+          addingMethod = 'prependElement';
 
-        HandsomeTrello.helpers.prependElement(this.generateHtmlForChildren(card.children), _descParentElement);
-        HandsomeTrello.helpers.prependElement(this.generateHtmlForRelatedTasks(card, card.parent), _descParentElement);
-        HandsomeTrello.helpers.prependElement(this.generateHtmlForParent(card.parent), _descParentElement);
+
+        var htmlContainers = {
+          parent: this.generateHtmlForParent(card.parent),
+          related: this.generateHtmlForRelatedTasks(card, card.parent),
+          children: this.generateHtmlForChildren(card.children)
+        };
+
+        var htmlContainersOrder = HandsomeTrello.options.orderOfBlocks.split('-').map(function (blockName) {
+          return htmlContainers[blockName];
+        });
+
+        if (HandsomeTrello.options.descriptionPosition === 'bottom') {
+          addingMethod = 'appendElement';
+        } else {
+          htmlContainersOrder.reverse();
+        }
+
+        htmlContainersOrder.forEach(function (block) {
+          HandsomeTrello.helpers[addingMethod](block, _descParentElement);
+        });
 
         this.bindDragAndDropOnChildren(card);
       }
