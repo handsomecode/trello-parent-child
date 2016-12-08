@@ -106,6 +106,7 @@
                 'href': parentCard.url,
                 'class': 'handsome-trello__inheritance-link'
               },
+                (HandsomeTrello.options.showCardId ? '#' + parentCard.idShort + ' ' : '') +
                 parentCard.title
               ],
               ' (' + (parentCard.status === 'closed' ? 'Archived' : parentCard.column.name) + ')'
@@ -140,6 +141,7 @@
                     'href': childCard.url,
                     'class': 'handsome-trello__inheritance-link'
                   },
+                    (HandsomeTrello.options.showCardId ? '#' + childCard.idShort + ' ' : '') +
                     childCard.title
                   ],
                   ' (' + (childCard.status === 'closed' ? 'Archived' : childCard.column.name) + ')'
@@ -217,6 +219,7 @@
                   'href': relatedCard.url,
                   'class': 'handsome-trello__inheritance-link'
                 },
+                  (HandsomeTrello.options.showCardId ? '#' + relatedCard.idShort + ' ' : '') +
                   relatedCard.title
                 ],
                 ' (' + (relatedCard.status === 'closed' ? 'Archived' : relatedCard.column.name) + ')'

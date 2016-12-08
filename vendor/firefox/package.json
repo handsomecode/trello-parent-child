@@ -26,6 +26,13 @@
       "value": true
     },
     {
+      "name": "showCardId",
+      "title": "Show Card Ids",
+      "description": "Show Card Ids in children and related lists and parent",
+      "type": "bool",
+      "value": false
+    },
+    {
       "name": "descriptionPosition",
       "title": "Position relative to the description",
       "description": "The position of Parent/Siblings/Child blocks relative to the description",

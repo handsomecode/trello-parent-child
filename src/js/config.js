@@ -70,6 +70,11 @@ var HandsomeTrello = {
         type: 'boolean',
         value: true
       },
+      showCardId: {
+        title: 'Show Card Ids in children and related lists and parent',
+        type: 'boolean',
+        value: false
+      },
       descriptionPosition: {
         title: 'The position of Parent/Siblings/Child blocks relative to the description',
         type: 'select',
