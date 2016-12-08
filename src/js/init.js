@@ -208,6 +208,7 @@
         shortUrl: cardData.shortUrl,
         url: cardData.url,
         column: self.helpers.getElementByProperty(self.data.boardData.lists, 'id', cardData.idList),
+        due: cardData.due,
         _element: _card,
         _link: _cardLink,
         _column: _column,

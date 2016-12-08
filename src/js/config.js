@@ -70,6 +70,11 @@ var HandsomeTrello = {
         type: 'boolean',
         value: true
       },
+      showCardDueDate: {
+        title: 'Show Due Date in children and related lists and parent',
+        type: 'boolean',
+        value: false
+      },
       showCardId: {
         title: 'Show Card Ids in children and related lists and parent',
         type: 'boolean',

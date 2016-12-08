@@ -26,6 +26,13 @@
       "value": true
     },
     {
+      "name": "showCardDueDate",
+      "title": "Show Card Due Date",
+      "description": "Show Due Date in children and related lists and parent",
+      "type": "bool",
+      "value": false
+    },
+    {
       "name": "showCardId",
       "title": "Show Card Ids",
       "description": "Show Card Ids in children and related lists and parent",
