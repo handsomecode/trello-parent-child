@@ -31,6 +31,9 @@
 				<string>js/vendor/jquery-ui.min.js</string>
 				<string>js/config.js</string>
 				<string>js/settings.js</string>
+				<string>js/helpers.js</string>
+				<string>js/pop-over.js</string>
+				<string>js/notification.js</string>
 				<string>js/api.js</string>
 				<string>js/plugins/inheritance.js</string>
 				<string>js/init.js</string>

@@ -137,7 +137,7 @@ gulp.task('opera-dist', function () {
 gulp.task('firefox-dist', shell.task([
   'mkdir -p dist/firefox',
   'cd ./build/firefox && ../../node_modules/.bin/jpm xpi > /dev/null',
-  'mv ./build/firefox/*-' + app.version + '.xpi ./dist/firefox/handsome-trello-firefox-extension-' + app.version + '.xpi',
+  'mv ./build/firefox/*.xpi ./dist/firefox/handsome-trello-firefox-extension-' + app.version + '.xpi',
   'cp ./dist/firefox/handsome-trello-firefox-extension-' + app.version + '.xpi ./dist/firefox/handsome-trello-firefox-extension-latest.xpi'
 ]));
 
@@ -148,7 +148,7 @@ gulp.task('safari-dist', shell.task([
 ]));
 
 gulp.task('firefox-run', shell.task([
-  'cd ./build/firefox && ../../node_modules/.bin/jpm run'
+  'cd ./build/firefox && ../../node_modules/.bin/jpm run -b Nightly --debug'
 ]));
 
 gulp.task('dist', function (cb) {
@@ -156,19 +156,19 @@ gulp.task('dist', function (cb) {
 });
 
 gulp.task('watch', function () {
-  rseq('default');
+  rseq('default', function () {
+    gulp.watch([
+      './src/less/**/*',
+      './src/fonts/**/*'
+    ], ['styles', 'options'], ['chrome', 'opera', 'firefox', 'safari']);
 
-  gulp.watch([
-    './src/less/**/*',
-    './src/fonts/**/*'
-  ], ['styles', 'options'], ['chrome', 'opera', 'firefox', 'safari']);
-
-  gulp.watch([
-    './src/js/**/*',
-    './src/css/**/*',
-    './vendor/**/*',
-    './package.json'
-  ], ['default']);
+    gulp.watch([
+      './src/js/**/*',
+      './src/css/**/*',
+      './vendor/**/*',
+      './package.json'
+    ], ['default']);
+  });
 });
 
 gulp.task('run', function (cb) {
