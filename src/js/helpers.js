@@ -35,7 +35,26 @@ HandsomeTrello.helpers = {
 
     _link.click();
 
-    HandsomeTrello.helpers.removeElement(_link);
+    this.removeElement(_link);
+  },
+
+  generateDateString: function (date) {
+    if (typeof date === 'string') {
+      date = new Date(date);
+    }
+
+    return (
+      date.toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      }) +
+      ' at ' +
+      date.toLocaleString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit'
+      })
+    );
   },
 
   generateGetParamsStringFromObject: function (object) {

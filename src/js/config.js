@@ -10,6 +10,7 @@ var HandsomeTrello = {
   },
 
   settings: {
+    locale: 'en-US',
     plugins: {
       'inheritance': true
     },

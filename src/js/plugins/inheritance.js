@@ -114,7 +114,7 @@
                 ['span', {
                   'class': 'handsome-trello__inheritance-due-date' + (new Date(parentCard.due) < new Date() ? ' handsome-trello__inheritance-due-date--expired' : '')
                 },
-                  '[Due: ' + (new Date(parentCard.due)).toLocaleString() + ']'
+                  '[Due: ' + HandsomeTrello.helpers.generateDateString(parentCard.due) + ']'
                 ]
                 : ''
             ]
@@ -156,7 +156,7 @@
                     ['span', {
                       'class': 'handsome-trello__inheritance-due-date' + (new Date(childCard.due) < new Date() ? ' handsome-trello__inheritance-due-date--expired' : '')
                     },
-                      '[Due: ' + (new Date(childCard.due)).toLocaleString() + ']'
+                      '[Due: ' + HandsomeTrello.helpers.generateDateString(childCard.due) + ']'
                     ]
                     : ''
                 ],
@@ -241,7 +241,7 @@
                   ['span', {
                     'class': 'handsome-trello__inheritance-due-date' + (new Date(relatedCard.due) < new Date() ? ' handsome-trello__inheritance-due-date--expired' : '')
                   },
-                    '[Due: ' + (new Date(relatedCard.due)).toLocaleString() + ']'
+                    '[Due: ' + HandsomeTrello.helpers.generateDateString(relatedCard.due) + ']'
                   ]
                   : ''
               ]

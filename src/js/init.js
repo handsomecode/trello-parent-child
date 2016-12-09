@@ -131,6 +131,10 @@
         } else {
           self.data.me.data = data;
 
+          if (data.prefs && typeof data.prefs.locale === 'string') {
+            self.settings.locale = data.prefs.locale;
+          }
+
           self.data.boardAccess =
             self.data.loaded &&
             self.data.boardId &&
