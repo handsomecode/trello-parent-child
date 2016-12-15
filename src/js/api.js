@@ -39,8 +39,10 @@ HandsomeTrello.api = {
 
     xhttp.onreadystatechange = function () {
       if (xhttp.readyState === 4) {
-        if (xhttp.status === 200 && typeof requestData.callback === 'function' && HandsomeTrello.helpers.isJSONString(xhttp.responseText)) {
-          requestData.callback(null, JSON.parse(xhttp.responseText));
+        if (xhttp.status === 200 && HandsomeTrello.helpers.isJSONString(xhttp.responseText)) {
+          if (typeof requestData.callback === 'function') {
+            requestData.callback(null, JSON.parse(xhttp.responseText));
+          }
         } else {
           console.error('Request Error:', xhttp.status, xhttp.responseText || xhttp.statusText);
 
