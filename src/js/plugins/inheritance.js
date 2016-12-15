@@ -1190,7 +1190,8 @@
       if (card && card.parent) {
         self.parentLoading(card.id, true);
 
-        var cardShortId = card.idShort;
+        var cardShortId = card.idShort,
+          cardParentShortId = card.parent.idShort;
 
         if (card.parent.childrenChecklist.checkItems.length) {
           HandsomeTrello.api.checklist.deleteItem(card.parent.childrenChecklist.id, card.checkItem.id, function (error) {
@@ -1200,8 +1201,9 @@
               );
             } else {
               card = HandsomeTrello.data.cards[cardShortId];
+              var parent = HandsomeTrello.data.cards[cardParentShortId];
 
-              card.parent.childrenChecklist.checkItems.splice(card.parent.childrenChecklist.checkItems.indexOf(card.checkItem), 1);
+              parent.childrenChecklist.checkItems.splice(parent.childrenChecklist.checkItems.indexOf(card.checkItem), 1);
 
               self.readCards();
 
