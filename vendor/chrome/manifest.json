@@ -13,8 +13,7 @@
   "permissions": [
     "tabs",
     "storage",
-    "https://trello.com/",
-    "https://api.airtable.com/"
+    "https://trello.com/"
   ],
   "options_page": "options.html",
   "content_scripts": [
