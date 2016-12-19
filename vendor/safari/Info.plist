@@ -27,8 +27,8 @@
 		<dict>
 			<key>End</key>
 			<array>
-				<string>js/vendor/jquery.min.js</string>
-				<string>js/vendor/jquery-ui.min.js</string>
+				<string>js/libs/jquery.min.js</string>
+				<string>js/libs/jquery-ui.min.js</string>
 				<string>js/config.js</string>
 				<string>js/settings.js</string>
 				<string>js/helpers.js</string>
