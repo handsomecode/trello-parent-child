@@ -109,14 +109,15 @@
                 (HandsomeTrello.options.showCardId ? '#' + parentCard.idShort + ' ' : '') +
                 parentCard.title
               ],
-              ' (' + (parentCard.status === 'closed' ? 'Archived' : parentCard.column.name) + ')' +
-              HandsomeTrello.options.showCardDueDate && parentCard.due ?
-                ['span', {
-                  'class': 'handsome-trello__inheritance-due-date' + (new Date(parentCard.due) < new Date() ? ' handsome-trello__inheritance-due-date--expired' : '')
-                },
-                  '[Due: ' + HandsomeTrello.helpers.generateDateString(parentCard.due) + ']'
-                ]
-                : ''
+              ' (' + (parentCard.status === 'closed' ? 'Archived' : parentCard.column.name) + ')',
+              (
+                HandsomeTrello.options.showCardDueDate && parentCard.due ?
+                  ['span', {
+                    'class': 'handsome-trello__inheritance-due-date' + (new Date(parentCard.due) < new Date() ? ' handsome-trello__inheritance-due-date--expired' : '')
+                  },
+                    '[Due: ' + HandsomeTrello.helpers.generateDateString(parentCard.due) + ']'
+                  ] : ''
+              )
             ]
           ]
       );
@@ -151,14 +152,15 @@
                     (HandsomeTrello.options.showCardId ? '#' + childCard.idShort + ' ' : '') +
                     childCard.title
                   ],
-                  ' (' + (childCard.status === 'closed' ? 'Archived' : childCard.column.name) + ')' +
-                  HandsomeTrello.options.showCardDueDate && childCard.due ?
-                    ['span', {
-                      'class': 'handsome-trello__inheritance-due-date' + (new Date(childCard.due) < new Date() ? ' handsome-trello__inheritance-due-date--expired' : '')
-                    },
-                      '[Due: ' + HandsomeTrello.helpers.generateDateString(childCard.due) + ']'
-                    ]
-                    : ''
+                  ' (' + (childCard.status === 'closed' ? 'Archived' : childCard.column.name) + ')',
+                  (
+                    HandsomeTrello.options.showCardDueDate && childCard.due ?
+                      ['span', {
+                        'class': 'handsome-trello__inheritance-due-date' + (new Date(childCard.due) < new Date() ? ' handsome-trello__inheritance-due-date--expired' : '')
+                      },
+                        '[Due: ' + HandsomeTrello.helpers.generateDateString(childCard.due) + ']'
+                      ] : ''
+                  )
                 ],
                 childCard.children && childCard.children.length ?
                     this.generateHtmlForOneChildren(childCard.children, level + 1) :
@@ -236,14 +238,15 @@
                   (HandsomeTrello.options.showCardId ? '#' + relatedCard.idShort + ' ' : '') +
                   relatedCard.title
                 ],
-                ' (' + (relatedCard.status === 'closed' ? 'Archived' : relatedCard.column.name) + ')' +
-                HandsomeTrello.options.showCardDueDate && relatedCard.due ?
-                  ['span', {
-                    'class': 'handsome-trello__inheritance-due-date' + (new Date(relatedCard.due) < new Date() ? ' handsome-trello__inheritance-due-date--expired' : '')
-                  },
-                    '[Due: ' + HandsomeTrello.helpers.generateDateString(relatedCard.due) + ']'
-                  ]
-                  : ''
+                ' (' + (relatedCard.status === 'closed' ? 'Archived' : relatedCard.column.name) + ')',
+                (
+                  HandsomeTrello.options.showCardDueDate && relatedCard.due ?
+                    ['span', {
+                      'class': 'handsome-trello__inheritance-due-date' + (new Date(relatedCard.due) < new Date() ? ' handsome-trello__inheritance-due-date--expired' : '')
+                    },
+                      '[Due: ' + HandsomeTrello.helpers.generateDateString(relatedCard.due) + ']'
+                    ] : ''
+                )
               ]
           ));
         }

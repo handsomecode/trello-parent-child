@@ -201,15 +201,8 @@ HandsomeTrello.helpers = {
       args.forEach(function (e) {
         try {
           elem.appendChild(
-            Object.prototype.toString.call(e) == '[object Array]'
-              ?
-              tag.apply(null, e)
-              :
-              e instanceof doc.defaultView.Node
-                ?
-                e
-                :
-                doc.createTextNode(e)
+            Object.prototype.toString.call(e) == '[object Array]' ? tag.apply(null, e) :
+              e instanceof doc.defaultView.Node ? e : doc.createTextNode(e)
           );
         } catch (ex) {
           elem.appendChild(doc.createTextNode(ex));
