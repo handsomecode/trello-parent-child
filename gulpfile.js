@@ -10,6 +10,7 @@ var rename = require('gulp-rename');
 var shell = require('gulp-shell');
 var jeditor = require("gulp-json-editor");
 var peditor = require('gulp-plist');
+var jshint = require('gulp-jshint');
 var app = require('./package');
 
 function pipe(src, transforms, dest) {
@@ -169,6 +170,15 @@ gulp.task('watch', function () {
       './package.json'
     ], ['default']);
   });
+});
+
+gulp.task('lint', function() {
+  return gulp.src([
+    './src/js/**/*.js',
+    '!./src/js/libs/*.js'
+  ])
+    .pipe(jshint())
+    .pipe(jshint.reporter('default'));
 });
 
 gulp.task('run', function (cb) {
