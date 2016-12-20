@@ -130,7 +130,7 @@
       for (var i = 0; i < children.length; i++) {
         var childCard = children[i];
 
-        if (childCard) {
+        if (childCard && childCard.checkItem) {
           var liAttributes = {
             'class': 'handsome-trello__inheritance-children-item handsome-trello__inheritance-children-item--' + childCard.status
           };
