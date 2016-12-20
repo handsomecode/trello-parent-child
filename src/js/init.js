@@ -144,7 +144,9 @@
 
           self.data.loading = false;
 
-          self.getBoardShortLinkFromUrl() || self.getCardShortLinkFromUrl();
+          if (!self.getBoardShortLinkFromUrl()) {
+            self.getCardShortLinkFromUrl();
+          }
         }
       });
     },
@@ -193,7 +195,8 @@
             self.data.boardAccess =
               data.id &&
               typeof self.data.me.data !== 'undefined' &&
-              typeof data.members !== 'undefined' && !!self.helpers.getElementByProperty(data.members, 'id', self.data.me.data.id);
+              typeof data.members !== 'undefined' &&
+              !!self.helpers.getElementByProperty(data.members, 'id', self.data.me.data.id);
           }
         });
       }
@@ -451,7 +454,9 @@
             self.data.loaded = false;
             self.data.loading = false;
 
-            self.getBoardShortLinkFromUrl() || self.getCardShortLinkFromUrl();
+            if (!self.getBoardShortLinkFromUrl()) {
+              self.getCardShortLinkFromUrl();
+            }
           }
         }, self.data.intervalTime);
       }, timeout);
@@ -545,7 +550,11 @@
           if (e.target.classList && e.target.classList.contains('phenom-action')) {
             var deletedCardMatch = e.target.querySelector('.phenom-desc').textContent.match(/deleted card #([0-9]+) from/);
 
-            if (deletedCardMatch && parseInt(deletedCardMatch[1]) > 0 && self.data.cards[deletedCardMatch[1]]) {
+            if (
+              deletedCardMatch &&
+              parseInt(deletedCardMatch[1]) > 0 &&
+              self.data.cards[deletedCardMatch[1]]
+            ) {
               var cardData = self.helpers.getElementByProperty(self.data.boardData.cards, 'idShort', deletedCardMatch[1]);
 
               if (cardData) {
@@ -556,7 +565,11 @@
             }
           }
 
-          if (e.target.classList && e.target.classList.contains('badge') && e.target.querySelector('.icon-checklist')) {
+          if (
+            e.target.classList &&
+            e.target.classList.contains('badge') &&
+            e.target.querySelector('.icon-checklist')
+          ) {
             var _parentTarget = self.helpers.findParentByClass(e.target, 'list-card');
 
             if (_parentTarget) {
@@ -581,7 +594,11 @@
             self.reloadData(true);
           }
 
-          if (e.target.classList && e.target.classList.contains('badge') && e.target.querySelector('.icon-checklist')) {
+          if (
+            e.target.classList &&
+            e.target.classList.contains('badge') &&
+            e.target.querySelector('.icon-checklist')
+          ) {
             var _parentTarget = self.helpers.findParentByClass(e.target, 'list-card');
 
             if (_parentTarget) {
@@ -597,7 +614,13 @@
 
       document.body.addEventListener('DOMSubtreeModified', function (e) {
         if (self.data.boardId && self.data.loaded && !self.helpers.checkLockedDOM()) {
-          if (e.target.classList && (e.target.classList.contains('js-list') || e.target.classList.contains('js-list-name'))) {
+          if (
+            e.target.classList &&
+            (
+              e.target.classList.contains('js-list') ||
+              e.target.classList.contains('js-list-name')
+            )
+          ) {
             self.reloadData(true);
           }
 

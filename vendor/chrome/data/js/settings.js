@@ -2,7 +2,9 @@ function loadSettings(options, callback) {
   var gettingOptions = {};
 
   for (var optionName in options) {
-    gettingOptions[optionName] = options[optionName].value;
+    if (options.hasOwnProperty(optionName)) {
+      gettingOptions[optionName] = options[optionName].value;
+    }
   }
 
   chrome.storage.sync.get(gettingOptions, function(localOptions) {
