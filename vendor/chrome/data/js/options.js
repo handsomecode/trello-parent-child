@@ -1,4 +1,4 @@
-(function (HandsomeTrello) {
+(function (chrome, HandsomeTrello) {
   'use strict';
 
   var _options = document.getElementById('options'),
@@ -112,4 +112,4 @@
     loadOptions();
   });
 
-})(HandsomeTrello);
+})(chrome, HandsomeTrello);

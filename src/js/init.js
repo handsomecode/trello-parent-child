@@ -288,7 +288,10 @@
       var self = this;
 
       for (var pluginName in self.callbacks.cardsUpdated) {
-        if (typeof self.callbacks.cardsUpdated[pluginName] === 'function') {
+        if (
+          self.callbacks.cardsUpdated.hasOwnProperty(pluginName) &&
+          typeof self.callbacks.cardsUpdated[pluginName] === 'function'
+        ) {
           self.callbacks.cardsUpdated[pluginName]();
         }
       }
@@ -383,7 +386,10 @@
             self.helpers.lockDOM('open-card-view', true);
 
             for (var pluginName in self.callbacks.openCardViewed) {
-              if (typeof self.callbacks.openCardViewed[pluginName] === 'function') {
+              if (
+                self.callbacks.openCardViewed.hasOwnProperty(pluginName) &&
+                typeof self.callbacks.openCardViewed[pluginName] === 'function'
+              ) {
                 self.callbacks.openCardViewed[pluginName](currentCard, currentCardTitle);
               }
             }
@@ -399,7 +405,10 @@
       self.helpers.lockDOM('badge-checklist-update', true);
 
       for (var pluginName in self.callbacks.badgeChecklistUpdated) {
-        if (typeof self.callbacks.badgeChecklistUpdated[pluginName] === 'function') {
+        if (
+          self.callbacks.badgeChecklistUpdated.hasOwnProperty(pluginName) &&
+          typeof self.callbacks.badgeChecklistUpdated[pluginName] === 'function'
+        ) {
           self.callbacks.badgeChecklistUpdated[pluginName](card);
         }
       }
@@ -474,6 +483,7 @@
 
       for (var pluginName in self.plugins) {
         if (
+          self.plugins.hasOwnProperty(pluginName) &&
           self.settings.plugins[pluginName] &&
           typeof self.plugins[pluginName].init === 'function'
         ) {
@@ -502,7 +512,10 @@
 
         if (e.target.classList && e.target.classList.contains('checklist')) {
           for (var checklistInsertedPluginName in self.callbacks.checklistInserted) {
-            if (typeof self.callbacks.checklistInserted[checklistInsertedPluginName] === 'function') {
+            if (
+              self.callbacks.checklistInserted.hasOwnProperty(checklistInsertedPluginName) &&
+              typeof self.callbacks.checklistInserted[checklistInsertedPluginName] === 'function'
+            ) {
               self.callbacks.checklistInserted[checklistInsertedPluginName](e.target);
             }
           }
@@ -541,7 +554,10 @@
 
           if (e.target.classList && e.target.classList.contains('checklist-item')) {
             for (var checkItemUpdatedPluginName in self.callbacks.checkItemUpdated) {
-              if (typeof self.callbacks.checkItemUpdated[checkItemUpdatedPluginName] === 'function') {
+              if (
+                self.callbacks.checkItemUpdated.hasOwnProperty(checkItemUpdatedPluginName) &&
+                typeof self.callbacks.checkItemUpdated[checkItemUpdatedPluginName] === 'function'
+              ) {
                 self.callbacks.checkItemUpdated[checkItemUpdatedPluginName](e.target);
               }
             }

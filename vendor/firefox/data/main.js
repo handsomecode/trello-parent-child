@@ -24,7 +24,9 @@ pageMod.PageMod({
     worker.port.emit("loadPrefs", pref);
     worker.port.on("savePrefs", function(options) {
       for (var optionName in options) {
-        pref[optionName] = options[optionName];
+        if (options.hasOwnProperty(optionName)) {
+          pref[optionName] = options[optionName];
+        }
       }
     });
   }
