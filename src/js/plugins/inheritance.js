@@ -1079,7 +1079,7 @@
       if (card.parent) {
         checkDeleteParentFromCard = (card.parent.id && parent.id && card.parent.id === parent.id);
 
-        self.removeParent(card, checkDeleteParentFromCard);
+        self.removeParent(card, checkDeleteParentFromCard, !checkDeleteParentFromCard);
       }
 
       // end removing current parent
@@ -1114,8 +1114,6 @@
         // end check recursion
 
         // adding parent
-
-        card.parent = parent;
 
         if (parent.childrenChecklist) {
           self.parentLoading(card.id, true);
@@ -1171,7 +1169,7 @@
       }
     },
 
-    removeParent: function (card, closeParentPopOver) {
+    removeParent: function (card, closeParentPopOver, isNotLastEvent) {
       var self = this;
 
       if (card && card.parent) {
@@ -1199,7 +1197,9 @@
               }
             }
 
-            self.parentLoading(card.id, false);
+            if (!isNotLastEvent) {
+              self.parentLoading(card.id, false);
+            }
           });
         } else {
           HandsomeTrello.api.checklist.remove(card.parent.childrenChecklist.id, function (error) {
@@ -1221,7 +1221,9 @@
               }
             }
 
-            self.parentLoading(card.id, false);
+            if (!isNotLastEvent) {
+              self.parentLoading(card.id, false);
+            }
           });
         }
 
