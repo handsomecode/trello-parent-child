@@ -12,6 +12,9 @@ var jeditor = require("gulp-json-editor");
 var peditor = require('gulp-plist');
 var app = require('./package');
 
+var firefoxConfigTransform = require('./vendor/firefox/helpers/configTranform');
+var safariConfigTransform = require('./vendor/safari/helpers/configTranform');
+
 function pipe(src, transforms, dest) {
   if (typeof transforms === 'string') {
     dest = transforms;
@@ -75,10 +78,10 @@ gulp.task('opera', function () {
       pipe('./vendor/opera/data/**/*', './build/opera'),
       pipe('./vendor/opera/manifest.json', [
         jeditor({
-          'name': app.title,
-          'version': app.version,
-          'description': app.description,
-          'homepage_url': app.homepage
+          name: app.title,
+          version: app.version,
+          description: app.description,
+          homepage_url: app.homepage
         })
       ], './build/opera/')
   );
@@ -91,11 +94,14 @@ gulp.task('firefox', function () {
       pipe('./src/icons/**/*', './build/firefox/data/icons'),
       pipe('./vendor/firefox/data/**/*', './build/firefox/data'),
       pipe('./vendor/firefox/package.json', [
-        jeditor({
-          'title': app.title,
-          'version': app.version,
-          'description': app.description,
-          'homepage': app.homepage
+        jeditor(function (json) {
+          json.title = app.title;
+          json.version = app.version;
+          json.description = app.description;
+          json.homepage = app.homepage;
+          json.preferences = firefoxConfigTransform();
+
+          return json;
         })
       ], './build/firefox/')
   );
@@ -114,6 +120,9 @@ gulp.task('safari', function () {
           Description: app.description,
           Website: app.homepage
         })
+      ], './build/safari/handsometrello.safariextension'),
+      pipe('./vendor/safari/Settings.plist', [
+        peditor(safariConfigTransform)
       ], './build/safari/handsometrello.safariextension')
   );
 });

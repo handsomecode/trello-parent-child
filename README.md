@@ -3,6 +3,8 @@ Parent/Child Management for Trello
 
 Thinking about how we use Trello and how others might use it in a similar way, we have created an extension that brings Parent/Child Management to Trello projects.
 
+Project Homepage: [https://labs.handsome.is/trello/](https://labs.handsome.is/trello/)
+
 
 ## Usage
 

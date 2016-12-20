@@ -61,43 +61,49 @@ var HandsomeTrello = {
     },
 
     options: {
-      openChildCard: {
-        title: 'Open Child Card after adding',
-        type: 'boolean',
-        value: true
-      },
       showArchivedCards: {
-        title: 'Show Archived Cards in children and related lists',
+        title: 'Show Archived Cards',
+        description: 'Show Archived Cards in children and related lists',
         type: 'boolean',
         value: true
       },
       showCardDueDate: {
-        title: 'Show Due Date in children and related lists and parent',
+        title: 'Show Card Due Date',
+        description: 'Show Due Date in children and related lists and parent',
         type: 'boolean',
         value: false
       },
       showCardId: {
-        title: 'Show Card Ids in children and related lists and parent',
+        title: 'Show Card IDs',
+        description: 'Show Card IDs for Parent/Siblings/Child Cards',
         type: 'boolean',
         value: false
       },
+      openChildCard: {
+        title: 'Open Child Card when adding',
+        description: 'Open Child Card when adding',
+        type: 'boolean',
+        value: true
+      },
       descriptionPosition: {
-        title: 'The position of Parent/Siblings/Child blocks relative to the description',
+        title: 'Position of Cards relative to the description',
+        description: 'Position of Parent/Siblings/Child Cards relative to the description',
         type: 'select',
         options: [
           {
-            label: 'Top',
+            label: 'Above',
             value: 'top'
           },
           {
-            label: 'Bottom',
+            label: 'Below',
             value: 'bottom'
           }
         ],
         value: 'bottom'
       },
       orderOfBlocks: {
-        title: 'The order of Parent/Siblings/Child blocks',
+        title: 'Order of Parent/Siblings/Child blocks',
+        description: 'Order of Parent/Siblings/Child blocks',
         type: 'select',
         options: [
           {

@@ -10,74 +10,7 @@
   "engines": {
     "firefox": ">=38.0a1"
   },
-  "preferences": [
-    {
-      "name": "openChildCard",
-      "title": "Open Child Card",
-      "description": "Open Child Card after adding",
-      "type": "bool",
-      "value": true
-    },
-    {
-      "name": "showArchivedCards",
-      "title": "Show Archived Cards",
-      "description": "Show Archived Cards in children and related lists",
-      "type": "bool",
-      "value": true
-    },
-    {
-      "name": "showCardDueDate",
-      "title": "Show Card Due Date",
-      "description": "Show Due Date in children and related lists and parent",
-      "type": "bool",
-      "value": false
-    },
-    {
-      "name": "showCardId",
-      "title": "Show Card Ids",
-      "description": "Show Card Ids in children and related lists and parent",
-      "type": "bool",
-      "value": false
-    },
-    {
-      "name": "descriptionPosition",
-      "title": "Position relative to the description",
-      "description": "The position of Parent/Siblings/Child blocks relative to the description",
-      "type": "menulist",
-      "options": [
-        {
-          "label": "Top",
-          "value": "top"
-        },
-        {
-          "label": "Bottom",
-          "value": "bottom"
-        }
-      ],
-      "value": "top"
-    },
-    {
-      "name": "orderOfBlocks",
-      "title": "The order of Parent/Siblings/Child blocks",
-      "description": "The order of Parent/Siblings/Child blocks in the card view window",
-      "type": "menulist",
-      "options": [
-        {
-          "label": "Parent - Siblings - Children",
-          "value": "parent-related-children"
-        },
-        {
-          "label": "Parent - Children - Siblings",
-          "value": "parent-children-related"
-        },
-        {
-          "label": "Siblings - Parent - Children",
-          "value": "related-parent-children"
-        }
-      ],
-      "value": "parent-related-children"
-    }
-  ],
+  "preferences": [],
   "icon": "data/icons/icon_48.png",
   "license": "MIT"
 }
