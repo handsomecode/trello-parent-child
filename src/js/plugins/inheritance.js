@@ -1437,8 +1437,6 @@
                     }
 
                     if (checkDoubleChildCheckItem) {
-                      console.error(123);
-
                       console.warn(
                           HandsomeTrello.settings.notification.messages.severalParentsOnCard(
                               '#' + childCard.idShort + ' ' + childCard.title,
