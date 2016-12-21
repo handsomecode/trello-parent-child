@@ -61,10 +61,13 @@ HandsomeTrello.helpers = {
     var stringData = '';
 
     for (var key in object) {
-      if (stringData !== '') {
-        stringData += '&';
+      if (object.hasOwnProperty(key)) {
+        if (stringData !== '') {
+          stringData += '&';
+        }
+
+        stringData += key + '=' + encodeURIComponent(object[key]);
       }
-      stringData += key + '=' + encodeURIComponent(object[key]);
     }
 
     return stringData;
@@ -188,15 +191,20 @@ HandsomeTrello.helpers = {
       var elem = doc.createElementNS(vals[0] || defaultNamespace, vals[1]);
 
       for (var key in attr) {
-        var val = attr[key];
-        if (nodes && key == 'key')
-          nodes[val] = elem;
+        if (attr.hasOwnProperty(key)) {
+          var val = attr[key];
 
-        vals = namespace(key);
-        if (typeof val == 'function')
-          elem.addEventListener(key.replace(/^on/, ''), val, false);
-        else
-          elem.setAttributeNS(vals[0] || '', vals[1], val);
+          if (nodes && key == 'key')
+            nodes[val] = elem;
+
+          vals = namespace(key);
+
+          if (typeof val == 'function') {
+            elem.addEventListener(key.replace(/^on/, ''), val, false);
+          } else {
+            elem.setAttributeNS(vals[0] || '', vals[1], val);
+          }
+        }
       }
       args.forEach(function (e) {
         try {
@@ -259,7 +267,7 @@ HandsomeTrello.helpers = {
 
   getElementByProperty: function (object, property, value) {
     for (var key in object) {
-      if (object[key][property] == value) {
+      if (object.hasOwnProperty(key) && object[key][property] == value) {
         return object[key];
       }
     }
