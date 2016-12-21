@@ -1,4 +1,4 @@
-(function () {
+(function (HandsomeTrello) {
   'use strict';
 
   HandsomeTrello.plugins.inheritance = {
@@ -93,41 +93,38 @@
       }
 
       return HandsomeTrello.helpers.jsonToDOM(
-          ['div', {
-            'class':
-              'handsome-trello__inheritance-parent handsome-trello__inheritance-parent--' +
-              HandsomeTrello.options.descriptionPosition + ' js-card-parent'
+        ['div', {
+          'class': 'handsome-trello__inheritance-parent handsome-trello__inheritance-parent--' +
+          HandsomeTrello.options.descriptionPosition + ' js-card-parent'
+        },
+          ['h3', {
+            'class': 'card-detail-item-header'
           },
-            ['h3', {
-              'class': 'card-detail-item-header'
+            'Parent:'
+          ],
+          ['p', {
+            'class': 'handsome-trello__inheritance-parent-item ' +
+            'handsome-trello__inheritance-parent-item--' + parentCard.status
+          },
+            ['a', {
+              'href': parentCard.url,
+              'class': 'handsome-trello__inheritance-link'
             },
-              'Parent:'
+              (HandsomeTrello.options.showCardId ? '#' + parentCard.idShort + ' ' : '') +
+              parentCard.title
             ],
-            ['p', {
-              'class':
-                'handsome-trello__inheritance-parent-item ' +
-                'handsome-trello__inheritance-parent-item--' + parentCard.status
-            },
-              ['a', {
-                'href': parentCard.url,
-                'class': 'handsome-trello__inheritance-link'
-              },
-                (HandsomeTrello.options.showCardId ? '#' + parentCard.idShort + ' ' : '') +
-                parentCard.title
-              ],
-              ' (' + (parentCard.status === 'closed' ? 'Archived' : parentCard.column.name) + ')',
-              (
-                HandsomeTrello.options.showCardDueDate && parentCard.due ?
-                  ['span', {
-                    'class':
-                      'handsome-trello__inheritance-due-date' +
-                      (new Date(parentCard.due) < new Date() ? ' handsome-trello__inheritance-due-date--expired' : '')
-                  },
-                    '[Due: ' + HandsomeTrello.helpers.generateDateString(parentCard.due) + ']'
-                  ] : ''
-              )
-            ]
+            ' (' + (parentCard.status === 'closed' ? 'Archived' : parentCard.column.name) + ')',
+            (
+              HandsomeTrello.options.showCardDueDate && parentCard.due ?
+                ['span', {
+                  'class': 'handsome-trello__inheritance-due-date' +
+                  (new Date(parentCard.due) < new Date() ? ' handsome-trello__inheritance-due-date--expired' : '')
+                },
+                  '[Due: ' + HandsomeTrello.helpers.generateDateString(parentCard.due) + ']'
+                ] : ''
+            )
           ]
+        ]
       );
     },
 
@@ -140,9 +137,8 @@
 
         if (childCard && childCard.checkItem) {
           var liAttributes = {
-            'class':
-              'handsome-trello__inheritance-children-item ' +
-              'handsome-trello__inheritance-children-item--' + childCard.status
+            'class': 'handsome-trello__inheritance-children-item ' +
+            'handsome-trello__inheritance-children-item--' + childCard.status
           };
 
           if (level === 0) {
@@ -151,33 +147,32 @@
           }
 
           _ul.appendChild(HandsomeTrello.helpers.jsonToDOM(
-              ['li', liAttributes,
-                ['p', {
-                  'class': 'handsome-trello__inheritance-children-name'
+            ['li', liAttributes,
+              ['p', {
+                'class': 'handsome-trello__inheritance-children-name'
+              },
+                ['a', {
+                  'href': childCard.url,
+                  'class': 'handsome-trello__inheritance-link'
                 },
-                  ['a', {
-                    'href': childCard.url,
-                    'class': 'handsome-trello__inheritance-link'
-                  },
-                    (HandsomeTrello.options.showCardId ? '#' + childCard.idShort + ' ' : '') +
-                    childCard.title
-                  ],
-                  ' (' + (childCard.status === 'closed' ? 'Archived' : childCard.column.name) + ')',
-                  (
-                    HandsomeTrello.options.showCardDueDate && childCard.due ?
-                      ['span', {
-                        'class':
-                          'handsome-trello__inheritance-due-date' +
-                          (new Date(childCard.due) < new Date() ? ' handsome-trello__inheritance-due-date--expired' : '')
-                      },
-                        '[Due: ' + HandsomeTrello.helpers.generateDateString(childCard.due) + ']'
-                      ] : ''
-                  )
+                  (HandsomeTrello.options.showCardId ? '#' + childCard.idShort + ' ' : '') +
+                  childCard.title
                 ],
-                childCard.children && childCard.children.length ?
-                    this.generateHtmlForOneChildren(childCard.children, level + 1) :
-                    ''
-              ]
+                ' (' + (childCard.status === 'closed' ? 'Archived' : childCard.column.name) + ')',
+                (
+                  HandsomeTrello.options.showCardDueDate && childCard.due ?
+                    ['span', {
+                      'class': 'handsome-trello__inheritance-due-date' +
+                      (new Date(childCard.due) < new Date() ? ' handsome-trello__inheritance-due-date--expired' : '')
+                    },
+                      '[Due: ' + HandsomeTrello.helpers.generateDateString(childCard.due) + ']'
+                    ] : ''
+                )
+              ],
+              childCard.children && childCard.children.length ?
+                this.generateHtmlForOneChildren(childCard.children, level + 1) :
+                ''
+            ]
           ));
         }
       }
@@ -197,7 +192,7 @@
       }
 
       var _div = document.createElement('div'),
-          _h3 = document.createElement('h3');
+        _h3 = document.createElement('h3');
 
       _div.setAttribute(
         'class',
@@ -222,18 +217,18 @@
       }
 
       if (
-          !parent || !parent.children || !parent.children.length ||
-          (
-              parent.children.length === 1 &&
-              parent.children[0] === card
-          )
+        !parent || !parent.children || !parent.children.length ||
+        (
+          parent.children.length === 1 &&
+          parent.children[0] === card
+        )
       ) {
         return;
       }
 
       var _div = document.createElement('div'),
-          _h3 = document.createElement('h3'),
-          _ul = document.createElement('ul');
+        _h3 = document.createElement('h3'),
+        _ul = document.createElement('ul');
 
       _div.setAttribute(
         'class',
@@ -250,30 +245,28 @@
 
         if (card !== relatedCard) {
           _ul.appendChild(HandsomeTrello.helpers.jsonToDOM(
-              ['li', {
-                'class':
-                  'handsome-trello__inheritance-related-item ' +
-                  'handsome-trello__inheritance-related-item--' + relatedCard.status
+            ['li', {
+              'class': 'handsome-trello__inheritance-related-item ' +
+              'handsome-trello__inheritance-related-item--' + relatedCard.status
+            },
+              ['a', {
+                'href': relatedCard.url,
+                'class': 'handsome-trello__inheritance-link'
               },
-                ['a', {
-                  'href': relatedCard.url,
-                  'class': 'handsome-trello__inheritance-link'
-                },
-                  (HandsomeTrello.options.showCardId ? '#' + relatedCard.idShort + ' ' : '') +
-                  relatedCard.title
-                ],
-                ' (' + (relatedCard.status === 'closed' ? 'Archived' : relatedCard.column.name) + ')',
-                (
-                  HandsomeTrello.options.showCardDueDate && relatedCard.due ?
-                    ['span', {
-                      'class':
-                        'handsome-trello__inheritance-due-date' +
-                        (new Date(relatedCard.due) < new Date() ? ' handsome-trello__inheritance-due-date--expired' : '')
-                    },
-                      '[Due: ' + HandsomeTrello.helpers.generateDateString(relatedCard.due) + ']'
-                    ] : ''
-                )
-              ]
+                (HandsomeTrello.options.showCardId ? '#' + relatedCard.idShort + ' ' : '') +
+                relatedCard.title
+              ],
+              ' (' + (relatedCard.status === 'closed' ? 'Archived' : relatedCard.column.name) + ')',
+              (
+                HandsomeTrello.options.showCardDueDate && relatedCard.due ?
+                  ['span', {
+                    'class': 'handsome-trello__inheritance-due-date' +
+                    (new Date(relatedCard.due) < new Date() ? ' handsome-trello__inheritance-due-date--expired' : '')
+                  },
+                    '[Due: ' + HandsomeTrello.helpers.generateDateString(relatedCard.due) + ']'
+                  ] : ''
+              )
+            ]
           ));
         }
       }
@@ -286,17 +279,17 @@
 
     searchInString: function (stringLine, searchLine) {
       var stringArray = stringLine.replace(/ +(?= )/g, '').replace(/[^0-9A-Za-zА-Яа-яЁё ]/g, '').trim().split(' '),
-          searchArray = searchLine.replace(/ +(?= )/g, '').replace(/[^0-9A-Za-zА-Яа-яЁё ]/g, '').trim().split(' '),
-          matchesCount = 0;
+        searchArray = searchLine.replace(/ +(?= )/g, '').replace(/[^0-9A-Za-zА-Яа-яЁё ]/g, '').trim().split(' '),
+        matchesCount = 0;
 
       for (var y = 0; y < searchArray.length; y++) {
         for (var i = 0; i < stringArray.length; i++) {
           if (
-              (
-                  y === searchArray.length - 1 &&
-                  stringArray[i].indexOf(searchArray[y]) === 0
-              ) ||
-              stringArray[i].toLowerCase() == searchArray[y].toLowerCase()
+            (
+              y === searchArray.length - 1 &&
+              stringArray[i].indexOf(searchArray[y]) === 0
+            ) ||
+            stringArray[i].toLowerCase() === searchArray[y].toLowerCase()
           ) {
             matchesCount++;
 
@@ -316,8 +309,8 @@
       }
 
       var _popOverContent,
-          _parentChangeSearchField,
-          _parentChangeList;
+        _parentChangeSearchField,
+        _parentChangeList;
 
       var currentOpenedCard = HandsomeTrello.getCurrentOpenedCard();
 
@@ -326,9 +319,159 @@
       }
 
       var currentParent,
-          currentItems = [],
-          currentQueryString = null,
-          selectedItemIndex = null;
+        currentItems = [],
+        currentQueryString = null,
+        selectedItemIndex = null;
+
+      function generateCardsItem(card, parentIndex, active, selected) {
+        return HandsomeTrello.helpers.jsonToDOM(
+          ['li', {
+            'class': 'item js-parent-change-item' + (active ? ' active' : '') + (selected ? ' selected' : '')
+          },
+            ['a', {
+              'href': '#',
+              'title': card.title + ' (' + card.column.name + ')',
+              'class': 'name js-parent-change-link',
+              'data-parent-index': parentIndex
+            },
+              ['span', {
+                'class': 'full-name'
+              },
+                card.title + ' ',
+                ['span', {
+                  'class': 'handsome-trello__inheritance-pop-over-parent-column-name'
+                },
+                  '(' + card.column.name + ')'
+                ]
+              ],
+              ['span', {
+                'class': 'icon-sm icon-check checked-icon'
+              }]
+            ]
+          ]
+        );
+      }
+
+      function checkScrollMissing(_item, _list) {
+        var listHeight = _list.offsetHeight,
+          listOffsetTop = _list.offsetTop,
+          listScrollTop = _list.scrollTop,
+          itemHeight = _item.offsetHeight,
+          itemOffsetTop = _item.offsetTop,
+          itemPositionTop = itemOffsetTop - listOffsetTop;
+
+        if (itemPositionTop < listScrollTop) {
+          _list.scrollTop = itemPositionTop;
+        } else if (itemPositionTop + itemHeight > listScrollTop + listHeight) {
+          _list.scrollTop = itemPositionTop - listHeight + itemHeight;
+        }
+      }
+
+      function selectParentChangeItem(index, notUndefined, checkMissingScroll) {
+        if (typeof notUndefined === 'undefined') {
+          notUndefined = false;
+        }
+
+        if (typeof checkMissingScroll === 'undefined') {
+          checkMissingScroll = false;
+        }
+
+        var _parentChangeItems = _popOverContent.querySelectorAll('.js-parent-change-item');
+
+        if (_parentChangeItems.length) {
+          if (
+            typeof selectedItemIndex === 'number' &&
+            typeof _parentChangeItems[selectedItemIndex] === 'object' &&
+            (!notUndefined || selectedItemIndex !== index)
+          ) {
+            _parentChangeItems[selectedItemIndex].classList.remove('selected');
+          }
+
+          if (
+            typeof index === 'number' &&
+            typeof _parentChangeItems[index] === 'object' &&
+            selectedItemIndex !== index
+          ) {
+            _parentChangeItems[index].classList.add('selected');
+
+            if (checkMissingScroll) {
+              checkScrollMissing(_parentChangeItems[index], _parentChangeList);
+            }
+          }
+
+          selectedItemIndex = selectedItemIndex !== index || notUndefined ? index : null;
+        }
+      }
+
+      function generateCardsList() {
+        if (currentQueryString === _parentChangeSearchField.value.trim()) {
+          return false;
+        }
+
+        currentQueryString = _parentChangeSearchField.value.trim();
+
+        _parentChangeList.innerHTML = '';
+
+        if (_parentChangeSearchField && _parentChangeSearchField.value.trim().length) {
+          currentItems = [];
+
+          for (var cardId in HandsomeTrello.data.cards) {
+            if (HandsomeTrello.data.cards.hasOwnProperty(cardId)) {
+              var card = HandsomeTrello.data.cards[cardId];
+
+              if (
+                card !== currentOpenedCard &&
+                card.status !== 'closed' &&
+                self.searchInString(card.title.toLowerCase(), _parentChangeSearchField.value.trim().toLowerCase())
+              ) {
+                _parentChangeList.appendChild(
+                  generateCardsItem(
+                    card,
+                    currentItems.length,
+                    (currentOpenedCard.parent && card.id === currentOpenedCard.parent.id),
+                    !currentItems.length
+                  )
+                );
+
+                currentItems.push(card);
+              }
+            }
+          }
+
+          selectParentChangeItem(currentItems.length ? 0 : null, true);
+        } else if (currentOpenedCard.parent) {
+          currentItems = [currentOpenedCard.parent];
+
+          _parentChangeList.appendChild(
+            generateCardsItem(
+              currentOpenedCard.parent,
+              0,
+              currentParent && currentParent.id === currentOpenedCard.parent.id,
+              false
+            )
+          );
+
+          selectParentChangeItem(null, true);
+        }
+
+        var _parentChangeLinks = _parentChangeList.querySelectorAll('.js-parent-change-link');
+
+        function selectParentClickHandler (e) {
+          e.preventDefault();
+
+          self.changeParent(currentOpenedCard, currentItems[parseInt(e.currentTarget.getAttribute('data-parent-index'))]);
+        }
+
+        function parentMouseOverHandler (e) {
+          selectParentChangeItem(parseInt(e.currentTarget.getAttribute('data-parent-index')), true);
+        }
+
+        for (var i = 0; i < _parentChangeLinks.length; i++) {
+          _parentChangeLinks[i].addEventListener('mouseover', parentMouseOverHandler);
+
+          _parentChangeLinks[i].addEventListener('click', selectParentClickHandler);
+        }
+      }
 
       if (!HandsomeTrello.popOver.check('Set Parent', close)) {
         _popOverContent = document.querySelector('.js-pop-over-content');
@@ -378,156 +521,6 @@
         _parentChangeSearchField.focus();
       }
 
-      function generateCardsItem(card, parentIndex, active, selected) {
-        return HandsomeTrello.helpers.jsonToDOM(
-            ['li', {
-              'class': 'item js-parent-change-item' + (active ? ' active' : '') + (selected ? ' selected' : '')
-            },
-              ['a', {
-                'href': '#',
-                'title': card.title + ' (' + card.column.name + ')',
-                'class': 'name js-parent-change-link',
-                'data-parent-index': parentIndex
-              },
-                ['span', {
-                  'class': 'full-name'
-                },
-                  card.title + ' ',
-                  ['span', {
-                    'class': 'handsome-trello__inheritance-pop-over-parent-column-name'
-                  },
-                    '(' + card.column.name + ')'
-                  ]
-                ],
-                ['span', {
-                  'class': 'icon-sm icon-check checked-icon'
-                }]
-              ]
-            ]
-        );
-      }
-
-      function generateCardsList() {
-        if (currentQueryString === _parentChangeSearchField.value.trim()) {
-          return false;
-        }
-
-        currentQueryString = _parentChangeSearchField.value.trim();
-
-        _parentChangeList.innerHTML = '';
-
-        if (_parentChangeSearchField && _parentChangeSearchField.value.trim().length) {
-          currentItems = [];
-
-          for (var cardId in HandsomeTrello.data.cards) {
-            if (HandsomeTrello.data.cards.hasOwnProperty(cardId)) {
-              var card = HandsomeTrello.data.cards[cardId];
-
-              if (
-                card !== currentOpenedCard &&
-                card.status !== 'closed' &&
-                self.searchInString(card.title.toLowerCase(), _parentChangeSearchField.value.trim().toLowerCase())
-              ) {
-                _parentChangeList.appendChild(
-                  generateCardsItem(
-                    card,
-                    currentItems.length,
-                    (currentOpenedCard.parent && card.id === currentOpenedCard.parent.id),
-                    !currentItems.length
-                  )
-                );
-
-                currentItems.push(card);
-              }
-            }
-          }
-
-          selectParentChangeItem(currentItems.length ? 0 : null, true);
-        } else if (currentOpenedCard.parent) {
-          currentItems = [currentOpenedCard.parent];
-
-          _parentChangeList.appendChild(
-              generateCardsItem(
-                  currentOpenedCard.parent,
-                  0,
-                  currentParent && currentParent.id === currentOpenedCard.parent.id,
-                  false
-              )
-          );
-
-          selectParentChangeItem(null, true);
-        }
-
-        var _parentChangeLinks = _parentChangeList.querySelectorAll('.js-parent-change-link');
-
-        function selectParentClickHandler(e) {
-          e.preventDefault();
-
-          self.changeParent(currentOpenedCard, currentItems[parseInt(e.currentTarget.getAttribute('data-parent-index'))]);
-        }
-
-        function parentMouseOverHandler(e) {
-          selectParentChangeItem(parseInt(e.currentTarget.getAttribute('data-parent-index')), true);
-        }
-
-        for (var i = 0; i < _parentChangeLinks.length; i++) {
-          _parentChangeLinks[i].addEventListener('mouseover', parentMouseOverHandler);
-
-          _parentChangeLinks[i].addEventListener('click', selectParentClickHandler);
-        }
-      }
-
-      function checkScrollMissing(_item, _list) {
-        var listHeight = _list.offsetHeight,
-            listOffsetTop = _list.offsetTop,
-            listScrollTop = _list.scrollTop,
-            itemHeight = _item.offsetHeight,
-            itemOffsetTop = _item.offsetTop,
-            itemPositionTop = itemOffsetTop - listOffsetTop;
-
-        if (itemPositionTop < listScrollTop) {
-          _list.scrollTop = itemPositionTop;
-        } else if (itemPositionTop + itemHeight > listScrollTop + listHeight) {
-          _list.scrollTop = itemPositionTop - listHeight + itemHeight;
-        }
-      }
-
-      function selectParentChangeItem(index, notUndefined, checkMissingScroll) {
-        if (typeof notUndefined === 'undefined') {
-          notUndefined = false;
-        }
-
-        if (typeof checkMissingScroll === 'undefined') {
-          checkMissingScroll = false;
-        }
-
-        var _parentChangeItems = _popOverContent.querySelectorAll('.js-parent-change-item');
-
-        if (_parentChangeItems.length) {
-          if (
-              typeof selectedItemIndex === 'number' &&
-              typeof _parentChangeItems[selectedItemIndex] === 'object' &&
-              (!notUndefined || selectedItemIndex !== index)
-          ) {
-            _parentChangeItems[selectedItemIndex].classList.remove('selected');
-          }
-
-          if (
-              typeof index === 'number' &&
-              typeof _parentChangeItems[index] === 'object' &&
-              selectedItemIndex !== index
-          ) {
-            _parentChangeItems[index].classList.add('selected');
-
-            if (checkMissingScroll) {
-              checkScrollMissing(_parentChangeItems[index], _parentChangeList);
-            }
-          }
-
-          selectedItemIndex = selectedItemIndex !== index || notUndefined ? index : null;
-        }
-      }
-
       _parentChangeSearchField.addEventListener('keyup', function () {
         generateCardsList();
 
@@ -536,26 +529,26 @@
 
       _parentChangeSearchField.addEventListener('keydown', function (e) {
         if (
-            e.keyCode === 13 && // Enter
-            typeof selectedItemIndex === 'number' &&
-            currentItems[selectedItemIndex]
+          e.keyCode === 13 && // Enter
+          typeof selectedItemIndex === 'number' &&
+          currentItems[selectedItemIndex]
         ) {
           self.changeParent(currentOpenedCard, currentItems[selectedItemIndex]);
         } else if (e.keyCode === 38) { // Arrow Up
           selectParentChangeItem(
-              typeof selectedItemIndex === 'number' && selectedItemIndex - 1 >= 0
-                ? selectedItemIndex - 1
-                : currentItems.length - 1,
-              false,
-              true
+            typeof selectedItemIndex === 'number' && selectedItemIndex - 1 >= 0 ?
+              selectedItemIndex - 1 :
+              currentItems.length - 1,
+            false,
+            true
           );
         } else if (e.keyCode === 40) { // Arrow Down
           selectParentChangeItem(
-              typeof selectedItemIndex === 'number' && selectedItemIndex + 1 < currentItems.length
-                ? selectedItemIndex + 1
-                : 0,
-              false,
-              true
+            typeof selectedItemIndex === 'number' && selectedItemIndex + 1 < currentItems.length ?
+              selectedItemIndex + 1 :
+              0,
+            false,
+            true
           );
         }
       });
@@ -569,14 +562,14 @@
       }
 
       var currentOpenedCard = HandsomeTrello.getCurrentOpenedCard(),
-          currentColumn = null,
-          currentPosition = 'bottom',
-          positionsList = [],
-          columnsList = [];
+        currentColumn = null,
+        currentPosition = 'bottom',
+        positionsList = [],
+        columnsList = [];
 
       for (var k = 0; k < HandsomeTrello.data.boardData.lists.length; k++) {
         var column = HandsomeTrello.data.boardData.lists[k],
-            isCurrentColumn = currentOpenedCard && column.name === currentOpenedCard.column.name;
+          isCurrentColumn = currentOpenedCard && column.name === currentOpenedCard.column.name;
 
         if (!currentColumn || isCurrentColumn) {
           currentColumn = column;
@@ -590,9 +583,9 @@
         }
 
         columnsList.push(HandsomeTrello.helpers.jsonToDOM(
-            ['option', optionParams,
-              column.name + (isCurrentColumn ? ' (current)' : '')
-            ]
+          ['option', optionParams,
+            column.name + (isCurrentColumn ? ' (current)' : '')
+          ]
         ));
       }
 
@@ -606,97 +599,87 @@
       }
 
       var popOverElements = HandsomeTrello.popOver.open('Add Child', HandsomeTrello.helpers.jsonToDOM(['div', {},
+          ['div', {
+            'class': 'form-grid'
+          },
+            ['input', {
+              'type': 'text',
+              'placeholder': 'Title',
+              'class': 'js-children-create-title-field'
+            }]
+          ],
+          ['div', {
+            'class': 'form-grid'
+          },
             ['div', {
-              'class': 'form-grid'
+              'class': 'button-link setting form-grid-child form-grid-child-threequarters'
             },
-              ['input', {
-                'type': 'text',
-                'placeholder': 'Title',
-                'class': 'js-children-create-title-field'
+              ['span', {
+                'class': 'label'
+              },
+                'List'
+              ],
+              ['span', {
+                'class': 'value js-children-create-current-column-value'
+              },
+                currentColumn.name
+              ],
+              ['label', {},
+                'List'
+              ],
+              ['select', {
+                'class': 'js-children-create-columns-select'
               }]
             ],
             ['div', {
-              'class': 'form-grid'
+              'class': 'button-link setting form-grid-child form-grid-child-quarter'
             },
-              ['div', {
-                'class': 'button-link setting form-grid-child form-grid-child-threequarters'
+              ['span', {
+                'class': 'label'
               },
-                ['span', {
-                  'class': 'label'
-                },
-                  'List'
-                ],
-                ['span', {
-                  'class': 'value js-children-create-current-column-value'
-                },
-                  currentColumn.name
-                ],
-                ['label', {},
-                  'List'
-                ],
-                ['select', {
-                  'class': 'js-children-create-columns-select'
-                }]
+                'Position'
               ],
-              ['div', {
-                'class': 'button-link setting form-grid-child form-grid-child-quarter'
+              ['span', {
+                'class': 'value js-children-create-current-position-value'
               },
-                ['span', {
-                  'class': 'label'
-                },
-                  'Position'
-                ],
-                ['span', {
-                  'class': 'value js-children-create-current-position-value'
-                },
-                  currentPosition
-                ],
-                ['label', {},
-                  'Position'
-                ],
-                ['select', {
-                  'class': 'js-children-create-positions-select'
-                }]
-              ]
-            ],
+                currentPosition
+              ],
+              ['label', {},
+                'Position'
+              ],
+              ['select', {
+                'class': 'js-children-create-positions-select'
+              }]
+            ]
+          ],
+          ['div', {
+            'class': 'form-grid'
+          },
+            ['input', {
+              'type': 'submit',
+              'value': 'Create',
+              'class': 'primary wide js-children-create-submit-btn'
+            }],
             ['div', {
-              'class': 'form-grid'
+              'class': 'check-div handsome-trello__inheritance-pop-over-children-checkbox'
             },
-              ['input', {
-                'type': 'submit',
-                'value': 'Create',
-                'class': 'primary wide js-children-create-submit-btn'
-              }],
-              ['div', {
-                'class': 'check-div handsome-trello__inheritance-pop-over-children-checkbox'
+              ['input', openChildCheckboxAttributes],
+              ['label', {
+                'for': 'pop-over-children-checkbox'
               },
-                ['input', openChildCheckboxAttributes],
-                ['label', {
-                  'for': 'pop-over-children-checkbox'
-                },
-                  'Open Child Card'
-                ]
+                'Open Child Card'
               ]
             ]
-          ]), _target),
-          _popOverContent = popOverElements._popOverContent,
-          _childrenCreateTitleField = _popOverContent.querySelector('.js-children-create-title-field'),
-          _childrenCreateCurrentColumnValue = _popOverContent.querySelector('.js-children-create-current-column-value'),
-          _childrenCreateColumnsSelect = _popOverContent.querySelector('.js-children-create-columns-select'),
-          _childrenCreateCurrentPositionValue = _popOverContent.querySelector('.js-children-create-current-position-value'),
-          _childrenCreatePositionsSelect = _popOverContent.querySelector('.js-children-create-positions-select'),
-          _childrenCreateSubmitBtn = _popOverContent.querySelector('.js-children-create-submit-btn');
+          ]
+        ]), _target);
 
-      for (var l = 0; l < columnsList.length; l++) {
-        _childrenCreateColumnsSelect.appendChild(columnsList[l]);
-      }
-
-      generatePositionsList();
-
-      document.getElementById('pop-over-children-checkbox').addEventListener('change', function (e) {
-        HandsomeTrello.options.openChildCard = e.target.checked;
-        HandsomeTrello.saveSettings();
-      });
+      var _popOverContent = popOverElements._popOverContent,
+        _childrenCreateTitleField = _popOverContent.querySelector('.js-children-create-title-field'),
+        _childrenCreateCurrentColumnValue = _popOverContent.querySelector('.js-children-create-current-column-value'),
+        _childrenCreateColumnsSelect = _popOverContent.querySelector('.js-children-create-columns-select'),
+        _childrenCreateCurrentPositionValue = _popOverContent.querySelector('.js-children-create-current-position-value'),
+        _childrenCreatePositionsSelect = _popOverContent.querySelector('.js-children-create-positions-select'),
+        _childrenCreateSubmitBtn = _popOverContent.querySelector('.js-children-create-submit-btn');
 
       function generatePositionsList() {
         var prevCardPos = null;
@@ -726,13 +709,13 @@
 
         _childrenCreatePositionsSelect.appendChild(
           HandsomeTrello.helpers.jsonToDOM(
-                ['option', {
-                  'value': 'bottom',
-                  'selected': 'selected'
-                },
-                  positionsList.bottom
-                ]
-            )
+            ['option', {
+              'value': 'bottom',
+              'selected': 'selected'
+            },
+              positionsList.bottom
+            ]
+          )
         );
 
         _childrenCreateCurrentPositionValue.textContent = Object.keys(positionsList).length.toString();
@@ -743,104 +726,115 @@
           self.childLoading(currentOpenedCard.id, true);
 
           HandsomeTrello.api.card.create(
-              _childrenCreateTitleField.value.trim(),
-              _childrenCreateColumnsSelect.value,
-              _childrenCreatePositionsSelect.value,
-              function (error, cardData) {
-                if (error) {
-                  HandsomeTrello.notification.open(
-                    HandsomeTrello.settings.notification.messages.error('Request Error. Please, try again.')
-                  );
+            _childrenCreateTitleField.value.trim(),
+            _childrenCreateColumnsSelect.value,
+            _childrenCreatePositionsSelect.value,
+            function (error, cardData) {
+              if (error) {
+                HandsomeTrello.notification.open(
+                  HandsomeTrello.settings.notification.messages.error('Request Error. Please, try again.')
+                );
 
-                  self.childLoading(currentOpenedCard.id, false);
-                } else {
+                self.childLoading(currentOpenedCard.id, false);
+              } else {
 
-                  cardData.checklists = [];
+                cardData.checklists = [];
 
-                  HandsomeTrello.data.boardData.cards.push(cardData);
+                HandsomeTrello.data.boardData.cards.push(cardData);
 
-                  HandsomeTrello.waitCreatingCard(cardData.shortUrl, function () {
-                    if (currentOpenedCard.children && currentOpenedCard.children.length) {
-                      HandsomeTrello.api.checklist.addItem(
-                        currentOpenedCard.childrenChecklist.id,
-                        cardData.url,
-                        'bottom',
-                        function (error, checkItemData) {
-                          if (error) {
-                            HandsomeTrello.notification.open(
-                              HandsomeTrello.settings.notification.messages.error('Request Error. Please, try again.')
-                            );
+                HandsomeTrello.waitCreatingCard(cardData.shortUrl, function () {
+                  if (currentOpenedCard.children && currentOpenedCard.children.length) {
+                    HandsomeTrello.api.checklist.addItem(
+                      currentOpenedCard.childrenChecklist.id,
+                      cardData.url,
+                      'bottom',
+                      function (error, checkItemData) {
+                        if (error) {
+                          HandsomeTrello.notification.open(
+                            HandsomeTrello.settings.notification.messages.error('Request Error. Please, try again.')
+                          );
 
-                            self.childLoading(currentOpenedCard.id, false);
-                          } else {
-                            currentOpenedCard.childrenChecklist.checkItems.push(checkItemData);
+                          self.childLoading(currentOpenedCard.id, false);
+                        } else {
+                          currentOpenedCard.childrenChecklist.checkItems.push(checkItemData);
 
-                            self.readCards();
+                          self.readCards();
 
-                            self.childLoading(currentOpenedCard.id, false);
+                          self.childLoading(currentOpenedCard.id, false);
 
-                            if (HandsomeTrello.options.openChildCard) {
-                              HandsomeTrello.helpers.goToLink(cardData.url);
-                            }
+                          if (HandsomeTrello.options.openChildCard) {
+                            HandsomeTrello.helpers.goToLink(cardData.url);
                           }
                         }
-                      );
-                    } else {
-                      HandsomeTrello.api.checklist.create(
-                        currentOpenedCard.id,
-                        self.data.childrenName,
-                        'top',
-                        function (error, checkListData) {
-                          if (error) {
-                            HandsomeTrello.notification.open(
-                              HandsomeTrello.settings.notification.messages.error(
-                                'Request Error. Please, try again.'
-                              )
-                            );
+                      }
+                    );
+                  } else {
+                    HandsomeTrello.api.checklist.create(
+                      currentOpenedCard.id,
+                      self.data.childrenName,
+                      'top',
+                      function (error, checkListData) {
+                        if (error) {
+                          HandsomeTrello.notification.open(
+                            HandsomeTrello.settings.notification.messages.error(
+                              'Request Error. Please, try again.'
+                            )
+                          );
 
-                            self.childLoading(currentOpenedCard.id, false);
-                          } else {
-                            HandsomeTrello.api.checklist.addItem(
-                              checkListData.id,
-                              cardData.url,
-                              'bottom',
-                              function (error, checkItemData) {
-                                if (error) {
-                                  HandsomeTrello.notification.open(
-                                    HandsomeTrello.settings.notification.messages.error(
-                                      'Request Error. Please, try again.'
-                                    )
-                                  );
+                          self.childLoading(currentOpenedCard.id, false);
+                        } else {
+                          HandsomeTrello.api.checklist.addItem(
+                            checkListData.id,
+                            cardData.url,
+                            'bottom',
+                            function (error, checkItemData) {
+                              if (error) {
+                                HandsomeTrello.notification.open(
+                                  HandsomeTrello.settings.notification.messages.error(
+                                    'Request Error. Please, try again.'
+                                  )
+                                );
 
-                                  self.childLoading(currentOpenedCard.id, false);
-                                } else {
-                                  checkListData.checkItems = [checkItemData];
-                                  currentOpenedCard.data.checklists.push(checkListData);
-                                  currentOpenedCard.childrenChecklist =
-                                    currentOpenedCard.data.checklists[currentOpenedCard.data.checklists.length - 1];
+                                self.childLoading(currentOpenedCard.id, false);
+                              } else {
+                                checkListData.checkItems = [checkItemData];
+                                currentOpenedCard.data.checklists.push(checkListData);
+                                currentOpenedCard.childrenChecklist =
+                                  currentOpenedCard.data.checklists[currentOpenedCard.data.checklists.length - 1];
 
-                                  self.readCards();
+                                self.readCards();
 
-                                  self.childLoading(currentOpenedCard.id, false);
+                                self.childLoading(currentOpenedCard.id, false);
 
-                                  if (HandsomeTrello.options.openChildCard) {
-                                    HandsomeTrello.helpers.goToLink(cardData.url);
-                                  }
+                                if (HandsomeTrello.options.openChildCard) {
+                                  HandsomeTrello.helpers.goToLink(cardData.url);
                                 }
                               }
-                            );
-                          }
+                            }
+                          );
                         }
-                      );
-                    }
-                  });
-                }
+                      }
+                    );
+                  }
+                });
               }
+            }
           );
 
           HandsomeTrello.popOver.close();
         }
       }
+
+      for (var l = 0; l < columnsList.length; l++) {
+        _childrenCreateColumnsSelect.appendChild(columnsList[l]);
+      }
+
+      generatePositionsList();
+
+      document.getElementById('pop-over-children-checkbox').addEventListener('change', function (e) {
+        HandsomeTrello.options.openChildCard = e.target.checked;
+        HandsomeTrello.saveSettings();
+      });
 
       if (self.checkChildLoading(currentOpenedCard.id)) {
         _popOverContent.classList.add('pop-over-content--loading');
@@ -886,7 +880,7 @@
       }
 
       var _sidebarParentBtn = _sidebarButtonsList.querySelector('.js-sidebar-parent-btn'),
-          _sidebarChildBtn = _sidebarButtonsList.querySelector('.js-sidebar-child-btn');
+        _sidebarChildBtn = _sidebarButtonsList.querySelector('.js-sidebar-child-btn');
 
       if (_sidebarParentBtn && _sidebarChildBtn) {
         return false;
@@ -901,28 +895,28 @@
       }
 
       _sidebarParentBtn = HandsomeTrello.helpers.jsonToDOM(
-          ['a', {
-            'href': '#',
-            'class': 'button-link js-sidebar-parent-btn'
-          },
-            ' ',
-            ['span', {
-              'class': 'icon-sm handsome-icon-parent'
-            }],
-            ' Parent'
-          ]
+        ['a', {
+          'href': '#',
+          'class': 'button-link js-sidebar-parent-btn'
+        },
+          ' ',
+          ['span', {
+            'class': 'icon-sm handsome-icon-parent'
+          }],
+          ' Parent'
+        ]
       );
       _sidebarChildBtn = HandsomeTrello.helpers.jsonToDOM(
-          ['a', {
-            'href': '#',
-            'class': 'button-link js-sidebar-child-btn'
-          },
-            ' ',
-            ['span', {
-              'class': 'icon-sm handsome-icon-child'
-            }],
-            ' Child'
-          ]
+        ['a', {
+          'href': '#',
+          'class': 'button-link js-sidebar-child-btn'
+        },
+          ' ',
+          ['span', {
+            'class': 'icon-sm handsome-icon-child'
+          }],
+          ' Child'
+        ]
       );
       _sidebarButtonsList.appendChild(_sidebarParentBtn);
       _sidebarButtonsList.appendChild(_sidebarChildBtn);
@@ -956,12 +950,12 @@
         placeholder: 'handsome-trello__inheritance-children-placeholder',
         update: function (event, ui) {
           var $prevItem = ui.item.prev(),
-              $nextItem = ui.item.next(),
-              checkItemId = ui.item.attr('data-children-id'),
-              newPosition =
-                  !$prevItem.length || !$prevItem.attr('data-children-pos').length ? 'top' :
-                      !$nextItem.length || !$nextItem.attr('data-children-pos').length ? 'bottom' :
-                      (parseInt($prevItem.attr('data-children-pos')) + parseInt($nextItem.attr('data-children-pos'))) / 2;
+            $nextItem = ui.item.next(),
+            checkItemId = ui.item.attr('data-children-id'),
+            newPosition =
+              !$prevItem.length || !$prevItem.attr('data-children-pos').length ? 'top' :
+                !$nextItem.length || !$nextItem.attr('data-children-pos').length ? 'bottom' :
+                  (parseInt($prevItem.attr('data-children-pos')) + parseInt($nextItem.attr('data-children-pos'))) / 2;
 
           HandsomeTrello.api.checklist.changeItemPos(
             card.id,
@@ -1037,7 +1031,7 @@
       HandsomeTrello.helpers.lockDOM('inheritance-clear-badge-card', true);
 
       var _checklistBadge = card._element.querySelector('.js-checklist-badge'),
-          _checklistFakeBadge = card._element.querySelector('.js-fake-checklist-badge');
+        _checklistFakeBadge = card._element.querySelector('.js-fake-checklist-badge');
 
       if (!_checklistBadge) {
         if (_checklistFakeBadge) {
@@ -1072,7 +1066,7 @@
         _checklistFakeBadge.classList.add('hide');
       } else {
         var countCheckItems = 0,
-            countCompleteCheckItems = 0;
+          countCompleteCheckItems = 0;
 
         for (var x = 0; x < card.data.checklists.length; x++) {
           var currentChecklist = card.data.checklists[x];
@@ -1158,21 +1152,21 @@
 
         if (checkParentRecursionCard) {
           console.warn(
-              HandsomeTrello.settings.notification.messages.recursionOnBoard(
-                  '#' + checkParentRecursionCard.idShort + ' ' + checkParentRecursionCard.title,
-                  checkParentRecursionCard.url,
-                  '#' + card.idShort + ' ' + card.title,
-                  card.url
-              ).outerHTML.replace(/<\/?[^>]+(>|$)/g, '')
+            HandsomeTrello.settings.notification.messages.recursionOnBoard(
+              '#' + checkParentRecursionCard.idShort + ' ' + checkParentRecursionCard.title,
+              checkParentRecursionCard.url,
+              '#' + card.idShort + ' ' + card.title,
+              card.url
+            ).outerHTML.replace(/<\/?[^>]+(>|$)/g, '')
           );
 
           HandsomeTrello.notification.open(
-              HandsomeTrello.settings.notification.messages.recursionOnBoard(
-                  '#' + checkParentRecursionCard.idShort + ' ' + checkParentRecursionCard.title,
-                  checkParentRecursionCard.url,
-                  '#' + card.idShort + ' ' + card.title,
-                  card.url
-              )
+            HandsomeTrello.settings.notification.messages.recursionOnBoard(
+              '#' + checkParentRecursionCard.idShort + ' ' + checkParentRecursionCard.title,
+              checkParentRecursionCard.url,
+              '#' + card.idShort + ' ' + card.title,
+              card.url
+            )
           );
 
           self.removeParent(checkParentRecursionCard, false);
@@ -1326,7 +1320,7 @@
 
     checkValidationChildCheckItem: function (checkItemName) {
       var cardIdMatch = checkItemName.match(HandsomeTrello.data.regexp.cardId),
-          cardLinkMatch = checkItemName.match(HandsomeTrello.data.regexp.cardIdFromLink);
+        cardLinkMatch = checkItemName.match(HandsomeTrello.data.regexp.cardIdFromLink);
 
       if (cardIdMatch && cardIdMatch[0] === checkItemName && HandsomeTrello.data.cards[cardIdMatch[1]]) {
         return HandsomeTrello.data.cards[cardIdMatch[1]];
@@ -1337,21 +1331,21 @@
       return false;
     },
 
-    moveFromSenondChildrenChecklistToFirstCallback: function (error, checkItemData) {
-      if (!error) {
-        card.childrenChecklist.checkItems.push(checkItemData);
-
-        this.readCards();
-      }
-    },
-
     moveFromSecondChildrenChecklistToFirst: function (card, checklist, indexChecklist) {
       var self = this;
+
+      function addingCheckItemCallback (error, checkItemData) {
+        if (!error) {
+          card.childrenChecklist.checkItems.push(checkItemData);
+
+          self.readCards();
+        }
+      }
 
       if (checklist.checkItems.length) {
         for (var z = 0; z < checklist.checkItems.length; z++) {
           var movingCheckItemName = checklist.checkItems[z].name.trim(),
-              movingCard = self.checkValidationChildCheckItem(movingCheckItemName);
+            movingCard = self.checkValidationChildCheckItem(movingCheckItemName);
 
           if (movingCard) {
             if (card.children.indexOf(movingCard) < 0) {
@@ -1359,7 +1353,7 @@
                 card.childrenChecklist.id,
                 movingCheckItemName,
                 'bottom',
-                this.moveFromSenondChildrenChecklistToFirstCallback
+                addingCheckItemCallback
               );
             }
           }
@@ -1407,8 +1401,8 @@
 
             for (var y = 0; y < checklist.checkItems.length; y++) {
               var checkItem = checklist.checkItems[y],
-                  checkItemName = checkItem.name.trim(),
-                  checkItemCard = self.checkValidationChildCheckItem(checkItemName);
+                checkItemName = checkItem.name.trim(),
+                checkItemCard = self.checkValidationChildCheckItem(checkItemName);
 
               if (checkItemCard) {
                 var childCard = checkItemCard;
@@ -1418,65 +1412,65 @@
                 }
 
                 var checkRecursionParent = self.checkRecursion(card, 'parent', childCard),
-                    checkRecursionChildren = self.checkRecursion(childCard.parent, 'parent', card);
+                  checkRecursionChildren = self.checkRecursion(childCard.parent, 'parent', card);
 
                 if (card.id === childCard.id) {
                   console.warn(
-                      HandsomeTrello.settings.notification.messages.recursionOnBoard(
-                          '#' + childCard.idShort + ' ' + childCard.title,
-                          childCard.url,
-                          '#' + card.idShort + ' ' + card.title,
-                          card.url
-                      ).outerHTML.replace(/<\/?[^>]+(>|$)/g, '')
+                    HandsomeTrello.settings.notification.messages.recursionOnBoard(
+                      '#' + childCard.idShort + ' ' + childCard.title,
+                      childCard.url,
+                      '#' + card.idShort + ' ' + card.title,
+                      card.url
+                    ).outerHTML.replace(/<\/?[^>]+(>|$)/g, '')
                   );
 
                   HandsomeTrello.notification.open(
-                      HandsomeTrello.settings.notification.messages.recursionOnBoard(
-                          '#' + childCard.idShort + ' ' + childCard.title,
-                          childCard.url,
-                          '#' + card.idShort + ' ' + card.title,
-                          card.url
-                      )
+                    HandsomeTrello.settings.notification.messages.recursionOnBoard(
+                      '#' + childCard.idShort + ' ' + childCard.title,
+                      childCard.url,
+                      '#' + card.idShort + ' ' + card.title,
+                      card.url
+                    )
                   );
                 }
 
                 if (checkRecursionParent) {
                   console.warn(
-                      HandsomeTrello.settings.notification.messages.recursionOnBoard(
-                          '#' + childCard.idShort + ' ' + childCard.title,
-                          childCard.url,
-                          '#' + checkRecursionParent.idShort + ' ' + checkRecursionParent.title,
-                          checkRecursionParent.url
-                      ).outerHTML.replace(/<\/?[^>]+(>|$)/g, '')
+                    HandsomeTrello.settings.notification.messages.recursionOnBoard(
+                      '#' + childCard.idShort + ' ' + childCard.title,
+                      childCard.url,
+                      '#' + checkRecursionParent.idShort + ' ' + checkRecursionParent.title,
+                      checkRecursionParent.url
+                    ).outerHTML.replace(/<\/?[^>]+(>|$)/g, '')
                   );
 
                   HandsomeTrello.notification.open(
-                      HandsomeTrello.settings.notification.messages.recursionOnBoard(
-                          '#' + childCard.idShort + ' ' + childCard.title,
-                          childCard.url,
-                          '#' + checkRecursionParent.idShort + ' ' + checkRecursionParent.title,
-                          checkRecursionParent.url
-                      )
+                    HandsomeTrello.settings.notification.messages.recursionOnBoard(
+                      '#' + childCard.idShort + ' ' + childCard.title,
+                      childCard.url,
+                      '#' + checkRecursionParent.idShort + ' ' + checkRecursionParent.title,
+                      checkRecursionParent.url
+                    )
                   );
                 }
 
                 if (checkRecursionChildren) {
                   console.warn(
-                      HandsomeTrello.settings.notification.messages.recursionOnBoard(
-                          '#' + card.idShort + ' ' + card.title,
-                          card.url,
-                          '#' + checkRecursionChildren.idShort + ' ' + checkRecursionChildren.title,
-                          checkRecursionChildren.url
-                      ).outerHTML.replace(/<\/?[^>]+(>|$)/g, '')
+                    HandsomeTrello.settings.notification.messages.recursionOnBoard(
+                      '#' + card.idShort + ' ' + card.title,
+                      card.url,
+                      '#' + checkRecursionChildren.idShort + ' ' + checkRecursionChildren.title,
+                      checkRecursionChildren.url
+                    ).outerHTML.replace(/<\/?[^>]+(>|$)/g, '')
                   );
 
                   HandsomeTrello.notification.open(
-                      HandsomeTrello.settings.notification.messages.recursionOnBoard(
-                          '#' + card.idShort + ' ' + card.title,
-                          card.url,
-                          '#' + checkRecursionChildren.idShort + ' ' + checkRecursionChildren.title,
-                          checkRecursionChildren.url
-                      )
+                    HandsomeTrello.settings.notification.messages.recursionOnBoard(
+                      '#' + card.idShort + ' ' + card.title,
+                      card.url,
+                      '#' + checkRecursionChildren.idShort + ' ' + checkRecursionChildren.title,
+                      checkRecursionChildren.url
+                    )
                   );
                 }
 
@@ -1490,9 +1484,9 @@
 
                   if (childCard.parent) {
                     if (
-                        childCard.parent.children &&
-                        childCard.parent.children.length &&
-                        childCard.parent.children.lastIndexOf(childCard) > -1
+                      childCard.parent.children &&
+                      childCard.parent.children.length &&
+                      childCard.parent.children.lastIndexOf(childCard) > -1
                     ) {
                       childCard.parent.children.splice(childCard.parent.children.lastIndexOf(childCard), 1);
                     }
@@ -1504,14 +1498,14 @@
                   HandsomeTrello.api.checklist.deleteItem(checklist.id, checkItem.id);
                 } else {
                   if (
-                      childCard.parent &&
-                      childCard.parent.id !== card.id &&
-                      childCard.parent.childrenChecklist
+                    childCard.parent &&
+                    childCard.parent.id !== card.id &&
+                    childCard.parent.childrenChecklist
                   ) {
                     var checkDoubleChildCheckItem = HandsomeTrello.helpers.getElementByProperty(
-                        childCard.parent.childrenChecklist.checkItems,
-                        'name',
-                        childCard.url
+                      childCard.parent.childrenChecklist.checkItems,
+                      'name',
+                      childCard.url
                     );
 
                     if (!checkDoubleChildCheckItem) {
@@ -1524,20 +1518,20 @@
 
                     if (checkDoubleChildCheckItem) {
                       console.warn(
-                          HandsomeTrello.settings.notification.messages.severalParentsOnCard(
-                              '#' + childCard.idShort + ' ' + childCard.title,
-                              childCard.url,
-                              '#' + childCard.parent.idShort + ' ' + childCard.parent.title,
-                              childCard.parent.url
-                          ).outerHTML.replace(/<\/?[^>]+(>|$)/g, ''));
+                        HandsomeTrello.settings.notification.messages.severalParentsOnCard(
+                          '#' + childCard.idShort + ' ' + childCard.title,
+                          childCard.url,
+                          '#' + childCard.parent.idShort + ' ' + childCard.parent.title,
+                          childCard.parent.url
+                        ).outerHTML.replace(/<\/?[^>]+(>|$)/g, ''));
 
                       HandsomeTrello.notification.open(
-                          HandsomeTrello.settings.notification.messages.severalParentsOnCard(
-                              '#' + childCard.idShort + ' ' + childCard.title,
-                              childCard.url,
-                              '#' + childCard.parent.idShort + ' ' + childCard.parent.title,
-                              childCard.parent.url
-                          )
+                        HandsomeTrello.settings.notification.messages.severalParentsOnCard(
+                          '#' + childCard.idShort + ' ' + childCard.title,
+                          childCard.url,
+                          '#' + childCard.parent.idShort + ' ' + childCard.parent.title,
+                          childCard.parent.url
+                        )
                       );
 
                       self.removeParent(childCard, false);
@@ -1609,9 +1603,9 @@
       var _checklist = HandsomeTrello.helpers.findParentByClass(_target, 'checklist');
 
       if (
-          _checklist &&
-          _checklist.querySelector('h3') &&
-          _checklist.querySelector('h3').textContent.trim().toLowerCase() === self.data.childrenName.toLowerCase()
+        _checklist &&
+        _checklist.querySelector('h3') &&
+        _checklist.querySelector('h3').textContent.trim().toLowerCase() === self.data.childrenName.toLowerCase()
       ) {
         var openedCard = HandsomeTrello.getCurrentOpenedCard();
 
@@ -1641,7 +1635,7 @@
         }
 
         var _popOverContent = document.querySelector('.js-pop-over-content'),
-            _parentChangeSearchField = document.querySelector('.js-parent-change-search-field');
+          _parentChangeSearchField = document.querySelector('.js-parent-change-search-field');
 
         if (!_popOverContent || !_parentChangeSearchField) {
           return false;
@@ -1667,8 +1661,8 @@
         }
 
         var _popOverContent = document.querySelector('.js-pop-over-content'),
-            _childrenCreateTitleField = document.querySelector('.js-children-create-title-field'),
-            _childrenCreateSubmitBtn = document.querySelector('.js-children-create-submit-btn');
+          _childrenCreateTitleField = document.querySelector('.js-children-create-title-field'),
+          _childrenCreateSubmitBtn = document.querySelector('.js-children-create-submit-btn');
 
         if (!_popOverContent || !_childrenCreateTitleField || !_childrenCreateSubmitBtn) {
           return false;
@@ -1697,8 +1691,8 @@
 
       HandsomeTrello.callbacks.checklistInserted.inheritance = function (_target) {
         if (
-            _target.querySelector('h3') &&
-            _target.querySelector('h3').textContent.trim().toLowerCase() === self.data.childrenName.toLowerCase()
+          _target.querySelector('h3') &&
+          _target.querySelector('h3').textContent.trim().toLowerCase() === self.data.childrenName.toLowerCase()
         ) {
           _target.classList.add('hide');
 
@@ -1718,4 +1712,4 @@
     }
   };
 
-})();
+})(HandsomeTrello);
