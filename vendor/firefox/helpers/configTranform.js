@@ -1,4 +1,4 @@
-require('node-import');
+var imports = require('node-import');
 
 imports('src/js/config');
 

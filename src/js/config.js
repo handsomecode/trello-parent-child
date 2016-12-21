@@ -1,15 +1,19 @@
-var HandsomeTrello = {
-  plugins: {},
+var HandsomeTrello = {};
 
-  callbacks: {
+(function (HandsomeTrello) {
+  'use strict';
+
+  HandsomeTrello.plugins = {};
+
+  HandsomeTrello.callbacks = {
     cardsUpdated: {},
     openCardViewed: {},
     checklistInserted: {},
     checkItemUpdated: {},
     badgeChecklistUpdated: {}
-  },
+  };
 
-  settings: {
+  HandsomeTrello.settings = {
     locale: 'en-US',
     plugins: {
       'inheritance': true
@@ -27,39 +31,38 @@ var HandsomeTrello = {
         },
         recursionOnBoard: function (recursionCardTitle, recursionCardLink, currentCardTitle, currentCardLink) {
           return HandsomeTrello.helpers.jsonToDOM(['span', {},
-              ['a', {
-                'href': recursionCardLink
-              },
-                recursionCardTitle
-              ],
-              ' is not a child for ',
-              ['a', {
-                'href': currentCardLink
-              },
-                currentCardTitle
-              ],
-              ' anymore, due to fix for cycle Parent/Child dependency'
+            ['a', {
+              'href': recursionCardLink
+            },
+              recursionCardTitle
+            ],
+            ' is not a child for ',
+            ['a', {
+              'href': currentCardLink
+            },
+              currentCardTitle
+            ],
+            ' anymore, due to fix for cycle Parent/Child dependency'
           ]);
         },
         severalParentsOnCard: function (recursionCardTitle, recursionCardLink, currentCardTitle, currentCardLink) {
           return HandsomeTrello.helpers.jsonToDOM(['span', {},
-              ['a', {
-                'href': recursionCardLink
-              },
-                recursionCardTitle
-              ],
-              ' is not a child for ',
-              ['a', {
-                'href': currentCardLink
-              },
-                currentCardTitle
-              ],
-              ' anymore, due to fix for multiple Parents dependency'
+            ['a', {
+              'href': recursionCardLink
+            },
+              recursionCardTitle
+            ],
+            ' is not a child for ',
+            ['a', {
+              'href': currentCardLink
+            },
+              currentCardTitle
+            ],
+            ' anymore, due to fix for multiple Parents dependency'
           ]);
         }
       }
     },
-
     options: {
       showArchivedCards: {
         title: 'Show Archived Cards',
@@ -122,5 +125,6 @@ var HandsomeTrello = {
         value: 'parent-related-children'
       }
     }
-  }
-};
+  };
+
+})(HandsomeTrello);
