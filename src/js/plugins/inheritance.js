@@ -138,7 +138,7 @@
       for (var i = 0; i < children.length; i++) {
         var childCard = children[i];
 
-        if (childCard) {
+        if (childCard && childCard.checkItem) {
           var liAttributes = {
             'class':
               'handsome-trello__inheritance-children-item ' +
@@ -759,7 +759,7 @@
 
                   HandsomeTrello.data.boardData.cards.push(cardData);
 
-                  HandsomeTrello.waitCreatingCard(cardData.shortUrl, function (card) {
+                  HandsomeTrello.waitCreatingCard(cardData.shortUrl, function () {
                     if (currentOpenedCard.children && currentOpenedCard.children.length) {
                       HandsomeTrello.api.checklist.addItem(
                         currentOpenedCard.childrenChecklist.id,
@@ -775,11 +775,7 @@
                           } else {
                             currentOpenedCard.childrenChecklist.checkItems.push(checkItemData);
 
-                            HandsomeTrello.helpers.lockDOM('inheritance-create-new-card', true);
-
                             self.readCards();
-
-                            HandsomeTrello.helpers.lockDOM('inheritance-create-new-card', false);
 
                             self.childLoading(currentOpenedCard.id, false);
 
@@ -823,11 +819,7 @@
                                   currentOpenedCard.childrenChecklist =
                                     currentOpenedCard.data.checklists[currentOpenedCard.data.checklists.length - 1];
 
-                                  HandsomeTrello.helpers.lockDOM('inheritance-create-new-card', true);
-
                                   self.readCards();
-
-                                  HandsomeTrello.helpers.lockDOM('inheritance-create-new-card', false);
 
                                   self.childLoading(currentOpenedCard.id, false);
 
@@ -1154,7 +1146,7 @@
       if (card.parent) {
         checkDeleteParentFromCard = (card.parent.id && parent.id && card.parent.id === parent.id);
 
-        self.removeParent(card, checkDeleteParentFromCard);
+        self.removeParent(card, checkDeleteParentFromCard, !checkDeleteParentFromCard);
       }
 
       // end removing current parent
@@ -1190,8 +1182,6 @@
 
         // adding parent
 
-        card.parent = parent;
-
         if (parent.childrenChecklist) {
           self.parentLoading(card.id, true);
 
@@ -1205,15 +1195,11 @@
                   HandsomeTrello.settings.notification.messages.error('Request Error. Please, try again.')
                 );
               } else {
+                HandsomeTrello.popOver.close();
+
                 parent.childrenChecklist.checkItems.push(checkItemData);
 
-                HandsomeTrello.helpers.lockDOM('inheritance-add-parent', true);
-
                 self.readCards();
-
-                HandsomeTrello.helpers.lockDOM('inheritance-add-parent', false);
-
-                HandsomeTrello.popOver.close();
               }
 
               self.parentLoading(card.id, false);
@@ -1244,17 +1230,13 @@
                         HandsomeTrello.settings.notification.messages.error('Request Error. Please, try again.')
                       );
                     } else {
+                      HandsomeTrello.popOver.close();
+
                       parent.data.checklists.push(checkListData);
                       parent.childrenChecklist = parent.data.checklists[parent.data.checklists.length - 1];
                       parent.childrenChecklist.checkItems.push(checkItemData);
 
-                      HandsomeTrello.helpers.lockDOM('inheritance-add-parent', true);
-
                       self.readCards();
-
-                      HandsomeTrello.helpers.lockDOM('inheritance-add-parent', false);
-
-                      HandsomeTrello.popOver.close();
                     }
 
                     self.parentLoading(card.id, false);
@@ -1269,7 +1251,7 @@
       }
     },
 
-    removeParent: function (card, closeParentPopOver) {
+    removeParent: function (card, closeParentPopOver, isNotLastEvent) {
       var self = this;
 
       if (card && card.parent) {
@@ -1297,7 +1279,9 @@
               }
             }
 
-            self.parentLoading(card.id, false);
+            if (!isNotLastEvent) {
+              self.parentLoading(card.id, false);
+            }
           });
         } else {
           HandsomeTrello.api.checklist.remove(card.parent.childrenChecklist.id, function (error) {
@@ -1325,7 +1309,9 @@
               }
             }
 
-            self.parentLoading(card.id, false);
+            if (!isNotLastEvent) {
+              self.parentLoading(card.id, false);
+            }
           });
         }
 
@@ -1355,11 +1341,7 @@
       if (!error) {
         card.childrenChecklist.checkItems.push(checkItemData);
 
-        HandsomeTrello.helpers.lockDOM('inheritance-move-children-cards-to-other-children-list', true);
-
-        self.readCards();
-
-        HandsomeTrello.helpers.lockDOM('inheritance-move-children-cards-to-other-children-list', false);
+        this.readCards();
       }
     },
 
@@ -1541,8 +1523,6 @@
                     }
 
                     if (checkDoubleChildCheckItem) {
-                      console.error(123);
-
                       console.warn(
                           HandsomeTrello.settings.notification.messages.severalParentsOnCard(
                               '#' + childCard.idShort + ' ' + childCard.title,

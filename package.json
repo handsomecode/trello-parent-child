@@ -18,6 +18,7 @@
     "gulp-zip": "^3.2.0",
     "jpm": "^1.0.6",
     "jshint": "^2.9.4",
+    "node-import": "^0.9.2",
     "rimraf": "^2.5.2",
     "run-sequence": "^1.1.5",
     "xar-js": "^0.2.0"
