@@ -78,9 +78,9 @@
         var currentOption = optionsList[optionId];
 
         if (currentOption.type === 'boolean') {
-          currentOption._input.checked = storageOptions[optionId]
+          currentOption._input.checked = storageOptions[optionId];
         } else {
-          currentOption._input.value = storageOptions[optionId]
+          currentOption._input.value = storageOptions[optionId];
         }
       }
     });
