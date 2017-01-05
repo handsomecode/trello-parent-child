@@ -10,22 +10,7 @@
   "engines": {
     "firefox": ">=38.0a1"
   },
-  "preferences": [
-    {
-      "name": "openChildCard",
-      "title": "Open Child Card",
-      "description": "Open Child Card after adding",
-      "type": "bool",
-      "value": true
-    },
-    {
-      "name": "showArchivedCards",
-      "title": "Show Archived Cards",
-      "description": "Show Archived Cards in children and related lists",
-      "type": "bool",
-      "value": true
-    }
-  ],
+  "preferences": [],
   "icon": "data/icons/icon_48.png",
   "license": "MIT"
 }

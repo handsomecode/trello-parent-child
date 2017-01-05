@@ -3,6 +3,8 @@ Parent/Child Management for Trello
 
 Thinking about how we use Trello and how others might use it in a similar way, we have created an extension that brings Parent/Child Management to Trello projects.
 
+Project Homepage: [https://labs.handsome.is/trello/](https://labs.handsome.is/trello/)
+
 
 ## Usage
 
@@ -16,7 +18,7 @@ Read our Simplifying Management with Trello blog post – [Learn More!](http://h
 ## Supported Browsers
 
 * [Chrome](https://chrome.google.com/webstore/detail/parentchild-managment-for/flnpbgmiploomjgagfbcjlikpiehclld)
+* [Opera](https://addons.opera.com/extensions/details/parentchild-managment-for-trello)
+* [Yandex](https://addons.opera.com/extensions/details/parentchild-managment-for-trello)
 * Safari (coming soon!)
 * Firefox (coming soon!)
-* Opera (coming soon!)
-* Yandex (coming soon!)

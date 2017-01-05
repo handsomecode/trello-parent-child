@@ -13,8 +13,7 @@
   "permissions": [
     "tabs",
     "storage",
-    "https://trello.com/",
-    "https://api.airtable.com/"
+    "https://trello.com/"
   ],
   "options_page": "options.html",
   "content_scripts": [
@@ -26,12 +25,13 @@
         "css/style.css"
       ],
       "js": [
-        "js/vendor/jquery.min.js",
-        "js/vendor/jquery-ui.min.js",
+        "js/libs/jquery.min.js",
+        "js/libs/jquery-ui.min.js",
         "js/config.js",
         "js/settings.js",
-        "js/errors-handler-config.js",
-        "js/errors-handler.js",
+        "js/helpers.js",
+        "js/pop-over.js",
+        "js/notification.js",
         "js/api.js",
         "js/plugins/inheritance.js",
         "js/init.js"

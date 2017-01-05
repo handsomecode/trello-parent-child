@@ -3,7 +3,9 @@ function loadSettings(options, callback) {
     var gettingOptions = {};
 
     for (var optionName in options) {
-      gettingOptions[optionName] = typeof preferences[optionName] !== 'undefined' ? preferences[optionName] : options[optionName].value;
+      if (options.hasOwnProperty(optionName)) {
+        gettingOptions[optionName] = typeof preferences[optionName] !== 'undefined' ? preferences[optionName] : options[optionName].value;
+      }
     }
 
     if (typeof callback === 'function') {

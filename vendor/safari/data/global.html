@@ -9,16 +9,23 @@
       if (e.name === 'getSettings') {
         var gettingOptions = {};
 
-        for (var optionName in options) {
-          gettingOptions[optionName] = typeof safari.extension.settings[optionName] !== 'undefined' ? safari.extension.settings[optionName] : options[optionName].value;
+        for (var optionGetName in options) {
+          if (options.hasOwnProperty(optionGetName)) {
+            gettingOptions[optionGetName] =
+              typeof safari.extension.settings[optionGetName] !== 'undefined'
+                ? safari.extension.settings[optionGetName]
+                : options[optionGetName].value;
+          }
         }
 
         e.target.page.dispatchMessage('updateSettings', gettingOptions);
       }
 
       if (e.name === 'setSettings') {
-        for (var optionName in options) {
-          safari.extension.settings[optionName] = options[optionName];
+        for (var optionSetName in options) {
+          if (options.hasOwnProperty(optionSetName)) {
+            safari.extension.settings[optionSetName] = options[optionSetName];
+          }
         }
       }
     }, false);

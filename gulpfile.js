@@ -1,16 +1,20 @@
 var gulp = require('gulp');
-var clean = require('gulp-clean');
+var rimraf = require('rimraf');
 var less = require('gulp-less');
-var minifyCSS = require('gulp-minify-css');
+var minifyCSS = require('gulp-clean-css');
 var cssBase64 = require('gulp-css-base64');
 var es = require('event-stream');
-var rseq = require('gulp-run-sequence');
+var rseq = require('run-sequence');
 var zip = require('gulp-zip');
 var rename = require('gulp-rename');
 var shell = require('gulp-shell');
 var jeditor = require("gulp-json-editor");
 var peditor = require('gulp-plist');
+var jshint = require('gulp-jshint');
 var app = require('./package');
+
+var firefoxConfigTransform = require('./vendor/firefox/helpers/configTranform');
+var safariConfigTransform = require('./vendor/safari/helpers/configTranform');
 
 function pipe(src, transforms, dest) {
   if (typeof transforms === 'string') {
@@ -47,7 +51,7 @@ gulp.task('options', function () {
 });
 
 gulp.task('clean', function () {
-  return pipe('./build', [clean()]);
+  return rimraf.sync('./build');
 });
 
 gulp.task('chrome', function () {
@@ -75,10 +79,10 @@ gulp.task('opera', function () {
       pipe('./vendor/opera/data/**/*', './build/opera'),
       pipe('./vendor/opera/manifest.json', [
         jeditor({
-          'name': app.title,
-          'version': app.version,
-          'description': app.description,
-          'homepage_url': app.homepage
+          name: app.title,
+          version: app.version,
+          description: app.description,
+          homepage_url: app.homepage
         })
       ], './build/opera/')
   );
@@ -91,11 +95,14 @@ gulp.task('firefox', function () {
       pipe('./src/icons/**/*', './build/firefox/data/icons'),
       pipe('./vendor/firefox/data/**/*', './build/firefox/data'),
       pipe('./vendor/firefox/package.json', [
-        jeditor({
-          'title': app.title,
-          'version': app.version,
-          'description': app.description,
-          'homepage': app.homepage
+        jeditor(function (json) {
+          json.title = app.title;
+          json.version = app.version;
+          json.description = app.description;
+          json.homepage = app.homepage;
+          json.preferences = firefoxConfigTransform();
+
+          return json;
         })
       ], './build/firefox/')
   );
@@ -114,6 +121,9 @@ gulp.task('safari', function () {
           Description: app.description,
           Website: app.homepage
         })
+      ], './build/safari/handsometrello.safariextension'),
+      pipe('./vendor/safari/Settings.plist', [
+        peditor(safariConfigTransform)
       ], './build/safari/handsometrello.safariextension')
   );
 });
@@ -137,7 +147,7 @@ gulp.task('opera-dist', function () {
 gulp.task('firefox-dist', shell.task([
   'mkdir -p dist/firefox',
   'cd ./build/firefox && ../../node_modules/.bin/jpm xpi > /dev/null',
-  'mv ./build/firefox/*-' + app.version + '.xpi ./dist/firefox/handsome-trello-firefox-extension-' + app.version + '.xpi',
+  'mv ./build/firefox/*.xpi ./dist/firefox/handsome-trello-firefox-extension-' + app.version + '.xpi',
   'cp ./dist/firefox/handsome-trello-firefox-extension-' + app.version + '.xpi ./dist/firefox/handsome-trello-firefox-extension-latest.xpi'
 ]));
 
@@ -148,7 +158,7 @@ gulp.task('safari-dist', shell.task([
 ]));
 
 gulp.task('firefox-run', shell.task([
-  'cd ./build/firefox && ../../node_modules/.bin/jpm run'
+  'cd ./build/firefox && ../../node_modules/.bin/jpm run -b Nightly --debug'
 ]));
 
 gulp.task('dist', function (cb) {
@@ -156,19 +166,28 @@ gulp.task('dist', function (cb) {
 });
 
 gulp.task('watch', function () {
-  rseq('default');
+  rseq('default', function () {
+    gulp.watch([
+      './src/less/**/*',
+      './src/fonts/**/*'
+    ], ['styles', 'options'], ['chrome', 'opera', 'firefox', 'safari']);
 
-  gulp.watch([
-    './src/less/**/*',
-    './src/fonts/**/*'
-  ], ['styles', 'options'], ['chrome', 'opera', 'firefox', 'safari']);
+    gulp.watch([
+      './src/js/**/*',
+      './src/css/**/*',
+      './vendor/**/*',
+      './package.json'
+    ], ['default']);
+  });
+});
 
-  gulp.watch([
-    './src/js/**/*',
-    './src/css/**/*',
-    './vendor/**/*',
-    './package.json'
-  ], ['default']);
+gulp.task('lint', function() {
+  return gulp.src([
+    './src/js/**/*.js',
+    '!./src/js/libs/*.js'
+  ])
+    .pipe(jshint())
+    .pipe(jshint.reporter('default'));
 });
 
 gulp.task('run', function (cb) {
