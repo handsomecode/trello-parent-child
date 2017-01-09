@@ -62,10 +62,11 @@ gulp.task('chrome', function () {
       pipe('./vendor/chrome/data/**/*', './build/chrome'),
       pipe('./vendor/chrome/manifest.json', [
         jeditor({
-          'name': app.title,
-          'version': app.version,
-          'description': app.description,
-          'homepage_url': app.homepage
+          name: app.title,
+          version: app.version,
+          description: app.description,
+          author: app.author,
+          homepage_url: app.homepage
         })
       ], './build/chrome/')
   );
@@ -82,6 +83,7 @@ gulp.task('opera', function () {
           name: app.title,
           version: app.version,
           description: app.description,
+          author: app.author,
           homepage_url: app.homepage
         })
       ], './build/opera/')
@@ -99,6 +101,7 @@ gulp.task('firefox', function () {
           json.title = app.title;
           json.version = app.version;
           json.description = app.description;
+          json.author = app.author;
           json.homepage = app.homepage;
           json.preferences = firefoxConfigTransform();
 
@@ -119,6 +122,7 @@ gulp.task('safari', function () {
           CFBundleDisplayName: app.title,
           CFBundleShortVersionString: app.version,
           Description: app.description,
+          Author: app.author,
           Website: app.homepage
         })
       ], './build/safari/handsometrello.safariextension'),
