@@ -576,12 +576,8 @@
         ) {
           var _parentTarget = self.helpers.findParentByClass(e.target, 'list-card');
 
-          if (_parentTarget) {
-            var _cardLinkByBadge = _parentTarget.querySelector('.js-card-name');
-
-            if (_cardLinkByBadge && _cardLinkByBadge.href) {
-              self.badgeChecklistUpdated(self.getCardByLink(_cardLinkByBadge.href));
-            }
+          if (_parentTarget && _parentTarget.href) {
+              self.badgeChecklistUpdated(self.getCardByLink(_parentTarget.href));
           }
         }
       }
@@ -605,15 +601,11 @@
         ) {
           var _parentTarget = self.helpers.findParentByClass(e.target, 'list-card');
 
-          if (_parentTarget) {
-            var _cardLink = _parentTarget.querySelector('.js-card-name');
-
-            if (_cardLink && _cardLink.href) {
-              self.badgeChecklistUpdated(self.getCardByLink(_cardLink.href));
+          if (_parentTarget && _parentTarget.href) {
+              self.badgeChecklistUpdated(self.getCardByLink(_parentTarget.href));
             }
           }
         }
-      }
     });
 
     document.body.addEventListener('DOMSubtreeModified', function (e) {
@@ -635,12 +627,8 @@
         ) {
           var _parentTarget = self.helpers.findParentByClass(e.target, 'list-card');
 
-          if (_parentTarget && _parentTarget.querySelector('.icon-checklist')) {
-            var _cardLink = _parentTarget.querySelector('.js-card-name');
-
-            if (_cardLink && _cardLink.href) {
-              self.badgeChecklistUpdated(self.getCardByLink(_cardLink.href));
-            }
+          if (_parentTarget && _parentTarget.querySelector('.icon-checklist') && _parentTarget.href) {
+              self.badgeChecklistUpdated(self.getCardByLink(_parentTarget.href));
           }
         }
       }
