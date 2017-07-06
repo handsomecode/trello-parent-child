@@ -158,7 +158,12 @@
                   (HandsomeTrello.options.showCardId ? '#' + childCard.idShort + ' ' : '') +
                   childCard.title
                 ],
-                ' (' + (childCard.status === 'closed' ? 'Archived' : childCard.column.name) + ')',
+                ' (' + (
+                  HandsomeTrello.options.showArchivedCards &&
+                  childCard.status === 'closed' ?
+                    'Archived' :
+                    childCard.column.name
+                ) + ')',
                 (
                   HandsomeTrello.options.showCardDueDate && childCard.due ?
                     ['span', {
@@ -256,7 +261,12 @@
                 (HandsomeTrello.options.showCardId ? '#' + relatedCard.idShort + ' ' : '') +
                 relatedCard.title
               ],
-              ' (' + (relatedCard.status === 'closed' ? 'Archived' : relatedCard.column.name) + ')',
+              ' (' + (
+                HandsomeTrello.options.showArchivedCards &&
+                relatedCard.status === 'closed' ?
+                  'Archived' :
+                  relatedCard.column.name
+              ) + ')',
               (
                 HandsomeTrello.options.showCardDueDate && relatedCard.due ?
                   ['span', {
@@ -1016,10 +1026,12 @@
         card = HandsomeTrello.getCurrentOpenedCard();
       }
 
-      if (card && (card.status !== 'closed' || HandsomeTrello.options.showArchivedCards)) {
+      if (card) {
         this.updateInheritanceListInOpenedCardView(card);
 
-        this.addButtonsOnRightSidebar();
+        if (card.status !== 'closed' || HandsomeTrello.options.showArchivedCards) {
+          this.addButtonsOnRightSidebar();
+        }
       }
     },
 
@@ -1406,10 +1418,6 @@
 
               if (checkItemCard) {
                 var childCard = checkItemCard;
-
-                if (childCard.status === 'closed' && !HandsomeTrello.options.showArchivedCards) {
-                  continue;
-                }
 
                 var checkRecursionParent = self.checkRecursion(card, 'parent', childCard),
                   checkRecursionChildren = self.checkRecursion(childCard.parent, 'parent', card);
