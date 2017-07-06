@@ -535,10 +535,9 @@
           var _card =
               e.target.classList.contains('card-short-id') ?
                 self.helpers.findParentByClass(e.target, 'list-card') :
-                e.target,
-            _cardLink = _card.querySelector('.js-card-name');
+                e.target;
 
-          self.updateLink(_cardLink);
+          self.updateLink(_card);
         }
 
         if (e.target.classList && e.target.classList.contains('checklist-item')) {
