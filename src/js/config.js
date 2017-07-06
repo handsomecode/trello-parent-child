@@ -65,8 +65,8 @@ var HandsomeTrello = {};
     },
     options: {
       showArchivedCards: {
-        title: 'Show Archived Cards',
-        description: 'Show Archived Cards in children and related lists',
+        title: 'Show Archived Siblings & Children',
+        description: 'Show Archived Siblings & Children in children and related lists',
         type: 'boolean',
         value: true
       },
