@@ -215,13 +215,13 @@
   HandsomeTrello.parseCard = function (_card) {
     var self = this;
 
-    var _cardLink = _card.querySelector('.js-card-name');
+    var _cardNameLink = _card.querySelector('.js-card-name');
 
-    if (!_cardLink || !_cardLink.href) {
+    if (!_card || !_card.href || !_cardNameLink || !_cardNameLink.innerHTML) {
       return false;
     }
 
-    var cardLink = _cardLink.href,
+    var cardLink = _card.href,
       cardRealId = self.getCardShortLinkFromUrl(cardLink),
       cardId = self.getCardIdFromLink(cardLink),
       cardData = self.helpers.getElementByProperty(self.data.boardData.cards, 'idShort', cardId);
@@ -230,7 +230,7 @@
       cardData = {
         id: cardRealId,
         idShort: cardId,
-        name: _cardLink.innerHTML.replace(/<span(.*)<\/span>/, '').trim(),
+        name: _cardNameLink.innerHTML.replace(/<span(.*)<\/span>/, '').trim(),
         url: cardLink,
         checklists: []
       };
@@ -254,7 +254,7 @@
 
     var _column = self.helpers.findParentByClass(_card, 'js-list');
 
-    self.data.cards[cardData.idShort] = self.createCardData(cardData, _card, _cardLink, _column);
+    self.data.cards[cardData.idShort] = self.createCardData(cardData, _card, cardLink, _column);
 
     var column = self.data.cards[cardData.idShort].column;
 
@@ -290,14 +290,14 @@
     var self = this;
 
     var createCardInterval = setInterval(function () {
-      var _card = document.querySelector('.js-card-name[href*="/c/' + self.getCardShortLinkFromLink(cardShortUrl) + '/"]');
+      var _card = document.querySelector('.list-card[href*="/c/' + self.getCardShortLinkFromLink(cardShortUrl) + '/"]');
 
       if (_card) {
         clearInterval(createCardInterval);
 
         self.helpers.lockDOM('wait-create-card', true);
 
-        var card = self.parseCard(self.helpers.findParentByClass(_card, 'list-card'));
+        var card = self.parseCard(_card);
 
         self.cardsUpdatedCallback();
 
