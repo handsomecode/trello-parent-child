@@ -1652,8 +1652,11 @@
               // page has changed, set new page as 'current'
               currentPage = window.location.href;
 
-              // do your thing...
-              self.updateCardView();
+              // update only if a card is open (which we can tell by checking if there is a /c/ in the url)
+              if (currentPage.includes("/c/"))
+              {
+                self.updateCardView();
+              }
           }
       }, 100);
 
