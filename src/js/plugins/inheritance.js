@@ -1022,6 +1022,7 @@
     },
 
     updateCardView: function (card) {
+      console.log("Called updateCardView...");
       if (!card) {
         card = HandsomeTrello.getCurrentOpenedCard();
       }
@@ -1580,6 +1581,7 @@
         )
       ) {
         self.updateCardView(openedCard);
+        console.log("Updated Card View of openedCard... ");
       }
     },
 
@@ -1633,6 +1635,28 @@
     },
 
     init: function () {
+      /*
+       * The following code checks if a card opens and then rerenders the card with
+       * the powerups added.
+       */
+      // store url on load
+      var currentPage = window.location.href;
+
+      // listen for changes
+      setInterval(function()
+      {
+          if (currentPage != window.location.href)
+          {
+              // page has changed, set new page as 'current'
+              currentPage = window.location.href;
+
+              // do your thing...
+              // console.log("card or board opened");
+              self.updateCardView();
+          }
+      }, 100);
+
+
       var self = this;
 
       HandsomeTrello.helpers.eventListener('handsomeTrello.parentLoading', function (event) {
@@ -1661,7 +1685,7 @@
         }
       });
 
-      HandsomeTrello.helpers.eventListener('handsomeTrello.childrenLoading', function (event) {
+      HandsomeTrello.helpers.eventListener('handsomeTrello.childrenLoading', function (event) {        
         var openedCard = HandsomeTrello.getCurrentOpenedCard();
 
         if (!openedCard || event.detail.id !== openedCard.id) {
@@ -1693,7 +1717,7 @@
         self.readCards();
       };
 
-      HandsomeTrello.callbacks.openCardViewed.inheritance = function (card) {
+      HandsomeTrello.callbacks.openCardViewed.inheritance = function (card) { 
         self.openCardViewed(card);
       };
 
@@ -1721,3 +1745,5 @@
   };
 
 })(HandsomeTrello);
+
+
