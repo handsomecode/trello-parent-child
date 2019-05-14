@@ -1022,7 +1022,6 @@
     },
 
     updateCardView: function (card) {
-      console.log("Called updateCardView...");
       if (!card) {
         card = HandsomeTrello.getCurrentOpenedCard();
       }
@@ -1581,7 +1580,6 @@
         )
       ) {
         self.updateCardView(openedCard);
-        console.log("Updated Card View of openedCard... ");
       }
     },
 
@@ -1634,28 +1632,30 @@
       }
     },
 
+    /*
+     * The init function is the first code the chrome plugin will run before 
+     * doing anything.
+     */
     init: function () {
       /*
-       * The following code checks if a card opens and then rerenders the card with
-       * the powerups added.
+       * The following code checks if a any chagne is made to the url indicating
+       * a card is open. If the url changed then we rerender the card with the 
+       * powerups added by calling updateCardView.
        */
       // store url on load
       var currentPage = window.location.href;
 
       // listen for changes
-      setInterval(function()
-      {
+      setInterval(function () {
           if (currentPage != window.location.href)
           {
               // page has changed, set new page as 'current'
               currentPage = window.location.href;
 
               // do your thing...
-              // console.log("card or board opened");
               self.updateCardView();
           }
       }, 100);
-
 
       var self = this;
 
