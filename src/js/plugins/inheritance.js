@@ -1649,7 +1649,6 @@
         function subscriber(mutations) {
           mutations.forEach((mutation) => {
             // handle mutations here
-            console.log("updating card view");
             self.updateCardView();
           });
         }

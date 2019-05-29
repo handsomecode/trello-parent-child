@@ -44,9 +44,6 @@
   };
 
   HandsomeTrello.getCardByLink = function (cardLink) {
-
-    // console.log(this.data.cards);
-
     return this.data.cards[this.getCardIdFromLink(cardLink)];
   };
 
@@ -197,8 +194,6 @@
   HandsomeTrello.createCardData = function (cardData, _card, _cardLink, _column) {
     var self = this;
 
-    console.log("Called createCardData...")
-
     return {
       id: cardData.id,
       idShort: cardData.idShort,
@@ -318,14 +313,10 @@
   HandsomeTrello.updateClosedCards = function () {
     var self = this;
 
-    console.log("Board Data contains " + self.data.boardData.cards.length + " cards.");
-
     for (var i = 0; i < self.data.boardData.cards.length; i++) {
       var cardData = self.data.boardData.cards[i];
 
-      // if (cardData.closed === true) {
-        self.data.cards[cardData.idShort] = self.createCardData(cardData);
-      //}
+      self.data.cards[cardData.idShort] = self.createCardData(cardData);
     }
   };
 
