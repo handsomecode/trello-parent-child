@@ -1634,6 +1634,33 @@
 
     init: function () {
       var self = this;
+      
+      // Watch the body for attribute changes indicating a card has loaded.
+      (function () {
+        // target element that we will observe
+        const target = document.body;
+    
+        // config object
+        const config = {
+          attributes: true,
+        };
+    
+        // subscriber function
+        function subscriber(mutations) {
+          mutations.forEach((mutation) => {
+            // handle mutations here
+            console.log("updating card view");
+            self.updateCardView();
+          });
+        }
+    
+        // instantiating observer
+        const observer = new MutationObserver(subscriber);
+    
+        // observing target
+        observer.observe(target, config);
+      } ());
+
 
       HandsomeTrello.helpers.eventListener('handsomeTrello.parentLoading', function (event) {
         var openedCard = HandsomeTrello.getCurrentOpenedCard();
@@ -1719,5 +1746,4 @@
       };
     }
   };
-
 })(HandsomeTrello);
