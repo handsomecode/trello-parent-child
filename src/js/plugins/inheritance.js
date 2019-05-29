@@ -1636,8 +1636,12 @@
       var self = this;
       
       // Watch the body for attribute changes indicating a card has loaded.
+      // This function uses a MutationObserver to check if the body has any
+      // attribute change (which loading a card will cause). If a card loads,
+      // we immediately call updateCardView which mounts the "Parent," 
+      // and "Child," buttons.
       (function () {
-        // target element that we will observe
+        // Target element that we will observe
         const target = document.body;
     
         // config object
@@ -1645,18 +1649,17 @@
           attributes: true,
         };
     
-        // subscriber function
+        // Subscriber function
         function subscriber(mutations) {
           mutations.forEach((mutation) => {
-            // handle mutations here
+            // Handle mutations here by calling updateCardView.
             self.updateCardView();
           });
         }
     
-        // instantiating observer
         const observer = new MutationObserver(subscriber);
     
-        // observing target
+        // Watch the body for changes to anything specified in the config
         observer.observe(target, config);
       } ());
 
