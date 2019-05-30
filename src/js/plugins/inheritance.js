@@ -95,7 +95,8 @@
       return HandsomeTrello.helpers.jsonToDOM(
         ['div', {
           'class': 'handsome-trello__inheritance-parent handsome-trello__inheritance-parent--' +
-          HandsomeTrello.options.descriptionPosition + ' js-card-parent'
+          HandsomeTrello.options.descriptionPosition + ' js-card-parent',
+          'style': 'padding-bottom: 0px'
         },
           ['h3', {
             'class': 'card-detail-item-header'
@@ -241,6 +242,11 @@
         'handsome-trello__inheritance-related--' + HandsomeTrello.options.descriptionPosition + ' ' +
         'js-card-related'
       );
+
+      _div.setAttribute(
+        'style', 'padding-bottom: 0px'
+      );
+
       _h3.setAttribute('class', 'card-detail-item-header');
       _h3.textContent = 'Siblings:';
       _ul.setAttribute('class', 'handsome-trello__inheritance-related-list');
@@ -994,8 +1000,11 @@
 
     updateInheritanceListInOpenedCardView: function (card) {
       if (card) {
-        var _descParentElement = document.querySelector('[attr="desc"]'),
+        var _descParentElement = document.querySelector('.window-module-title'),
           addingMethod = 'prependElement';
+
+        _descParentElement.setAttribute("style",
+          "display: flex; flex-direction: column; align-items: flex-start; padding-bottom: 0px")
 
         var htmlContainers = {
           parent: this.generateHtmlForParent(card.parent),

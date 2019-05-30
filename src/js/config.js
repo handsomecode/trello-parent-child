@@ -102,7 +102,7 @@ var HandsomeTrello = {};
             value: 'bottom'
           }
         ],
-        value: 'bottom'
+        value: 'top'
       },
       orderOfBlocks: {
         title: 'Order of Parent/Siblings/Child blocks',
