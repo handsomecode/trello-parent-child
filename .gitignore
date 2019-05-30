@@ -14,3 +14,6 @@ build
 dist
 src/css
 vendor/safari/certs
+
+### OS Specific
+.DS_Store

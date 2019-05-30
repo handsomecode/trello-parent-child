@@ -1644,15 +1644,16 @@
         // Target element that we will observe
         const target = document.body;
     
-        // config object
+        // config object which configures what we'll be observing. In this case
+        // observe attribute changes (to the body).
         const config = {
           attributes: true,
         };
     
-        // Subscriber function
         function subscriber(mutations) {
           mutations.forEach((mutation) => {
             // Handle mutations here by calling updateCardView.
+            console.log("Callled... ");
             self.updateCardView();
           });
         }
