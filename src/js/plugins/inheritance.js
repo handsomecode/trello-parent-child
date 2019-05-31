@@ -1634,6 +1634,35 @@
 
     init: function () {
       var self = this;
+      
+      // Watch the body for attribute changes indicating a card has loaded.
+      // This function uses a MutationObserver to check if the body has any
+      // attribute change (which loading a card will cause). If a card loads,
+      // we immediately call updateCardView which mounts the "Parent," 
+      // and "Child," buttons.
+      (function () {
+        // Target element that we will observe
+        const target = document.body;
+    
+        // config object which configures what we'll be observing. In this case
+        // observe attribute changes (to the body).
+        const config = {
+          attributes: true,
+        };
+    
+        function subscriber(mutations) {
+          mutations.forEach((mutation) => {
+            // Handle mutations here by calling updateCardView.
+            self.updateCardView();
+          });
+        }
+    
+        const observer = new MutationObserver(subscriber);
+    
+        // Watch the body for changes to anything specified in the config
+        observer.observe(target, config);
+      } ());
+
 
       HandsomeTrello.helpers.eventListener('handsomeTrello.parentLoading', function (event) {
         var openedCard = HandsomeTrello.getCurrentOpenedCard();
@@ -1719,5 +1748,4 @@
       };
     }
   };
-
 })(HandsomeTrello);

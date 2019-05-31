@@ -316,9 +316,7 @@
     for (var i = 0; i < self.data.boardData.cards.length; i++) {
       var cardData = self.data.boardData.cards[i];
 
-      if (cardData.closed === true) {
-        self.data.cards[cardData.idShort] = self.createCardData(cardData);
-      }
+      self.data.cards[cardData.idShort] = self.createCardData(cardData);
     }
   };
 
