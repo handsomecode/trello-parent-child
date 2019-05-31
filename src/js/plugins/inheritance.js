@@ -1003,7 +1003,7 @@
     updateInheritanceListInOpenedCardView: function (card) {
       if (card) {
         // We want to grab the section of a Card which is right above description.
-        // addingMethod is used to call prependElement in helpers.js. 
+        // addingMethod is used to specify which helpers.js method to call to add the buttons
         var _descParentElement = document.querySelector('.window-module-title'),
           addingMethod = 'prependElement';
 
