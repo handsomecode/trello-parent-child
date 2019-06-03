@@ -1004,7 +1004,7 @@
       if (card) {
         // We want to grab the section of a Card which is right above description.
         // addingMethod is used to specify which helpers.js method to call to add the buttons
-        var _descParentElement = document.querySelector('.window-module-title'),
+        var _descParentElement = document.querySelector('.description-title'),
           addingMethod = 'prependElement';
 
         // We need to style the div we're generating since by default the Description
