@@ -95,7 +95,9 @@
       return HandsomeTrello.helpers.jsonToDOM(
         ['div', {
           'class': 'handsome-trello__inheritance-parent handsome-trello__inheritance-parent--' +
-          HandsomeTrello.options.descriptionPosition + ' js-card-parent'
+          HandsomeTrello.options.descriptionPosition + ' js-card-parent',
+          // There should be no padding under any Child/Parent/Sibling buttons. There is by default 20px.
+          'style': 'padding-bottom: 0px' 
         },
           ['h3', {
             'class': 'card-detail-item-header'
@@ -241,6 +243,12 @@
         'handsome-trello__inheritance-related--' + HandsomeTrello.options.descriptionPosition + ' ' +
         'js-card-related'
       );
+
+      // There should be no padding under any Child/Parent/Sibling buttons.
+      _div.setAttribute(
+        'style', 'padding-bottom: 0px'
+      );
+
       _h3.setAttribute('class', 'card-detail-item-header');
       _h3.textContent = 'Siblings:';
       _ul.setAttribute('class', 'handsome-trello__inheritance-related-list');
@@ -994,8 +1002,15 @@
 
     updateInheritanceListInOpenedCardView: function (card) {
       if (card) {
-        var _descParentElement = document.querySelector('[attr="desc"]'),
+        // We want to grab the section of a Card which is right above description.
+        // addingMethod is used to specify which helpers.js method to call to add the buttons
+        var _descParentElement = document.querySelector('.description-title'),
           addingMethod = 'prependElement';
+
+        // We need to style the div we're generating since by default the Description
+        // section displays inline-block and will not display as desired.
+        _descParentElement.setAttribute("style",
+          "display: flex; flex-direction: column; align-items: flex-start; padding-bottom: 0px")
 
         var htmlContainers = {
           parent: this.generateHtmlForParent(card.parent),
